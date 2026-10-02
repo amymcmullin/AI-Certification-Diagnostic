@@ -1,0 +1,28 @@
+[
+ {
+  "id": "ai",
+  "title": "AI Certification Diagnostic",
+  "heading": "Which AI exam are you ready for?",
+  "exams": [
+   "Generative AI Foundations",
+   "Azure AI Fundamentals (AI-901)",
+   "IT Specialist: Artificial Intelligence"
+  ],
+  "questions": 45,
+  "minutes": 40,
+  "public_keys": false
+ },
+ {
+  "id": "demo",
+  "title": "AI Diagnostic Demo",
+  "heading": "Which AI exam are you ready for?",
+  "exams": [
+   "Generative AI Foundations",
+   "Azure AI Fundamentals (AI-901)",
+   "IT Specialist: Artificial Intelligence"
+  ],
+  "questions": 12,
+  "minutes": 10,
+  "public_keys": true
+ }
+]

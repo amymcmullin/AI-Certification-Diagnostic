@@ -1,0 +1,540 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0}[hidden]{display:none!important}*,*::before,*::after{box-sizing:border-box}</style></head><body><title>AI Certification Diagnostic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one score-report column; exam colors carry meaning, the accent stays for actions */
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --ink:#15212C; --muted:#56636F; --line:#D8DDE4;
+  --accent:#2346A0; --accent-ink:#FFFFFF; --accent-soft:#E2E8F7;
+  --x0:#9B3D8F; --x1:#1F6FC5; --x2:#1E8A6E; --x3:#B4532A;
+  --good:#1E7F4F; --good-soft:#DFF1E7; --warn:#A56A12; --warn-soft:#F8EDD9; --bad:#B4352F; --bad-soft:#F7E1DF;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E151C; --surface:#16202A; --ink:#E5EBF1; --muted:#9AA8B5; --line:#2A3846;
+  --accent:#93AAF2; --accent-ink:#0E151C; --accent-soft:#1D2944;
+  --x0:#D78ACB; --x1:#73B0F0; --x2:#5FCBA9; --x3:#EE9A6E;
+  --good:#62CB8E; --good-soft:#163323; --warn:#E3B260; --warn-soft:#3A2C12; --bad:#EE7C74; --bad-soft:#3E1D1B;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E151C; --surface:#16202A; --ink:#E5EBF1; --muted:#9AA8B5; --line:#2A3846;
+  --accent:#93AAF2; --accent-ink:#0E151C; --accent-soft:#1D2944;
+  --x0:#D78ACB; --x1:#73B0F0; --x2:#5FCBA9; --x3:#EE9A6E;
+  --good:#62CB8E; --good-soft:#163323; --warn:#E3B260; --warn-soft:#3A2C12; --bad:#EE7C74; --bad-soft:#3E1D1B;
+  color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding:0 16px}
+.wrap{max-width:780px;margin:0 auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.9rem,5vw,2.6rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.45rem;font-weight:800}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.spacer{flex:1}
+button,.btn{font:inherit;font-weight:700;font-size:.95rem;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 16px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.link{background:none;border:none;padding:0;color:var(--accent);text-decoration:underline;font-weight:400}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,textarea:focus-visible,.opt:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+label.field{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:.92rem;flex:1;min-width:180px}
+input[type=text],textarea{font:inherit;font-weight:400;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+textarea{font-family:var(--mono);font-size:.82rem;min-height:120px;resize:vertical}
+
+/* start */
+.exam-trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.exam-card{border-top:4px solid var(--c);padding:12px 0 0}
+.exam-card b{font-family:var(--display);font-weight:600;font-size:1.02rem;display:block;line-height:1.2}
+.exam-card span{font-size:.85rem;color:var(--muted)}
+@media (max-width:560px){.exam-trio{grid-template-columns:1fr}}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:.92rem}
+.facts b{font-family:var(--mono);font-weight:500}
+
+/* quiz */
+.qbar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px;z-index:2;display:flex;flex-direction:column;gap:8px}
+.track{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent);transition:width .2s}
+.qmeta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.stem{font-size:1.15rem;line-height:1.5}
+.hint{font-size:.85rem;font-weight:700;color:var(--accent)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:12px 14px;cursor:pointer;background:var(--surface)}
+.opt:hover{border-color:var(--accent)}
+.opt.on{border-color:var(--accent);background:var(--accent-soft)}
+.opt input{margin-top:5px;accent-color:var(--accent);width:18px;height:18px;flex:none}
+.opt .letter{font-family:var(--mono);font-size:.85rem;color:var(--muted);margin-top:2px}
+.grid-nav{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px}
+.grid-nav button{padding:6px 0;font-family:var(--mono);font-weight:500;font-size:.8rem}
+.grid-nav button.done{background:var(--accent-soft);border-color:var(--accent)}
+.grid-nav button.flag{box-shadow:inset 0 -3px 0 var(--warn)}
+.grid-nav button.cur{outline:2px solid var(--ink)}
+
+/* results */
+.verdict{border-left:6px solid var(--c);padding:18px 22px}
+.verdict .big{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,4.5vw,2.1rem);line-height:1.1}
+.meters{display:flex;flex-direction:column;gap:16px}
+.meter{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:baseline}
+.meter .nm{font-weight:700}
+.meter .pct{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.bar{grid-column:1/-1;position:relative;height:12px;background:var(--bg);border:1px solid var(--line);border-radius:99px}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:99px;background:var(--c)}
+.bar .cut{position:absolute;top:-5px;bottom:-5px;left:75%;width:2px;background:var(--ink)}
+.cutlbl{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-align:right}
+.pill{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.b-ready{background:var(--good-soft);color:var(--good)} .b-close{background:var(--warn-soft);color:var(--warn)}
+.b-dev{background:var(--bad-soft);color:var(--bad)} .b-not{background:var(--bad-soft);color:var(--bad)}
+.topics{display:grid;grid-template-columns:minmax(0,1fr) 110px 46px;gap:8px 12px;align-items:center;font-size:.93rem}
+.topics .mini{height:8px;background:var(--bg);border:1px solid var(--line);border-radius:99px;position:relative}
+.topics .mini i{position:absolute;inset:0 auto 0 0;border-radius:99px}
+.topics .n{font-family:var(--mono);font-size:.82rem;text-align:right;font-variant-numeric:tabular-nums}
+.dots{display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.plan{counter-reset:p;display:flex;flex-direction:column;gap:14px;margin:0;padding:0;list-style:none}
+.plan li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:4px 10px}
+.plan li::before{counter-increment:p;content:counter(p);font-family:var(--mono);font-size:.85rem;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;grid-row:span 3}
+.plan .obj{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+.codebox{font-family:var(--mono);font-size:.82rem;word-break:break-all;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:12px}
+details.rev{border-top:1px solid var(--line);padding-block:10px}
+details.rev summary{cursor:pointer;display:flex;gap:10px;align-items:baseline}
+details.rev summary::marker{content:""}
+.mark{font-family:var(--mono);font-weight:500;width:20px;flex:none}
+.mark.y{color:var(--good)} .mark.n{color:var(--bad)}
+.rev ul{margin:8px 0;padding-left:20px;font-size:.93rem}
+.rev li.key{font-weight:700;color:var(--good)} .rev li.wrong{color:var(--bad);text-decoration:line-through}
+.why{font-size:.9rem;color:var(--muted)}
+
+/* teacher */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:760px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--mono);font-weight:500;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.chip{display:inline-block;min-width:44px;text-align:center;font-family:var(--mono);font-size:.8rem;padding:2px 6px;border-radius:6px}
+.examtag{font-weight:700;color:var(--c)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--surface)}
+.stat b{display:block;font-family:var(--display);font-size:1.6rem;font-weight:800}
+.stat span{font-size:.82rem;color:var(--muted)}
+.notice{font-size:.85rem;padding:10px 14px;border-radius:8px;background:var(--warn-soft);color:var(--ink)}
+.foot{font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<main class="wrap" id="app"></main>
+
+<script>
+const BANK = {"settings": {"id": "ai", "title": "AI Certification Diagnostic", "eyebrow": "iTECH · AI certification readiness", "heading": "Which AI exam are you ready for?", "minutes": 40, "review": "explain", "encode": true}, "exams": {"GAI": {"name": "Generative AI Foundations", "vendor": "Certiport / Pearson (Critical Career Skills)", "weights": {"FND": 0.05, "GEN": 0.15, "PRM": 0.3, "CRT": 0.2, "VER": 0.1, "ETH": 0.2}, "short": "GenAI"}, "AZ": {"name": "Azure AI Fundamentals (AI-901)", "vendor": "Microsoft", "weights": {"FND": 0.05, "GEN": 0.2, "PRM": 0.15, "ETH": 0.15, "AZR": 0.45}, "short": "AI-901"}, "ITS": {"name": "IT Specialist: Artificial Intelligence", "vendor": "Certiport / Pearson", "weights": {"FND": 0.15, "ETH": 0.1, "DAT": 0.3, "MOD": 0.25, "OPS": 0.2}, "short": "ITS AI"}}, "topics": {"FND": {"name": "AI & Machine Learning Foundations", "study": "Know the ML task types: classification, regression, clustering, reinforcement learning, supervised vs. unsupervised. Also know when generative AI fits better than predictive AI or a search engine.", "objectives": "GAI 1.1 · AI-901 Identify AI workloads · ITS 1.1–1.2"}, "GEN": {"name": "How Generative AI Works", "study": "Tokens, embeddings, LLMs vs. diffusion models; what training requires (data, GPUs, energy); model parameters such as temperature and max tokens.", "objectives": "GAI 1.1–1.2 · AI-901 Identify AI model components and configurations"}, "PRM": {"name": "Prompt Engineering & Refinement", "study": "Zero-shot, few-shot, chain-of-thought, self-consistency, generate knowledge, prompt chaining, reverse prompting. Improve prompts with content, style, persona and context; know what system prompts do.", "objectives": "GAI 3.1–3.4 · AI-901 Create effective system and user prompts"}, "CRT": {"name": "Creating & Transforming Content", "study": "Choosing prompts for text, image and video tasks (summarize, reformat, translate, subtitle, avatar, colorize) and choosing a tool (privacy, cost, licensing, output control).", "objectives": "GAI 1.3–1.5, 2.1–2.4"}, "VER": {"name": "Verifying Output & Limitations", "study": "Hallucinations, inconsistency, outdated knowledge; how to verify historical facts, current facts and numerical data against reliable sources.", "objectives": "GAI 1.6, 3.5"}, "ETH": {"name": "Responsible AI, Ethics, Law & Privacy", "study": "Microsoft's six Responsible AI principles; sources of bias; intellectual property; PII and data privacy; who is accountable for AI output.", "objectives": "GAI 4.1–4.5 · AI-901 Responsible AI · ITS 3.6, 5.3"}, "AZR": {"name": "Azure AI Services & Microsoft Foundry", "study": "Vision (object detection, OCR), Azure AI Language, Azure Speech, Content Understanding, grounding/RAG, and agents in Microsoft Foundry.", "objectives": "AI-901 Identify AI workloads; Implement AI solutions using Microsoft Foundry"}, "DAT": {"name": "Data Collection & Preparation", "study": "Data quality issues (missing values, outliers, invalid entries), encoding categorical data, text features (bag-of-words, TF-IDF), train/test splits, stratification.", "objectives": "ITS 2.1–2.9"}, "MOD": {"name": "Model Training & Evaluation", "study": "Overfitting vs. underfitting, ways to prevent overfitting, classification metrics (precision, recall, F1) vs. regression metrics (MAE, RMSE).", "objectives": "ITS 3.1–3.5"}, "OPS": {"name": "Deployment, Monitoring & Lifecycle", "study": "Data drift vs. concept drift, logging and monitoring, retraining triggers, documentation, change control and scope creep.", "objectives": "ITS 1.6, 2.4, 4.1–4.4, 5.1–5.5"}}, "items": [{"id": "FND1", "topic": "FND", "type": "mc", "stem": "A real estate company wants to predict the sale price of a home from its square footage, number of bedrooms, and location. What type of machine learning task is this?", "options": ["Classification", "Regression", "Clustering", "Reinforcement learning"], "k": "1fd1e609", "w": "HOb+gYspDvaQ2MnrjzQ74Lze+k/t/YXIeBQ1rubjld9/lsH4OGM7a5UI3rR24HrUvO5SVYxrV/yyGsFqX3f8T5KGl6lnmfk3EdhPaArXLNVcMFIttnsys14dSGQApq2478zbeSCvSA=="}, {"id": "FND2", "topic": "FND", "type": "mc", "stem": "A gym has check-in data for 3,000 members but no labels or categories. Management wants AI to discover groups of members with similar workout habits. Which technique fits best?", "options": ["Regression", "Clustering", "Anomaly detection", "Supervised classification"], "k": "0a54db80", "w": "rpMRNDnrUR5Zn8ZCHWXHM0q5sTHYKJS9x84fZA7/aiIG+WvJbdcwzzCmSDSEHEhe2nQCJFCEBPiK5cQ7DyH9OTc3/BM1/TQot85q"}, {"id": "FND3", "topic": "FND", "type": "mc", "stem": "A warehouse robot gets a reward each time it delivers a package faster than before. Over thousands of trips it learns better routes. Which learning approach is this?", "options": ["Reinforcement learning", "Unsupervised learning", "Supervised learning", "Rule-based programming"], "k": "79d8a256", "w": "8A5a0dttRpN3En8AM0AzNAU74niJS/rBGnQ/MgO7AHLDW+e5QeVHYfKAqtujhFQ4Lq0P/tVNKI+BW44Ef+R4Ipfv8+nAy/692qJaEYXZo7ff"}, {"id": "FND4", "topic": "FND", "type": "ma", "stem": "Which TWO tasks are better suited to generative AI than to a search engine or a predictive model? (Choose two.)", "options": ["Drafting a first version of a cover letter for a help-desk job", "Finding the Collier County tax office's hours for today", "Predicting whether a loan applicant will miss a payment", "Creating three logo concept images for a new food truck"], "k": "0b9db77f", "w": "3saDnnLy2WnR6BPhqsC4JGKoLCDlNr53TqT8zKn3IcMUrAsLwqN/S6v9r0hwUnWAOIICRwzqMKy2C1YhnvqpHAY6VsqmnHKXpsH5OMJ5KKYXwKP8FlaM7h8UmNnOKGDZx0q7tmrj24HgiLXWVfJSZ9CV+YFCi+FBR/X3rgt/Dij091BNqWuqDThWlKJgfw=="}, {"id": "GEN1", "topic": "GEN", "type": "mc", "stem": "In a large language model (LLM), what is a token?", "options": ["A password used to access the model", "A label a person adds to a training example", "A small unit of text, such as a word or part of a word, that the model processes", "A score showing how accurate a response is"], "k": "d50eb5cd", "w": "pWX34BPdoCjcwOSedcpNWTmgdN8gBFYsk+oWPfhRQpO6A+1x+5XxU0ykUVE1PHdlzZPzwTGQyRP0n0uW1GDCCuG2TFW9qKml+Uyz8lqW+yjQovm5RhtrEieGxZMhBSAiCFWOeyU4FytDiKhTy1A/yLHZcMiO"}, {"id": "GEN2", "topic": "GEN", "type": "mc", "stem": "What is the purpose of embeddings in a generative AI solution?", "options": ["They encrypt prompts before they are sent to the model", "They represent text as numeric vectors so that content with similar meaning ends up close together", "They compress images to reduce storage", "They count how many words are in a document"], "k": "f7708b76", "w": "tjqkGQb/XLPlk8vorHyNbVCiO4Q2AE10rvzDhnT9eT+s3/UjXO2ckL6QdwJjvf7ZbH6nJBGISiJlJK8FubUY1K78qfuMkS25o2uMvux/YWsP0sLmvU4F+6K4RhIJT1CGlB39odOujdJXx40PXRc="}, {"id": "GEN3", "topic": "GEN", "type": "mc", "stem": "A developer wants a help-desk chatbot to give consistent, predictable answers to the same question. Which configuration change helps most?", "options": ["Remove the system prompt", "Raise the temperature", "Lower the temperature", "Increase the max tokens setting"], "k": "7807f4c7", "w": "DQ3YrGpLZhVxmSY3Gqgy3GFI96pLx5eoBaAtmTXyDrXa2oURjWmyzcYShnWTCCK8GkXgeabAbZyb/2hDgr3MIGPh9wLiOkmNm/8ixXFvCnuAoIW+bwM/qkD/7Qno9uDwYvHlKNrfuIOfzsQUHlJdxh10MDs2kk2oVANZ1I/AddAy+gTETgOL"}, {"id": "GEN4", "topic": "GEN", "type": "ma", "stem": "Which TWO statements about training generative AI models are true? (Choose two.)", "options": ["Once trained, an LLM automatically knows about events that happened after training", "An LLM can be trained effectively on a few hundred sentences", "Image generation models are commonly trained on images paired with text descriptions", "Training a large model takes powerful hardware such as GPUs and uses a lot of energy"], "k": "ef99041d", "w": "YDCUSm4AgyBqsUYWp2WFKOVuRYqYdymESbBf3Oug/yKroN0Rh/s1Wz8bhGAiz0gjmIXi+GIEd6wtMFcVv2fmZyOXmY0YmOKm5VXnx9E2t0l2JAZlVhF2teyJs3AqyP+NBcU4YmjPAWhks1U/Ao6JRYtFqopeEOZNnG8EgCEd9Jk72Pdw/7kSpv+uE1uJH2KOTkHnjforkHtJ10oV7Z/rD/6hjfbmvVsQ/wDweAyh"}, {"id": "GEN5", "topic": "GEN", "type": "mc", "stem": "Which type of model creates an image by starting from random noise and refining it step by step until it matches the prompt?", "options": ["k-means", "Linear regression", "Diffusion model", "Decision tree"], "k": "a2ecef21", "w": "9HjJxJkuc2e5Fa7skFRf0CIvLkJqQe5cYfJX4a7/GUs8zX/fSeRQQ0oBykBxTl5ohGEEfOCDSbY+Rs8RXK6z9gT8UxTKDwqNk0/X1XuHq6L2SdwR+Q0c20vXFbEAT6vwUIjgqyD2tw=="}, {"id": "PRM1", "topic": "PRM", "type": "mc", "stem": "Which prompt is an example of few-shot prompting?", "options": ["“Write a slogan for a dog-grooming business.”", "“Think step by step about what pet owners want, then write a slogan.”", "“Here are two slogans we like: ‘Fresh fur, happy tails’ and ‘Clean pups, big smiles.’ Write three more in the same style.”", "“Write a slogan, then rewrite it to be shorter.”"], "k": "b15c4a54", "w": "cZXWuAkpkFWCvU7L/9CjwC7kw5YqHIR7wAqvfLoIb5fjpm2rzh6C5zcxa3k19HpAiPJPRFsX4wv29gNGE0CSYIx9nC2agZgU2CYyDnLdRLPfJLEwYkUjdkcoQxfLSljExmNrt6GQT6oh4IRTsvaI3r+mL0KDXiPNPodZ0N4cmIxTV37YAawZb0Ws9Uj8dewii32+2DlEMBd360813p6lO2pmb1N4PzX9AvX3bkvr/F+rDkFbthpg7M+lyLWG9Q=="}, {"id": "PRM2", "topic": "PRM", "type": "mc", "stem": "A student writes: “Solve this budget problem. Show your reasoning one step at a time before giving the final total.” Which prompting technique is this?", "options": ["Zero-shot", "Reverse prompting", "Chain-of-thought", "Self-consistency"], "k": "ecfb08a5", "w": "5BXpLsMdl0sykFoYv0d5XMxI4umlqmk9UGdnw4JVgKfMw8rBe1+3aCiJS+0XGqd/d4gt/Y9JMW+eddI+uvH45ZDktoc1cB6usQko5Gqx1b6XW6NcinKIDA=="}, {"id": "PRM3", "topic": "PRM", "type": "mc", "stem": "A student runs the same math word-problem prompt five times and goes with the answer that comes up most often. Which technique is this?", "options": ["Self-consistency", "Prompt chaining", "Generate knowledge", "Few-shot"], "k": "7b773ea9", "w": "k+SMHNFlOYUgLRkT7qEL/YfKhQvqJ6RGGLqjK/ueH7Ok3bif/Ujsnm7F/iuszADbRTK090ZvnzW7lM+62A7AQmfikiIHrqMWpzi7XHV2/pFZfitCw8bqYIOOGdpQ8SIu73/sHtBlmuQhWfQXS0CV"}, {"id": "PRM4", "topic": "PRM", "type": "mc", "stem": "Which is an example of reverse prompting?", "options": ["Asking the AI to translate its answer into Spanish", "Asking the AI to list facts about a topic before writing about it", "Typing the prompt in reverse word order", "Pasting a sample product description and asking, “What prompt would produce text like this?”"], "k": "e7576157", "w": "HjOQp4eKSHReNRwdvTYAf5xObZiqND02ooINJ19wZYx62XdMYPoA9e3zpb7T5dFmiEFHHIUjsi0F53njMxZUgP0a+GEVOztrljK9jyl8g0eRxyGqxJKmJm+mYgBMeIXsCQifZM14nWP43DA4h7deSdv5XgjzJc0YlhYSoRFiAjMGtl00GJXa9Cmq9gudIFR2VNx5D7HSwbHRmww="}, {"id": "PRM5", "topic": "PRM", "type": "ma", "stem": "The prompt “Write about solar panels” returns generic text. You need a piece for a homeowners' newsletter. Which TWO changes would most improve the output? (Choose two.)", "options": ["Shorten the prompt to “Solar?”", "Run the same prompt again without changes", "Assign a persona: “You are a friendly energy-savings advisor”", "Add context: “for Florida homeowners considering installation, about 200 words”"], "k": "f676a2ef", "w": "0Sq24wPxBWTBdiL9a00765Xj/3xxSi6G+iUU3AIRYtY49y2osGNfuTyNVP5A/zem/rDuvaOP+L4vEoXsvR1ElsC5DwHAdgMRTrnWoYU7RI/kV4l9za/BZZt7HxyKrM0jV2uTzkkByuaCyx6jrmus26j3qaE48Qgh0g/8"}, {"id": "PRM6", "topic": "PRM", "type": "mc", "stem": "In a Microsoft Foundry chat app, where should you put the instruction that the assistant must always act as a polite IT help-desk agent and decline unrelated requests?", "options": ["In the temperature setting", "In the system prompt (system message)", "In each user's message", "In the model's training data"], "k": "3a5e129f", "w": "IJ9SU70Q/ZxCu1ZdrxVJse4dsraCsTB49NOGUw/SQ/qmZQ9EA6Y0arJJPHa+l2LZXlgVMuVDha6JjVKyt6PFpZ+cUoyDN9VXp+HtwbVnLkihB+4nRXw+wVlxFcZtgJpnBiUc/HIyKQ8XZNXD2GOEl/hWwQYnQmSEEhCIWrAO34eeP8g="}, {"id": "CRT1", "topic": "CRT", "type": "mc", "stem": "An instructor needs a recorded lecture to be usable by viewers who cannot hear the audio. Which AI prompt fits best?", "options": ["“Add upbeat background music to this video.”", "“Generate an avatar that reads this lecture aloud.”", "“Generate accurate subtitles synchronized with the speech in this video.”", "“Colorize this video.”"], "k": "1bbe1a36", "w": "qUUVuLSYJLkpFGs6MMb0A5bKtVK18+2EVRQgkdcBwcgINkGsG8xa42CpyN7GOXHeQaetl67GI2Mp6vyqRCjwcpTEzqmiEfHKQG/m1n8="}, {"id": "CRT2", "topic": "CRT", "type": "mc", "stem": "An AI response lists the annual rainfall for 12 cities in one long paragraph. Which follow-up prompt will make the data easiest to read?", "options": ["“Rewrite the paragraph with more detail.”", "“Convert this into a table with columns for City and Annual Rainfall, sorted highest to lowest.”", "“Translate this into Spanish.”", "“Make this sound more exciting.”"], "k": "b33a5e65", "w": "j31XdWt4o5DNsFrFscv16pZso512WaU8o0wLwFBAeOrwU7jN1/unNDn33ZmGzL5BzIZ43tUN+7vEkbg6XNddD8DBPzgNTqVn4I9blszJPyZU1k/sadUGQ6bz20PV5A59BeCvmMPOVEN/yI0p36g="}, {"id": "CRT3", "topic": "CRT", "type": "ma", "stem": "A small business is choosing a generative AI tool to make marketing images. Which TWO considerations matter most? (Choose two.)", "options": ["How the tool handles uploaded data and whether it is used for training", "Whether the license allows commercial use of the generated images", "The color of the tool's logo", "How many social media followers the tool's company has"], "k": "55a32c2d", "w": "lRlt5+PtbR7IvVuKAt5J3/qmTq/C7WpM2RlQyF4Z+PW46ONG9ZL4lLa2Y30ISbt6kr5gebIACb567Wdg5XikgQVpC3eStyMeSGXrMnuNnnkQ/0VxRaOK4eDqO2U+F0DYtsQK1HYZFPixHyR3Xe5EjPXIlieAIC8="}, {"id": "VER1", "topic": "VER", "type": "mc", "stem": "A chatbot confidently cites a court case, with a name and date, that never existed. What is this called?", "options": ["Tokenization", "Hallucination", "Overfitting", "Data drift"], "k": "db9c5a8a", "w": "sX8fI9/LSBQgHz3VOsJQvA8ue1nvx5/eT/nkmmIpeFFoUJFUSYKAD+o3S2W+TvvmOpH/lgkC6OQ81LcMjE3KdkhlTaLj+EFq"}, {"id": "VER2", "topic": "VER", "type": "ma", "stem": "A writer uses a generative AI tool to collect facts about this week's local news for a newsletter. Which TWO steps best verify the facts? (Choose two.)", "options": ["Assume the facts are correct if they are detailed", "Open any sources the AI cites and confirm they exist, are recent, and say what the AI claims", "Cross-check each fact against reputable, current news sources", "Ask the same chatbot, “Are you sure?”"], "k": "0f3b0c43", "w": "bWjOuSuX5KbcyhwOWpO++SnQKByHWoCSlcj/gQboCghhVhPnuDoV0cHxOsi2ir3RYsqCMM84JTUPzqz6/kD1IVENAnpq9QAH6qoM6bB5yD7G6pogqWGRqWizY/B+E/6E/w+ethLyy2PC9KKzdGmLJX1sb5+417gc7bpqQ7pM"}, {"id": "VER3", "topic": "VER", "type": "mc", "stem": "An AI-generated image of a classroom shows two wall clocks set to different times, and one student has six fingers. Which limitation of generative AI does this show?", "options": ["Bias in training data", "Copyright infringement", "Inconsistent or illogical details in generated output", "Data leakage"], "k": "a2b74a26", "w": "r7VeaA75Mm/ZQFYiJFXriMuYBJuj40wKVAnnST4TQhjrdhTwBdAftBxpEgLMCHAk5Mx9wdb9XrBONnlBsxrp37WjCVC+K0ozltWuUDw/Gvbwn7z3xBsXkTDSFFX+aNyAr8RngSZQUcHtV/+UoUig613b6hoaz35AWRLRnBjJI5pvMgDEtPfhHR3ZOLyUHQaTCuVjvCBw2kJnhgjhDuKwdZmxVM4OlYy+moyaOA=="}, {"id": "ETH1", "topic": "ETH", "type": "mc", "stem": "A loan-approval model approves applicants from one neighborhood far less often than applicants with similar finances elsewhere. Which Responsible AI principle is most directly at issue?", "options": ["Fairness", "Transparency", "Inclusiveness", "Reliability and safety"], "k": "aeb48ed9", "w": "QqwqoK59RYl6ockXrWPz3M6CQgemy6//gRxyVQ9OX79EB2vnducNvVsqIo3CZ79s1pgkeRWehnAm8WSmsmt7pttQ1Mj9m3KPBm+Afft4BNNgzwBWeUbfaJpSA/Z/RA=="}, {"id": "ETH2", "topic": "ETH", "type": "mc", "stem": "Which Responsible AI principle requires telling users how a model reaches its decisions and what its limitations are?", "options": ["Inclusiveness", "Privacy and security", "Accountability", "Transparency"], "k": "4730d49b", "w": "jXq0wCwlBFa3qhv/jDuteLUDCBnMy0mj2obTAkHgNNzxhsqpD+W2tSaQw7eWFonMiCSOOLEPbIcsEXzD1d70CeOcu3jEyWYJlwsnFdsObc5E0HUb0TJ7TOA="}, {"id": "ETH3", "topic": "ETH", "type": "ma", "stem": "An employee pastes a customer list with names, addresses, and Social Security numbers into a free public chatbot to format it. Which TWO risks does this create? (Choose two.)", "options": ["The data is automatically encrypted and deleted", "Exposed PII could lead to identity theft and civil or criminal liability", "The chatbot will refuse to format any table", "The data may be stored or used to train the model"], "k": "1fc71a21", "w": "s6sxZ4iGH6sGvt3JC/MRCZHATHwwJoAQ5q4BApXGwR201yNcQbZjjYuq1pR5IRLpANzlRprBb8bZ4scsR9PG9KPYRMs/m9GtOW4Xol4R8xxlawf9lN1XNxe0wku+9+3Md49/gKnRp7zNJW1savO8XIYjTMUF2lUbhEWIoI2mF6x6q0CHxaKfA2HVuwckQ0xcXH+jQAqeP/SRIsHrgmRd10F6aBcRHAzODfLtw5v4/g6RwVNRnA=="}, {"id": "ETH4", "topic": "ETH", "type": "mc", "stem": "A company wants to train a model on product descriptions from manufacturers' websites, and some of that text is copyrighted. What is the proper approach?", "options": ["Remove the company logos and use the rest", "Get permission or licenses from the copyright holders", "Paraphrase the text first so it no longer counts", "Use it freely, since it is publicly posted"], "k": "7015cbcf", "w": "8u+GJImNv15Wvc3Nxp79LOsO7iRVmx6+zwBSI0DVH5Ylj4Yog83kM9zF1sobWSYZfW1hFUUv31Uz/5EBD/Tu8n+nF0Agj6f6rGf4d9V5y9RxDXpJMZB1Qyv2gPRxlwcsXvgQRMEai9sdAhfZYmz4+pXL6pQHx9mZbU1qbPpu7fQ="}, {"id": "ETH5", "topic": "ETH", "type": "mc", "stem": "A resume-screening model is trained on 10 years of hiring decisions from a company that mostly hired men. What is the most likely result?", "options": ["It may learn to favor male candidates, repeating the historical bias", "It will rank candidates fairly because computers are objective", "It will refuse to rank any candidates", "It will only be affected by the newest resumes"], "k": "04920b45", "w": "YaTaPz/o/Rz7cDW0Yb7A6OKsECis2YS/ziNgp+kPbVdkeJA765rj787LC3cgn7v04hdcgtD7+Y/jiceFjEk884aqNxNozM5QI8+5WxlerN15en4HzJp8XLhO4VXu7Z8Px5IIfNXDdAMRwMAzDXErHktpty2koZzAqZrQcphJo+c="}, {"id": "AZR1", "topic": "AZR", "type": "mc", "stem": "An object detection model finds a dog in a photo. What does it return to show where the dog is?", "options": ["A sentiment score", "Bounding box coordinates", "A key phrase list", "A transcript"], "k": "21d2eae0", "w": "IPRwrIho2y2pQ+ZdPtfa7LGiWv5G/SY8RaVR5JXoyGJtYvnnL5W7L429B5ACFZ8qcuVTg+aClQwjubyqNXKBLfQLMVMXNhLG5AESqZLA58LEsaoaKaRHDPO+Un92lXpVFoHomfw4jU/mCRpHh5WFdheMYnbu2DlTsBjKkiohG96TnccwF06S3+Hd5penRnGo5Q=="}, {"id": "AZR2", "topic": "AZR", "type": "mc", "stem": "A clinic wants to pull patient name, visit date, and insurance ID fields from thousands of scanned intake forms into a database. Which Microsoft Foundry capability fits best?", "options": ["Azure Speech", "Image generation", "Azure Translator", "Azure Content Understanding (document information extraction)"], "k": "bd4f355b", "w": "AIBcEZ4+MGQLYySaDB7xtOB1XaWzGr3Jatlqg5OJS3UuCzXJu5ecmZr+RtlKG1YVDrgOEHLmPO1rYArvaI3mk1sB5tL8z36gvOUfgYENsR4MmILU5WmltJWNC+KS/4JHDaF23rz1TyD5abP1MzumBN29gA=="}, {"id": "AZR3", "topic": "AZR", "type": "ma", "stem": "Which TWO tasks can Azure AI Language perform? (Choose two.)", "options": ["Named entity recognition", "Converting spoken audio to text", "Detecting objects in images", "Sentiment analysis"], "k": "4d3d80f3", "w": "CsApF7jT4kfInA2RMjH0qFWxmECmaReUDzFqQmEmXabGL+PO+/ssJGYZr4jh0ZKtulzH1C7zjyobx6i0L4mVxnqIIJYCxj6/QwUmOoX8uTUCNAXrhNgp8YNrkbKDNvVca+Y8PJXUzpfPRLkgL0zi/RvPyhMAPg66OWkzMQfzCd7q/KzMGrvcqt4F/xDVLlAx2le2P5rYkVX9DipYURpPKflxPbWXYpeh"}, {"id": "AZR4", "topic": "AZR", "type": "mc", "stem": "An app must listen to a caller's spoken question and answer out loud. Which pair of capabilities does it need?", "options": ["Speech to text and text to speech", "Anomaly detection and clustering", "OCR and image classification", "Key phrase extraction and translation"], "k": "e4b9c522", "w": "PdJ721Yv6iBTg0im3CKQJQzi9y9v+7Ggx9B0wJcZ4LZfH661bEHqVaPdCG8cLBn6Pj//jPLqkDo0UynnpkZSzb5GIkgmhaobMdZ3KNcJA+TYSKVNUXbdoaQuXLMF4g9hmzbIJE1xVG5G+H5w6kZFt9jr"}, {"id": "AZR5", "topic": "AZR", "type": "mc", "stem": "A company's chatbot gives generic answers about the company's own HR policies. What is the best way to make its answers come from the employee handbook?", "options": ["Ground the model in the handbook using retrieval-augmented generation (RAG)", "Raise the temperature", "Shorten every prompt", "Switch to an image generation model"], "k": "78360305", "w": "bYfQ9QmrlpvIPauB5enEtzgJuFZ61U367cSs3MleWySnJ+AKy8WvOq695e1s1uUaJuf0kQ6T4Hg1oMArct3Ys2zq14I8+mOB8fAF77yjNXQPXriaaVe5IIcR9iB86whK1sDMOY1XmJZm7dYaHGopC3mWgC8="}, {"id": "AZR6", "topic": "AZR", "type": "mc", "stem": "What best describes an AI agent built in Microsoft Foundry, compared with a basic chat completion?", "options": ["It does not use a language model", "It always gives shorter answers", "It can use tools and take multi-step actions toward a goal", "It runs only offline"], "k": "84b2ff63", "w": "2yDb0hBsuEPrUaoKZwjEuPVLr04QH5umqLBkRmcQfwK7gY+2XsueQtJCMF/JSzpS9XrqcO7HtB0LE3/fh8OHsPpnKXaGhuKb+LstW04DnIhR6M4Jhhl5HioQsPXrfy6YK1nbcz8N6AgXBaj+GBfhYWI="}, {"id": "DAT1", "topic": "DAT", "type": "mc", "stem": "An “Age” column in a training dataset contains the values -3 and 999. What does this indicate?", "options": ["Invalid values that need cleaning before training", "Concept drift", "Overfitting", "Class imbalance"], "k": "441abd6b", "w": "SDfZ8Kd8DZoXi6h832aQygqGGzE/W0OMJ4rnxUwIJAkTr5+GEjwVQxDG+r1f5YhJXaOB0Vs9iwqhdSQ6cI5VoIaDhEhH4ZTfaCWlsvGrBbbINp5yqI1crnc="}, {"id": "DAT2", "topic": "DAT", "type": "mc", "stem": "A “Color” column contains Red, Blue, and Green. What must happen before most ML algorithms can use it?", "options": ["Sort the values alphabetically", "Encode the categories as numbers, for example with one-hot encoding", "Delete the column", "Multiply each value by 10"], "k": "7f33e003", "w": "m85PRai6/yFgVAxumAuANUGxINvyYyMnzah5W4f9LwABv4A9XU/chJ2hyYDvXkcUvdo6Fs+ZSOw1qCfNUQ8Rd6cVKCEHP5TnjN00qV8FwW47AnU42EETEXG93MQ3hYLevzK2Ho3X30Fg/Ow9WpdlmC79qrueVg=="}, {"id": "DAT3", "topic": "DAT", "type": "mc", "stem": "What is the most commonly used ratio for splitting a dataset into training and testing sets?", "options": ["99% training / 1% testing", "20% training / 80% testing", "80% training / 20% testing", "50% training / 50% testing"], "k": "1435bb32", "w": "KW1xD3idRaaxPGZ56UBasR4uZN4iH33pn4IjpvXy+PxDg4yAWMUFzSbdfP0PxsOIjdwWxVrWNui3q0jompTPu0su/RAA2Awiwxaa1JaWNx5Clq5yJ6tazAUOSEqv585Tm/5oy56H"}, {"id": "DAT4", "topic": "DAT", "type": "mc", "stem": "A small dataset is 95% “not fraud” and 5% “fraud.” How should you split it so the training and test sets both keep that ratio?", "options": ["Use a stratified split", "Put all the fraud rows in the test set", "Drop the fraud rows", "Split by date only"], "k": "769033fc", "w": "/CA3p9UKu9nQI0LKXgJhog30V8r2O7xGtZewIato/BwOhV3ek9YTfRujkO6e6jJauLHLNM6BhpY+9h7J7F+1XLCJupwlDHGvIngorvcqvVOM1EjkA98CUs5ByKg5cyQr350357zF0iAC20YXEVJjFoC4aseu"}, {"id": "DAT5", "topic": "DAT", "type": "ma", "stem": "Which TWO techniques turn text data into numeric features? (Choose two.)", "options": ["Bag-of-words", "TF-IDF", "Min-max scaling", "Pruning"], "k": "1bf9067d", "w": "67UKE0T/Z2SnHxm3lD8NB1cFZVdlpdNCiDtXOzG3CAMQxEhgjGbE5oM6HhYlbmCHwl/joTDeJcs0RBdhX+d/A/bGpOX8fCHHqyOQdPoHKk6t3jd9rhwgbHKWUKhq0IE9/JuCG6MwcV+EtG0xH+LsGwxMApmwnr9JfcbLdvhLONpRg158GDIkVH+dRrF0Qu4EfRqDLNNamlOKeF73l/aqQ0Q9sKqsx+ofycfw4Q=="}, {"id": "MOD1", "topic": "MOD", "type": "mc", "stem": "A model scores 99% accuracy on its training data but only 70% on new test data. What is most likely happening?", "options": ["The model is well balanced", "Underfitting", "Overfitting", "Concept drift"], "k": "8323a79b", "w": "4bPGXFAPskVM9XlgdNlhiSFosIEyxrq+tmqZ20ZIWK/pfOd289X1LgzxFq4dnXo/4Cfj4/eDf1X5Zq2q+XnRmsetU9VyMVrvvLbU3l8ETha7e4L1TVyXufzGHpknBoPGQPlIIaUhICm1Ozg0igz7Kovpkb3+Rj+SEvf8es/4hmGR3j/L6VjBfh4FWjPi"}, {"id": "MOD2", "topic": "MOD", "type": "ma", "stem": "Which TWO methods help prevent overfitting? (Choose two.)", "options": ["Adding many more features without adding data", "Cross-validation", "Regularization", "Training for many more epochs"], "k": "efa769b8", "w": "dzsbj2pbU/7JRf72DGNEZWEy8MVpix+hyvGqmtH+s+rxi5estEJNn89sp1i2IHXi/YJmZ1dXIzZTtCmzCEa6YOvid6n2pz9pfdaMV7MB1VagwBcbwkBz94A+jQaIpZi2ozZYv2En+FAL5aBrWDEwyTmRVTI54Cg3gRqvgi7q2BZQrhmq22pZCyPXjgd0wYQkTjPSHX2cvIcpqdHL"}, {"id": "MOD3", "topic": "MOD", "type": "mc", "stem": "A model screens patients for cancer. Missing a real case is the worst possible error. Which metric should be prioritized?", "options": ["Recall (sensitivity)", "Precision", "Training speed", "Overall accuracy only"], "k": "632b36da", "w": "tri2SbgCFFoSTmUOQcitVngz4Cd60X9woP9/F8V30/NM016pPajIn9kBwiz0ibWkThiU/p39DddER3cuY1bmI+cMgxdDyV31yCehg+ms1ojgHB7avqSYgjNJjXNw2MqwKliHj3piBwQ1rGo7WxL0cXI="}, {"id": "MOD4", "topic": "MOD", "type": "mc", "stem": "Which metric is used to evaluate a regression model?", "options": ["Recall", "Root mean squared error (RMSE)", "F1 score", "Precision"], "k": "b4aece76", "w": "uUr9cvKxwkJzHEdOduxCABXLo1JbT4twbDeQa+rvJdoMUtyJJLcdHOlMvPQT+deloATcRUTd8dOjobyh7o9v21om75qCWOqVl0xLOUVUTueGg6FaQrK8Ft3FxZv7a6CR80A278d3yt/ilNWBhkxNxpPlcndIeqyjWadS6Q=="}, {"id": "OPS1", "topic": "OPS", "type": "mc", "stem": "A model trained on U.S. mailing addresses starts receiving international address formats in production, and its performance drops. What is this issue?", "options": ["Underfitting", "Overfitting during training", "Data drift (a change in the input data distribution)", "Scope creep"], "k": "f04d87d3", "w": "bYD/yEW46h8R6LggvnGWOvyvnaLAZ6HeHiRoPyzejJvloZQX8XFdYeGONmCohEwUukdi/7Uz/CHY6dF8wKFtIEfQLvxoDbymcKR1thP8sGPg9e9Z3wncfKHBOYhlS7dbEg79n6JRjaLi24/KlaM/n6Dfqh2mqQ=="}, {"id": "OPS2", "topic": "OPS", "type": "mc", "stem": "A fraud model gets worse because criminals change tactics, so transaction patterns that used to be safe now signal fraud. What is this called?", "options": ["Hyperparameter tuning", "Data leakage", "Class balancing", "Concept drift"], "k": "6ad15ffa", "w": "ftVSySCtC+dNqbPxzPQrO4zOzPiRtDuTi/OIJAQASWNHP/KFFGOo4iPMhYojzi9iKHHAsNVRDfCyCf34dDgnCs/c7jETbhyw6GIPTtMQ+3AQYgCn8bQIHTuo5nJkUYh91MGtqfycmRRQOa6kM50v+9OkeYAYPWGlXMgOUxhPz7Dgy2Gs"}, {"id": "OPS3", "topic": "OPS", "type": "mc", "stem": "Why is logging critical in a production AI system?", "options": ["It records inputs, outputs and errors so the team can trace, audit, debug and monitor the system", "It replaces the need for testing", "It makes training faster", "It reduces the size of the dataset"], "k": "d0551712", "w": "NWGcJj8BRWE2HaFJKZ6WLuhsG9ay8wjlzTjjs9g54J8HmyglPEciirMjKeEgqisVe9h1yS+fmPcW6nvmJHWxqMr1r3gu8RRgMqfnPSuHjrOQCQGqwOzAoNsl3ge/17zpsz+4T/ZVTb5qWw=="}, {"id": "OPS4", "topic": "OPS", "type": "mc", "stem": "Six months into a year-long AI project, a team member proposes new features that would add time and budget. How should the team avoid scope creep?", "options": ["Add the features quietly to keep the stakeholder happy", "Ignore all feedback until the project is finished", "Restart the project from the beginning", "Assess the request against the documented scope through change control, and add it only if approved"], "k": "37d8d150", "w": "0ZX6qEEzA1YPknUIGO5Ey1agoLLvpQcpZrqM0rkqBohgWPMYo25KTJFYt2iySyMoLPSGIjfb0NtlL5wzU4IlZqMEaHIDlTevPTVrQlJm7aRm8GQhHyHAWMMtQwoTAaGlB5Y2y3ocf8jy5qGg8F8="}], "salt": "5cb807c5404090f7"};
+const ITEMS = BANK.items, TOPICS = BANK.topics, EXAMS = BANK.exams;
+const CFG = Object.assign({id:"pack", eyebrow:"Certification readiness", heading:"Which exam are you ready for?", intro:"", minutes:40, review:"explain", org:""}, BANK.settings||{});
+const EXAM_KEYS = Object.keys(EXAMS);
+const EXAM_COLOR = Object.fromEntries(EXAM_KEYS.map((e,i)=>[e,`var(--x${i%4})`]));
+const SHORT = e => EXAMS[e].short || EXAMS[e].name;
+const READY = 75, CLOSE = 60, DEV = 40;
+const SAVE_KEY = "cdx-attempt-" + CFG.id;
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fnv = s => { let h=0x811c9dc5; for(const ch of s){ h^=ch.codePointAt(0); h=Math.imul(h,0x01000193)>>>0;} return h; };
+const hex8 = n => n.toString(16).padStart(8,"0");
+
+/* ---------- encoded packs ----------
+   A private pack is published with each key stored as a hash and each explanation
+   XOR-encoded, so the answers can't be read from the page source. This keeps honest
+   students honest; it is not secure against someone running code in the console. */
+function stream(seed){ let x = seed || 1; return () => { x ^= x<<13; x>>>=0; x ^= x>>>17; x ^= x<<5; x>>>=0; return x & 255; }; }
+function decodeWhy(it){
+  if (it.why !== undefined) return it.why;
+  const next = stream(fnv(BANK.salt+"|w|"+it.id));
+  const bytes = Uint8Array.from(atob(it.w), c => c.charCodeAt(0) ^ next());
+  return (it.why = new TextDecoder().decode(bytes));
+}
+for (const it of ITEMS){
+  if (it.answer) continue;
+  const n = it.type === "ma" ? 2 : 1;
+  for (let m = 1; m < (1<<it.options.length); m++){
+    if (popcount(m) === n && hex8(fnv(BANK.salt+"|"+it.id+"|"+m)) === it.k){
+      it.answer = it.options.map((_,k)=>k).filter(k => (m>>k)&1); break;
+    }
+  }
+  if (!it.answer) throw new Error("Answer key for " + it.id + " could not be decoded");
+}
+const keyMask = it => it.answer.reduce((m,a)=>m|(1<<a),0);
+const need = it => it.answer.length;
+
+/* ---------- scoring (pure) ---------- */
+function score(masks){ // masks: array aligned with ITEMS (canonical option indices)
+  const topic = {};
+  for (const t in TOPICS) topic[t] = {n:0, c:0};
+  const correct = ITEMS.map((it,i)=> masks[i] === keyMask(it));
+  ITEMS.forEach((it,i)=>{ topic[it.topic].n++; if(correct[i]) topic[it.topic].c++; });
+  for (const t in topic) topic[t].pct = topic[t].n ? topic[t].c/topic[t].n : 0;
+  const exam = {};
+  for (const e of EXAM_KEYS){
+    const w = EXAMS[e].weights; let s = 0;
+    for (const t in w) s += w[t]*topic[t].pct;
+    exam[e] = Math.round(s*100);
+  }
+  const ranked = EXAM_KEYS.slice().sort((a,b)=> exam[b]-exam[a]);
+  const total = correct.filter(Boolean).length;
+  return {topic, exam, ranked, best: ranked[0], correct, total, overall: Math.round(100*total/ITEMS.length)};
+}
+function band(p){ return p>=READY?{k:"ready",t:"Likely ready",c:"b-ready"}: p>=CLOSE?{k:"close",t:"Almost there",c:"b-close"}: p>=DEV?{k:"dev",t:"Developing",c:"b-dev"}:{k:"not",t:"Not yet",c:"b-not"}; }
+function studyPlan(r, e){
+  const w = EXAMS[e].weights;
+  return Object.keys(w).map(t=>({t, w:w[t], pct:r.topic[t].pct, gain:w[t]*(1-r.topic[t].pct)}))
+    .filter(x=> x.pct < 0.8).sort((a,b)=> b.gain-a.gain);
+}
+
+/* ---------- results code ---------- */
+function b64u(str){ return btoa(String.fromCharCode(...new TextEncoder().encode(str))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function unb64u(s){ s=s.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; return new TextDecoder().decode(Uint8Array.from(atob(s),c=>c.charCodeAt(0))); }
+function makeCode(rec){
+  const clean = v => String(v).replace(/~/g,"-").trim().slice(0,60);
+  const payload = ["2", CFG.id, clean(rec.name), clean(rec.period), rec.date, rec.minutes, rec.masks.map(m=>m.toString(16)).join("")].join("~");
+  return "AIDX-" + b64u(payload) + "." + check(payload, 2);
+}
+// v1 codes (first AI release) have no pack id and belong to the "ai" pack
+const check = (payload, v) => (fnv((v===1?"itech-ai|":"cdx|")+payload)%1679616).toString(36).padStart(4,"0");
+function parseCodes(text){
+  const out=[], seen=new Set(); let bad=0, other=0;
+  for (const m of text.matchAll(/AIDX-([A-Za-z0-9_-]+)\.([a-z0-9]{4})/g)){
+    if (seen.has(m[0])) continue; seen.add(m[0]);
+    try{
+      const payload = unb64u(m[1]); let p = payload.split("~"); const v = +p[0];
+      if (v===1 && p.length===6) p = ["1","ai",...p.slice(1)];
+      else if (v!==2 || p.length!==7) throw 0;
+      if (p[1]!==CFG.id){ other++; continue; }
+      if (p[6].length!==ITEMS.length) throw 0;
+      out.push({name:p[2], period:p[3], date:p[4], minutes:+p[5], masks:[...p[6]].map(h=>parseInt(h,16)), verified: check(payload, v)===m[2], code:m[0]});
+    }catch(e){ bad++; }
+  }
+  return {rows:out, bad, other};
+}
+
+/* ---------- Canvas "Student Analysis" CSV ---------- */
+function csvRows(text){
+  const rows=[]; let row=[], f="", q=false;
+  for (let i=0;i<text.length;i++){
+    const c=text[i];
+    if (q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else if (c==='"') q=true;
+    else if (c===','){ row.push(f); f=""; }
+    else if (c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n') i++; row.push(f); rows.push(row); row=[]; f=""; }
+    else f+=c;
+  }
+  if (f!==""||row.length){ row.push(f); rows.push(row); }
+  return rows;
+}
+const norm = s => String(s).toLowerCase().replace(/<[^>]*>/g,"").replace(/&[a-z#0-9]+;/g,"").replace(/[^a-z0-9]/g,"").slice(0,60);
+function parseCanvas(text){
+  const rows = csvRows(text); if (rows.length<2) return [];
+  const h = rows[0].map(x=>x.trim());
+  const nameCol = h.findIndex(x=>x.toLowerCase()==="name");
+  if (nameCol<0) return [];
+  const secCol = h.findIndex(x=>x.toLowerCase()==="section");
+  const subCol = h.findIndex(x=>x.toLowerCase()==="submitted");
+  const byStem = new Map(ITEMS.map((it,i)=>[norm(it.stem),i]));
+  const map = []; // [colIndex of score, itemIndex]
+  h.forEach((x,c)=>{ const m = x.match(/^\d+:\s*([\s\S]+)/); if(!m) return; const i = byStem.get(norm(m[1])); if(i!==undefined) map.push([c+1,i]); });
+  if (!map.length) return [];
+  return rows.slice(1).filter(r=> r[nameCol] && r[nameCol].trim()).map(r=>{
+    const masks = ITEMS.map(()=>0);
+    for (const [c,i] of map){ const v = parseFloat(r[c]); if (v>=0.999) masks[i] = keyMask(ITEMS[i]); }
+    const sub = subCol>=0 ? (r[subCol]||"").slice(0,10) : "";
+    return {name:r[nameCol].trim(), period: secCol>=0?(r[secCol]||"").trim():"", date:sub, minutes:0, masks, verified:true, code:"canvas:"+r[nameCol], canvas:true, matched:map.length};
+  });
+}
+
+/* ---------- attempt state ---------- */
+let S = null;
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function newAttempt(name, period){
+  return {name, period, order: shuffle(ITEMS.map((_,i)=>i)),
+    perm: ITEMS.map(it=> shuffle(it.options.map((_,k)=>k))),
+    masks: ITEMS.map(()=>0), flags: ITEMS.map(()=>false), idx:0, start: Date.now(), end:null};
+}
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const s = JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(s && s.masks && s.masks.length===ITEMS.length) return s; }catch(e){} return null; }
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+const answeredCount = () => S.masks.filter((m,i)=> popcount(m)===need(ITEMS[i])).length;
+function popcount(m){ let c=0; while(m){ c+=m&1; m>>=1;} return c; }
+
+/* ---------- views ---------- */
+function footer(){
+  return `<footer class="foot"><span>Original practice questions written to each exam's published objectives. Readiness is an estimate from this diagnostic, not an official score prediction. Not affiliated with or endorsed by any exam vendor; exam names are trademarks of their owners.${CFG.org?" "+esc(CFG.org)+".":""}</span>
+  <button class="link" id="toTeacher">Teacher view</button></footer>`;
+}
+function viewStart(){
+  const saved = load();
+  app.innerHTML = `
+  <header class="stack">
+    <div class="eyebrow">${esc(CFG.eyebrow)}</div>
+    <h1>${esc(CFG.heading)}</h1>
+    <p class="muted" style="max-width:62ch">${esc(CFG.intro || `This diagnostic covers what ${EXAM_KEYS.length} certification exams test. When you finish, you'll see your readiness for each exam, the one you are most likely to pass, and the topics to study first.`)}</p>
+  </header>
+  <section class="exam-trio" style="grid-template-columns:repeat(${Math.min(EXAM_KEYS.length,3)},minmax(0,1fr))">
+    ${EXAM_KEYS.map(e=>`<div class="exam-card" style="--c:${EXAM_COLOR[e]}"><b>${esc(EXAMS[e].name)}</b><span>${esc(EXAMS[e].vendor)}</span></div>`).join("")}
+  </section>
+  <section class="panel stack">
+    <div class="facts"><span><b>${ITEMS.length}</b> questions</span><span>about <b>${CFG.minutes}</b> minutes</span><span><b>${Object.keys(TOPICS).length}</b> topic areas</span><span>“Choose two” items need both answers right</span></div>
+    ${saved && !saved.end ? `<div class="notice">You have an unfinished attempt for <b>${esc(saved.name)}</b> (${saved.masks.filter(Boolean).length} answered). <button class="link" id="resume">Resume it</button></div>`:""}
+    <form id="startForm" class="stack" novalidate>
+      <div class="row">
+        <label class="field" for="nm">Your name<input type="text" id="nm" autocomplete="name" required></label>
+        <label class="field" for="pd">Class or period<input type="text" id="pd" placeholder="e.g. CSIT AM"></label>
+      </div>
+      <p id="err" class="muted" hidden style="color:var(--bad)">Enter your name to start.</p>
+      <div class="row"><button class="primary" type="submit">Start the diagnostic</button>
+      <span class="muted" style="font-size:.88rem">Answer every question even if you're unsure. Guessing tells your teacher more than a blank.</span></div>
+    </form>
+  </section>
+  ${footer()}`;
+  document.getElementById("startForm").onsubmit = ev => {
+    ev.preventDefault();
+    const nm = document.getElementById("nm").value.trim();
+    if(!nm){ document.getElementById("err").hidden=false; return; }
+    S = newAttempt(nm, document.getElementById("pd").value.trim()); save(); viewQuiz();
+  };
+  const r = document.getElementById("resume"); if (r) r.onclick = ()=>{ S = saved; viewQuiz(); };
+  document.getElementById("toTeacher").onclick = viewTeacher;
+}
+
+function viewQuiz(){
+  const pos = S.idx, i = S.order[pos], it = ITEMS[i], multi = it.type==="ma";
+  const done = answeredCount();
+  app.innerHTML = `
+  <div class="qbar">
+    <div class="qmeta"><span>Question ${pos+1} of ${ITEMS.length}</span><span>${done} answered</span></div>
+    <div class="track"><i style="width:${100*done/ITEMS.length}%"></i></div>
+  </div>
+  <section class="panel stack" aria-live="polite">
+    <p class="stem">${esc(it.stem)}</p>
+    ${multi?`<p class="hint">Select ${need(it)} answers.</p>`:""}
+    <div class="opts" role="${multi?"group":"radiogroup"}">
+      ${S.perm[i].map((k,n)=>{
+        const on = (S.masks[i]>>k)&1;
+        return `<label class="opt ${on?"on":""}"><input type="${multi?"checkbox":"radio"}" name="q" id="o${k}" value="${k}" ${on?"checked":""}><span class="letter">${"ABCD"[n]}</span><span>${esc(it.options[k])}</span></label>`;
+      }).join("")}
+    </div>
+  </section>
+  <div class="row">
+    <button id="prev" ${pos===0?"disabled":""}>Back</button>
+    <button id="flag">${S.flags[i]?"Unflag":"Flag for review"}</button>
+    <span class="spacer"></span>
+    ${pos<ITEMS.length-1?`<button class="primary" id="next">Next</button>`:`<button class="primary" id="finish">Review &amp; submit</button>`}
+  </div>
+  <details class="panel"><summary class="eyebrow" style="cursor:pointer">Jump to a question</summary>
+    <div class="grid-nav" style="margin-top:12px">${S.order.map((q,p)=>`<button data-p="${p}" class="${popcount(S.masks[q])===need(ITEMS[q])?"done":""} ${S.flags[q]?"flag":""} ${p===pos?"cur":""}">${p+1}</button>`).join("")}</div>
+  </details>`;
+  app.querySelectorAll(".opts input").forEach(inp=> inp.onchange = ()=>{
+    const k = +inp.value;
+    if (!multi) S.masks[i] = 1<<k;
+    else {
+      let m = S.masks[i] ^ (1<<k);
+      if (popcount(m) > need(it)) { inp.checked = false; return; }
+      S.masks[i] = m;
+    }
+    save();
+    app.querySelectorAll(".opt").forEach(l=> l.classList.toggle("on", l.querySelector("input").checked));
+    const d = answeredCount();
+    app.querySelector(".qmeta span:last-child").textContent = d+" answered";
+    app.querySelector(".track i").style.width = (100*d/ITEMS.length)+"%";
+  });
+  const go = p => { S.idx = p; save(); viewQuiz(); window.scrollTo(0,0); };
+  document.getElementById("prev").onclick = ()=> go(pos-1);
+  const nx = document.getElementById("next"); if (nx) nx.onclick = ()=> go(pos+1);
+  const fi = document.getElementById("finish"); if (fi) fi.onclick = viewReview;
+  document.getElementById("flag").onclick = ()=>{ S.flags[i]=!S.flags[i]; save(); viewQuiz(); };
+  app.querySelectorAll(".grid-nav button").forEach(b=> b.onclick = ()=> go(+b.dataset.p));
+}
+
+function viewReview(){
+  const missing = S.order.map((q,p)=>({q,p})).filter(x=> popcount(S.masks[x.q])!==need(ITEMS[x.q]));
+  const flagged = S.order.map((q,p)=>({q,p})).filter(x=> S.flags[x.q]);
+  app.innerHTML = `
+  <header class="stack"><div class="eyebrow">Before you submit</div><h2>${answeredCount()} of ${ITEMS.length} answered</h2></header>
+  <section class="panel stack">
+    ${missing.length?`<p>Still open (unanswered, or not enough answers picked): ${missing.map(x=>`<button class="link" data-p="${x.p}">${x.p+1}</button>`).join(", ")}</p>`:`<p>Every question has an answer.</p>`}
+    ${flagged.length?`<p>Flagged: ${flagged.map(x=>`<button class="link" data-p="${x.p}">${x.p+1}</button>`).join(", ")}</p>`:""}
+    <div class="row"><button id="back">Keep working</button><span class="spacer"></span><button class="primary" id="submit">Submit and see my results</button></div>
+    ${missing.length?`<p class="muted" style="font-size:.88rem">Open questions count as wrong.</p>`:""}
+  </section>`;
+  app.querySelectorAll("[data-p]").forEach(b=> b.onclick=()=>{ S.idx=+b.dataset.p; viewQuiz(); });
+  document.getElementById("back").onclick = ()=> viewQuiz();
+  document.getElementById("submit").onclick = ()=>{ S.end = Date.now(); save(); viewResults(); window.scrollTo(0,0); };
+}
+
+function meterHTML(e, pct){
+  const b = band(pct);
+  return `<div class="meter" style="--c:${EXAM_COLOR[e]}"><span class="nm">${esc(EXAMS[e].name)}</span>
+    <span><span class="pill ${b.c}">${b.t}</span> <span class="pct">${pct}%</span></span>
+    <div class="bar" role="img" aria-label="${pct} percent readiness"><i style="width:${pct}%"></i><span class="cut"></span></div></div>`;
+}
+function topicRows(r){
+  return Object.keys(TOPICS).map(t=>{
+    const p = Math.round(r.topic[t].pct*100);
+    const col = p>=80?"var(--good)":p>=60?"var(--warn)":"var(--bad)";
+    const dots = EXAM_KEYS.filter(e=> EXAMS[e].weights[t]).map(e=>`<i style="--c:${EXAM_COLOR[e]}" title="${esc(EXAMS[e].name)}"></i>`).join("");
+    return `<span>${esc(TOPICS[t].name)}<span class="dots">${dots}</span></span><div class="mini"><i style="width:${p}%;background:${col}"></i></div><span class="n">${r.topic[t].c}/${r.topic[t].n}</span>`;
+  }).join("");
+}
+
+function viewResults(){
+  const r = score(S.masks), best = r.best, second = r.ranked[1], bb = band(r.exam[best]);
+  const plan = studyPlan(r, best);
+  const minutes = Math.max(1, Math.round((S.end - S.start)/60000));
+  const code = makeCode({name:S.name, period:S.period||"", date:new Date(S.end).toISOString().slice(0,10), minutes, masks:S.masks});
+  let headline;
+  if (bb.k==="ready") headline = `You're on track to pass ${EXAMS[best].name}.`;
+  else if (bb.k==="close") headline = `${EXAMS[best].name} is your closest exam. A focused review should get you there.`;
+  else headline = `${EXAMS[best].name} is your best starting point. Build these topics before you schedule it.`;
+  app.innerHTML = `
+  <header class="stack">
+    <div class="eyebrow">Score report · ${esc(S.name)}${S.period?" · "+esc(S.period):""} · ${minutes} min</div>
+    <h1>${r.total} of ${ITEMS.length} correct</h1>
+  </header>
+  <section class="panel verdict stack" style="--c:${EXAM_COLOR[best]}">
+    <div class="eyebrow">Recommended exam</div>
+    <div class="big">${esc(EXAMS[best].name)}</div>
+    <p>${esc(headline)} Next closest: <b>${esc(EXAMS[second].name)}</b> at ${r.exam[second]}%.</p>
+  </section>
+  <section class="panel stack">
+    <div class="row"><h2>Exam readiness</h2><span class="spacer"></span><span class="cutlbl">line = ${READY}% readiness target</span></div>
+    <div class="meters">${r.ranked.map(e=> meterHTML(e, r.exam[e])).join("")}</div>
+    <p class="muted" style="font-size:.86rem">Each exam's readiness weights your topic scores by how much of that exam the topic covers.</p>
+  </section>
+  <section class="panel stack">
+    <h2>Study plan for ${esc(EXAMS[best].name)}</h2>
+    ${plan.length?`<p class="muted">Ordered by how many points each topic is worth on this exam.</p><ol class="plan">${plan.map(x=>`<li><b>${esc(TOPICS[x.t].name)} · ${Math.round(x.pct*100)}%</b><span>${esc(TOPICS[x.t].study)}</span><span class="obj">${esc(TOPICS[x.t].objectives)}</span></li>`).join("")}</ol>`
+      :`<p>You scored 80% or higher on every topic this exam covers. Take a full-length practice test, then schedule the exam.</p>`}
+  </section>
+  <section class="panel stack">
+    <h2>Topic scores</h2>
+    <p class="muted" style="font-size:.86rem">Dots show which exams test each topic: <span class="dots">${EXAM_KEYS.map(e=>`<i style="--c:${EXAM_COLOR[e]}"></i>`).join("")}</span> ${EXAM_KEYS.map(e=>`<span class="examtag" style="--c:${EXAM_COLOR[e]}">${esc(SHORT(e))}</span>`).join(" · ")}</p>
+    <div class="topics">${topicRows(r)}</div>
+  </section>
+  <section class="panel stack">
+    <h2>Turn in your results code</h2>
+    <p>Copy this code and paste it where your teacher asked (Canvas assignment or form).</p>
+    <div class="codebox" id="code">${esc(code)}</div>
+    <div class="row"><button class="primary" id="copy">Copy code</button><span id="copied" class="muted" aria-live="polite"></span></div>
+  </section>
+  <section class="panel">
+    <details><summary style="cursor:pointer"><h2 style="display:inline">Review your answers</h2></summary>
+    <p class="muted" style="font-size:.86rem;margin-top:8px">${CFG.review==="full"?"Correct answers are shown in green.":CFG.review==="none"?"Shows which questions you got right. Ask your teacher to go over the ones you missed.":"Your answers are marked right or wrong, with an explanation. Correct answers aren't shown, so you can work them out."}</p>
+    <div style="margin-top:10px">${S.order.map((q,p)=>{
+      const it = ITEMS[q], ok = r.correct[q];
+      return `<details class="rev"><summary><span class="mark ${ok?"y":"n"}">${ok?"✓":"✗"}</span><span>${p+1}. ${esc(it.stem)}</span></summary>
+        ${CFG.review==="none" ? `<p class="why">${esc(TOPICS[it.topic].name)}</p>` : `
+        <ul>${it.options.map((o,k)=>{ const key=it.answer.includes(k), mine=(S.masks[q]>>k)&1;
+          const cls = CFG.review==="full" ? (key?"key":mine?"wrong":"") : (mine?(ok?"key":"wrong"):"");
+          return `<li class="${cls}">${esc(o)}${mine?" (your answer)":""}</li>`;}).join("")}</ul>
+        <p class="why">${esc(decodeWhy(it))}</p>`}</details>`;}).join("")}</div></details>
+  </section>
+  <div class="row"><button id="again">Start a new attempt</button></div>
+  ${footer()}`;
+  document.getElementById("copy").onclick = async ()=>{
+    const out = document.getElementById("copied");
+    try{ await navigator.clipboard.writeText(code); out.textContent="Copied."; }
+    catch(e){ const rg=document.createRange(); rg.selectNodeContents(document.getElementById("code")); const s=getSelection(); s.removeAllRanges(); s.addRange(rg); out.textContent="Selected. Press Ctrl+C to copy."; }
+  };
+  document.getElementById("again").onclick = ()=>{ clearSave(); S=null; viewStart(); };
+  document.getElementById("toTeacher").onclick = viewTeacher;
+}
+
+/* ---------- teacher ---------- */
+let T = {rows:[], sort:"name", dir:1, example:false};
+function exampleCodes(){
+  const names = ["Example Student A","Example Student B","Example Student C","Example Student D","Example Student E","Example Student F"];
+  const strengths = [["PRM","CRT","VER","ETH","GEN"],["AZR","GEN","ETH","PRM"],["DAT","MOD","OPS","FND"],["FND","PRM","ETH"],["DAT","MOD","FND","ETH","OPS","AZR"],["CRT","VER","PRM","ETH","GEN","AZR"]];
+  let seed = 7; const rnd = ()=> (seed = (seed*16807)%2147483647)/2147483647;
+  return names.map((n,s)=> makeCode({name:n, period:"EXAMPLE", date:"2026-10-01", minutes:28+s*3,
+    masks: ITEMS.map(it=> rnd() < (strengths[s].includes(it.topic)?0.88:0.4) ? keyMask(it) : (1<<((it.answer[0]+1)%4)) | (it.type==="ma"?1<<((it.answer[0]+2)%4):0))
+  })).join("\n");
+}
+function viewTeacher(){
+  app.innerHTML = `
+  <header class="stack"><div class="eyebrow">Teacher view</div><h1>Class results</h1>
+    <p class="muted" style="max-width:62ch">Paste results codes from Canvas or a form. You can paste a whole export: the page finds the codes inside it. If you gave the test as a Canvas quiz, open its Student Analysis CSV instead. Nothing you paste leaves this browser.</p></header>
+  <section class="panel stack">
+    <label class="field" for="codes">Results codes<textarea id="codes" placeholder="AIDX-…"></textarea></label>
+    <div class="row"><button class="primary" id="go">Show results</button><label class="btn" for="file" style="cursor:pointer">Open a .csv or .txt file</label><input type="file" id="file" accept=".csv,.txt,text/plain,text/csv" hidden>
+      <span class="spacer"></span><button id="ex">Load example class</button><button id="back">Back to the test</button></div>
+    <p id="parseMsg" class="muted" aria-live="polite"></p>
+  </section>
+  <div id="tout" class="stack"></div>`;
+  const ta = document.getElementById("codes");
+  const run = ()=>{ const {rows:codeRows,bad,other} = parseCodes(ta.value); const canvasRows = parseCanvas(ta.value);
+    const rows = codeRows.concat(canvasRows);
+    T.rows = rows.map(x=>({...x, r:score(x.masks)})); T.example = rows.some(r=>r.period==="EXAMPLE");
+    const cv = canvasRows.length ? ` Canvas report: ${canvasRows.length} student${canvasRows.length>1?"s":""}, ${canvasRows[0].matched} of ${ITEMS.length} questions matched.` : "";
+    document.getElementById("parseMsg").textContent = rows.length ? `${rows.length} result${rows.length>1?"s":""} loaded${bad?`, ${bad} code${bad>1?"s":""} could not be read`:""}.${cv}${other?` ${other} code${other>1?"s":""} from a different diagnostic skipped.`:""}` : (bad?`${bad} code(s) could not be read. Check that each one was copied in full.`:"No results found. Paste codes that start with AIDX-, or open the Canvas Student Analysis CSV.");
+    renderTeacher(); };
+  document.getElementById("go").onclick = run;
+  document.getElementById("ex").onclick = ()=>{ ta.value = exampleCodes(); run(); };
+  document.getElementById("file").onchange = ev=>{ const f=ev.target.files[0]; if(!f) return; f.text().then(t=>{ ta.value=t; run(); }); };
+  document.getElementById("back").onclick = ()=> S && !S.end ? viewQuiz() : S && S.end ? viewResults() : viewStart();
+  if (T.rows.length) renderTeacher();
+}
+function renderTeacher(){
+  const out = document.getElementById("tout"); if(!out) return;
+  const rows = T.rows; if(!rows.length){ out.innerHTML=""; return; }
+  const avg = f => Math.round(rows.reduce((s,x)=>s+f(x),0)/rows.length);
+  const recCount = Object.fromEntries(EXAM_KEYS.map(e=>[e, rows.filter(x=>x.r.best===e).length]));
+  const readyCount = rows.filter(x=> x.r.exam[x.r.best]>=READY).length;
+  const topicAvg = Object.keys(TOPICS).map(t=>({t, p: rows.reduce((s,x)=>s+x.r.topic[t].pct,0)/rows.length})).sort((a,b)=>a.p-b.p);
+  const itemPct = ITEMS.map((it,i)=>({it, p: rows.filter(x=>x.r.correct[i]).length/rows.length})).sort((a,b)=>a.p-b.p).slice(0,6);
+  const sorted = rows.slice().sort((a,b)=>{
+    const k=T.sort, d=T.dir;
+    const v = x => k==="name"?x.name.toLowerCase(): k==="period"?x.period.toLowerCase(): k==="date"?x.date: k==="overall"?x.r.overall: k==="rec"?x.r.best: x.r.exam[k];
+    return v(a)>v(b)?d: v(a)<v(b)?-d:0;});
+  const chip = p => { const b=band(p); return `<span class="chip ${b.c}">${p}%</span>`; };
+  const th = (k,l)=>`<th data-k="${k}" aria-sort="${T.sort===k?(T.dir>0?"ascending":"descending"):"none"}">${l}${T.sort===k?(T.dir>0?" ▲":" ▼"):""}</th>`;
+  out.innerHTML = `
+  ${T.example?`<p class="notice">These are example students generated to show the layout. They are not real results.</p>`:""}
+  ${rows.some(x=>!x.verified)?`<p class="notice">${rows.filter(x=>!x.verified).length} code(s) failed the check digits and may have been edited. They are marked with ⚠.</p>`:""}
+  <section class="stats">
+    <div class="stat"><b>${rows.length}</b><span>students</span></div>
+    <div class="stat"><b>${avg(x=>x.r.overall)}%</b><span>average score</span></div>
+    <div class="stat"><b>${readyCount}</b><span>likely ready for their recommended exam</span></div>
+    ${EXAM_KEYS.map(e=>`<div class="stat" style="border-top:4px solid ${EXAM_COLOR[e]}"><b>${recCount[e]}</b><span>recommended ${esc(EXAMS[e].name)}</span></div>`).join("")}
+  </section>
+  <div class="tablewrap"><table>
+    <thead><tr>${th("name","Student")}${th("period","Class")}${th("date","Date")}${th("overall","Score")}${EXAM_KEYS.map(e=>th(e,esc(SHORT(e)))).join("")}${th("rec","Recommended")}<th>Study first</th></tr></thead>
+    <tbody>${sorted.map(x=>{ const pl = studyPlan(x.r, x.r.best).slice(0,2);
+      return `<tr><td>${x.verified?"":"⚠ "}${esc(x.name)}</td><td>${esc(x.period)}</td><td class="num">${esc(x.date)}</td><td class="num">${x.r.total}/${ITEMS.length}</td>
+      ${EXAM_KEYS.map(e=>`<td>${chip(x.r.exam[e])}</td>`).join("")}
+      <td><span class="examtag" style="--c:${EXAM_COLOR[x.r.best]}">${esc(EXAMS[x.r.best].name)}</span></td>
+      <td>${pl.length?pl.map(p=>esc(TOPICS[p.t].name)).join("<br>"):"Ready to test"}</td></tr>`;}).join("")}</tbody>
+  </table></div>
+  <div class="row"><button id="csv">Download CSV</button><button id="copycsv">Copy as CSV</button><span id="csvMsg" class="muted" aria-live="polite"></span></div>
+  <section class="panel stack"><h2>Class topic averages</h2><p class="muted" style="font-size:.86rem">Weakest first. Dots show which exams test the topic.</p>
+    <div class="topics">${topicAvg.map(({t,p})=>{ const q=Math.round(p*100); const col=q>=80?"var(--good)":q>=60?"var(--warn)":"var(--bad)";
+      return `<span>${esc(TOPICS[t].name)}<span class="dots">${EXAM_KEYS.filter(e=>EXAMS[e].weights[t]).map(e=>`<i style="--c:${EXAM_COLOR[e]}"></i>`).join("")}</span></span><div class="mini"><i style="width:${q}%;background:${col}"></i></div><span class="n">${q}%</span>`;}).join("")}</div>
+  </section>
+  <section class="panel stack"><h2>Most-missed questions</h2>
+    ${itemPct.map(({it,p})=>`<div><span class="pill ${band(Math.round(p*100)).c}">${Math.round(p*100)}% correct</span> <span class="eyebrow">${it.id} · ${esc(TOPICS[it.topic].name)}</span><p style="margin-top:4px">${esc(it.stem)}</p></div>`).join("")}
+  </section>`;
+  out.querySelectorAll("th[data-k]").forEach(h=> h.onclick=()=>{ const k=h.dataset.k; T.dir = T.sort===k? -T.dir : (["name","period","rec"].includes(k)?1:-1); T.sort=k; renderTeacher(); });
+  const csv = ()=> { const q=v=>`"${String(v).replace(/"/g,'""')}"`;
+    const head = ["Student","Class","Date","Minutes","Correct","Overall %",...EXAM_KEYS.map(e=>EXAMS[e].name+" %"),"Recommended exam", ...Object.keys(TOPICS).map(t=>TOPICS[t].name+" %"),"Verified"];
+    return [head.map(q).join(","), ...rows.map(x=>[x.name,x.period,x.date,x.minutes,x.r.total,x.r.overall,...EXAM_KEYS.map(e=>x.r.exam[e]),EXAMS[x.r.best].name,...Object.keys(TOPICS).map(t=>Math.round(x.r.topic[t].pct*100)),x.verified?"yes":"no"].map(q).join(","))].join("\n"); };
+  const msg = document.getElementById("csvMsg");
+  document.getElementById("copycsv").onclick = async ()=>{ try{ await navigator.clipboard.writeText(csv()); msg.textContent="Copied. Paste into Excel or Sheets."; }catch(e){ msg.textContent="Copy was blocked in this view. Use Download CSV."; } };
+  const dl = document.getElementById("csv");
+  (async ()=>{ const d = window.claude ? await window.claude.use("downloads").catch(()=>null) : null;
+    if (d) dl.onclick = async ()=>{ try{ await d.save({filename:CFG.id+"-diagnostic-results.csv", data:csv()}); msg.textContent="Saved."; }catch(e){ msg.textContent="Download was cancelled or blocked."; } };
+    else if (!window.claude) dl.onclick = ()=>{ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv()],{type:"text/csv"})); a.download=CFG.id+"-diagnostic-results.csv"; a.click(); };
+    else dl.hidden = true; })();
+}
+
+/* ---------- boot ---------- */
+if (location.hash === "#teacher") viewTeacher();
+else { const s = load(); if (s && s.end) { S = s; viewResults(); } else viewStart(); }
+</script>
+</body></html>

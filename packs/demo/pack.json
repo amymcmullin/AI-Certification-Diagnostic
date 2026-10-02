@@ -1,0 +1,299 @@
+{
+ "settings": {
+  "id": "demo",
+  "title": "AI Diagnostic Demo",
+  "eyebrow": "Demo · public sample questions",
+  "heading": "Which AI exam are you ready for?",
+  "intro": "A 12-question sample of the AI certification diagnostic. The full version has 45 questions; these sample questions are public, so their answers are shown after you submit.",
+  "minutes": 10,
+  "review": "full",
+  "encode": false
+ },
+ "exams": {
+  "GAI": {
+   "name": "Generative AI Foundations",
+   "vendor": "Certiport / Pearson (Critical Career Skills)",
+   "weights": {
+    "FND": 0.05,
+    "GEN": 0.15,
+    "PRM": 0.3,
+    "CRT": 0.2,
+    "VER": 0.1,
+    "ETH": 0.2
+   },
+   "short": "GenAI"
+  },
+  "AZ": {
+   "name": "Azure AI Fundamentals (AI-901)",
+   "vendor": "Microsoft",
+   "weights": {
+    "FND": 0.05,
+    "GEN": 0.2,
+    "PRM": 0.15,
+    "ETH": 0.15,
+    "AZR": 0.45
+   },
+   "short": "AI-901"
+  },
+  "ITS": {
+   "name": "IT Specialist: Artificial Intelligence",
+   "vendor": "Certiport / Pearson",
+   "weights": {
+    "FND": 0.15,
+    "ETH": 0.1,
+    "DAT": 0.3,
+    "MOD": 0.25,
+    "OPS": 0.2
+   },
+   "short": "ITS AI"
+  }
+ },
+ "topics": {
+  "FND": {
+   "name": "AI & Machine Learning Foundations",
+   "study": "Know the ML task types: classification, regression, clustering, reinforcement learning, supervised vs. unsupervised. Also know when generative AI fits better than predictive AI or a search engine.",
+   "objectives": "GAI 1.1 · AI-901 Identify AI workloads · ITS 1.1–1.2"
+  },
+  "GEN": {
+   "name": "How Generative AI Works",
+   "study": "Tokens, embeddings, LLMs vs. diffusion models; what training requires (data, GPUs, energy); model parameters such as temperature and max tokens.",
+   "objectives": "GAI 1.1–1.2 · AI-901 Identify AI model components and configurations"
+  },
+  "PRM": {
+   "name": "Prompt Engineering & Refinement",
+   "study": "Zero-shot, few-shot, chain-of-thought, self-consistency, generate knowledge, prompt chaining, reverse prompting. Improve prompts with content, style, persona and context; know what system prompts do.",
+   "objectives": "GAI 3.1–3.4 · AI-901 Create effective system and user prompts"
+  },
+  "CRT": {
+   "name": "Creating & Transforming Content",
+   "study": "Choosing prompts for text, image and video tasks (summarize, reformat, translate, subtitle, avatar, colorize) and choosing a tool (privacy, cost, licensing, output control).",
+   "objectives": "GAI 1.3–1.5, 2.1–2.4"
+  },
+  "VER": {
+   "name": "Verifying Output & Limitations",
+   "study": "Hallucinations, inconsistency, outdated knowledge; how to verify historical facts, current facts and numerical data against reliable sources.",
+   "objectives": "GAI 1.6, 3.5"
+  },
+  "ETH": {
+   "name": "Responsible AI, Ethics, Law & Privacy",
+   "study": "Microsoft's six Responsible AI principles; sources of bias; intellectual property; PII and data privacy; who is accountable for AI output.",
+   "objectives": "GAI 4.1–4.5 · AI-901 Responsible AI · ITS 3.6, 5.3"
+  },
+  "AZR": {
+   "name": "Azure AI Services & Microsoft Foundry",
+   "study": "Vision (object detection, OCR), Azure AI Language, Azure Speech, Content Understanding, grounding/RAG, and agents in Microsoft Foundry.",
+   "objectives": "AI-901 Identify AI workloads; Implement AI solutions using Microsoft Foundry"
+  },
+  "DAT": {
+   "name": "Data Collection & Preparation",
+   "study": "Data quality issues (missing values, outliers, invalid entries), encoding categorical data, text features (bag-of-words, TF-IDF), train/test splits, stratification.",
+   "objectives": "ITS 2.1–2.9"
+  },
+  "MOD": {
+   "name": "Model Training & Evaluation",
+   "study": "Overfitting vs. underfitting, ways to prevent overfitting, classification metrics (precision, recall, F1) vs. regression metrics (MAE, RMSE).",
+   "objectives": "ITS 3.1–3.5"
+  },
+  "OPS": {
+   "name": "Deployment, Monitoring & Lifecycle",
+   "study": "Data drift vs. concept drift, logging and monitoring, retraining triggers, documentation, change control and scope creep.",
+   "objectives": "ITS 1.6, 2.4, 4.1–4.4, 5.1–5.5"
+  }
+ },
+ "items": [
+  {
+   "id": "D-FND1",
+   "topic": "FND",
+   "type": "mc",
+   "stem": "A bank wants a model to label each credit card transaction as “fraud” or “not fraud.” What type of machine learning task is this?",
+   "options": [
+    "Regression",
+    "Classification",
+    "Clustering",
+    "Reinforcement learning"
+   ],
+   "answer": [
+    1
+   ],
+   "why": "Choosing between fixed categories is classification. Regression predicts a number."
+  },
+  {
+   "id": "D-GEN1",
+   "topic": "GEN",
+   "type": "mc",
+   "stem": "In a generative AI model's settings, what does “max tokens” control?",
+   "options": [
+    "How creative the responses are",
+    "How many people can use the model at once",
+    "The maximum length of the model's response",
+    "How much data the model was trained on"
+   ],
+   "answer": [
+    2
+   ],
+   "why": "Max tokens caps how long a response can be. Temperature, not max tokens, controls how random or creative it is."
+  },
+  {
+   "id": "D-PRM1",
+   "topic": "PRM",
+   "type": "mc",
+   "stem": "Which prompt is an example of zero-shot prompting?",
+   "options": [
+    "“Here are two examples of formal emails. Write a third in the same style.”",
+    "“Think through each step, then give the answer.”",
+    "“Write the prompt that would produce this paragraph.”",
+    "“Translate ‘good morning, class’ into French.”"
+   ],
+   "answer": [
+    3
+   ],
+   "why": "A zero-shot prompt asks for the task directly, without examples. The first option is few-shot, the second is chain-of-thought, and the third is reverse prompting."
+  },
+  {
+   "id": "D-PRM2",
+   "topic": "PRM",
+   "type": "mc",
+   "stem": "A student asks an AI to outline an essay, then asks it to write the first paragraph from that outline, then the second paragraph. Which technique is this?",
+   "options": [
+    "Prompt chaining",
+    "Few-shot prompting",
+    "Self-consistency",
+    "Reverse prompting"
+   ],
+   "answer": [
+    0
+   ],
+   "why": "Prompt chaining breaks a task into steps, with each prompt building on the output of the one before."
+  },
+  {
+   "id": "D-CRT1",
+   "topic": "CRT",
+   "type": "mc",
+   "stem": "Which prompt transforms content into a different media type?",
+   "options": [
+    "“Fix the spelling and grammar in this report.”",
+    "“Create an infographic image that shows these five statistics.”",
+    "“Summarize this article in three sentences.”",
+    "“Translate this flyer into Spanish.”"
+   ],
+   "answer": [
+    1
+   ],
+   "why": "Turning text data into an image changes the media type. The other prompts keep the content as text."
+  },
+  {
+   "id": "D-VER1",
+   "topic": "VER",
+   "type": "ma",
+   "stem": "An AI tool says 34% of U.S. households have a smart speaker. Which TWO steps best verify this number? (Choose two.)",
+   "options": [
+    "Ask the AI to repeat the answer",
+    "Find the original survey or dataset and confirm the figure and its date",
+    "Accept it because it is a specific percentage",
+    "Compare it with another reliable, recent source"
+   ],
+   "answer": [
+    1,
+    3
+   ],
+   "why": "Check numbers against the original source and a second reliable source, and look at the date. A specific-sounding number can still be made up or out of date."
+  },
+  {
+   "id": "D-ETH1",
+   "topic": "ETH",
+   "type": "mc",
+   "stem": "Which Responsible AI principle says that people, not the AI system, must be answerable for the system's decisions and outcomes?",
+   "options": [
+    "Inclusiveness",
+    "Reliability and safety",
+    "Accountability",
+    "Transparency"
+   ],
+   "answer": [
+    2
+   ],
+   "why": "Accountability means a named person or team is responsible for how an AI system is designed, deployed and used."
+  },
+  {
+   "id": "D-AZR1",
+   "topic": "AZR",
+   "type": "mc",
+   "stem": "Which capability turns written text into natural-sounding spoken audio?",
+   "options": [
+    "Text to speech in Azure Speech",
+    "Optical character recognition",
+    "Key phrase extraction",
+    "Object detection"
+   ],
+   "answer": [
+    0
+   ],
+   "why": "Text to speech (speech synthesis) creates spoken audio from text. OCR does the reverse for images: it reads text out of them."
+  },
+  {
+   "id": "D-AZR2",
+   "topic": "AZR",
+   "type": "ma",
+   "stem": "Which TWO tasks can Azure AI Vision perform? (Choose two.)",
+   "options": [
+    "Detect the sentiment of a product review",
+    "Read printed and handwritten text in an image",
+    "Translate a phone call in real time",
+    "Generate tags and a caption that describe an image"
+   ],
+   "answer": [
+    1,
+    3
+   ],
+   "why": "Vision analyzes images: OCR, tags, captions, objects. Sentiment belongs to Azure AI Language, and live call translation to Azure Speech."
+  },
+  {
+   "id": "D-DAT1",
+   "topic": "DAT",
+   "type": "mc",
+   "stem": "Why do you hold back a test set that the model never sees during training?",
+   "options": [
+    "To make training faster",
+    "To estimate how the model will perform on new, unseen data",
+    "To give the model more examples to memorize",
+    "To remove outliers from the data"
+   ],
+   "answer": [
+    1
+   ],
+   "why": "A held-out test set shows how well the model generalizes. Testing on the training data would overstate its accuracy."
+  },
+  {
+   "id": "D-MOD1",
+   "topic": "MOD",
+   "type": "mc",
+   "stem": "Which classification metric combines precision and recall into a single number?",
+   "options": [
+    "Mean absolute error",
+    "R-squared",
+    "F1 score",
+    "Learning rate"
+   ],
+   "answer": [
+    2
+   ],
+   "why": "The F1 score is the harmonic mean of precision and recall. MAE and R² are regression metrics, and the learning rate is a training setting."
+  },
+  {
+   "id": "D-OPS1",
+   "topic": "OPS",
+   "type": "mc",
+   "stem": "After deployment, a model's predictions get a little worse every month. What should the team put in place first?",
+   "options": [
+    "Monitoring that tracks performance and data drift, with alerts and a retraining plan",
+    "A larger test set from the original training data",
+    "A higher temperature setting",
+    "A new user interface"
+   ],
+   "answer": [
+    0
+   ],
+   "why": "Production models need ongoing monitoring so drift is caught and the model is retrained before it causes harm."
+  }
+ ]
+}
