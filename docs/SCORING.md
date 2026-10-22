@@ -77,19 +77,21 @@ Most students take both of these exams, so here the recommendation answers **whi
 
 | Topic | CCST IT Support | ITS Device Config |
 |---|---|---|
-| Help Desk Practice (HELP) | 0.14 | – |
-| Hardware, Ports & Peripherals (HDW) | 0.15 | 0.10 |
+| Help Desk Practice (HELP) | 0.10 | – |
+| Hardware, Ports & Peripherals (HDW) | 0.22 | 0.10 |
 | Network Connectivity (NET) | 0.12 | 0.05 |
-| macOS & Mobile Devices (MOB) | 0.10 | – |
-| Threats, Authentication & Device Security (SEC) | 0.10 | 0.15 |
+| macOS & Mobile Devices (MOB) | 0.12 | – |
+| Threats, Authentication & Device Security (SEC) | 0.07 | 0.15 |
 | Windows Troubleshooting & Recovery (TRB) | 0.10 | 0.14 |
-| Cloud, Virtualization & Remote Support (CLD) | 0.08 | 0.05 |
-| Directory Services, Sharing & Permissions (ACC) | 0.07 | 0.14 |
+| Cloud, Virtualization & Remote Support (CLD) | 0.06 | 0.05 |
+| Directory Services, Sharing & Permissions (ACC) | 0.08 | 0.14 |
 | Windows Setup, Accounts & Settings (WIN) | 0.06 | 0.15 |
 | Applications, Updates & Windows Features (APPS) | 0.05 | 0.10 |
-| Storage, File Systems & Backup (STOR) | 0.03 | 0.12 |
+| Storage, File Systems & Backup (STOR) | 0.02 | 0.12 |
 
-Neither vendor publishes domain percentages. The weights are estimated from the breadth of each exam's published objectives (CCST IT Support objectives 09/2024; ITS Device Configuration and Management objectives 01/2025). About half of each exam's content is shared: hardware and ports, Active Directory and Group Policy basics, MFA and malware response, Windows updates and settings, Task Manager, Event Viewer, Device Manager, and basic connectivity commands. The topics only one exam tests decide the recommendation: help desk practice and macOS/mobile for CCST, and file systems, share vs. NTFS permissions, policy precedence and recovery for ITS.
+Neither vendor publishes domain percentages. The weights are estimated from the breadth of each exam's published objectives (CCST IT Support objectives 09/2024; ITS Device Configuration and Management objectives 01/2025). The CCST weights were then adjusted to match how the GMetrix practice-test bank spreads its 82 CCST questions: about a quarter on hardware and peripherals, and less on help desk tasks and threats than the objective list suggests. About half of each exam's content is shared: hardware and ports, Active Directory and Group Policy basics, MFA and malware response, Windows updates and settings, Task Manager, Event Viewer, Device Manager, and basic connectivity commands. The topics only one exam tests decide the recommendation: help desk practice and macOS/mobile for CCST, and file systems, share vs. NTFS permissions, policy precedence and recovery for ITS.
+
+The 50 questions lean toward what the author's students missed most in GMetrix practice tests (CCST IT Support: up to 39 students; Device Configuration: up to 8). Connectivity and resource access, hardware issues, and Windows troubleshooting and permissions get extra questions. Security, where students scored highest on both exams, gets fewer.
 
 ## 4. Readiness bands
 
