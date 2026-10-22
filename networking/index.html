@@ -1,0 +1,546 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0}[hidden]{display:none!important}*,*::before,*::after{box-sizing:border-box}</style></head><body><title>Networking Certification Diagnostic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one score-report column; exam colors carry meaning, the accent stays for actions */
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --ink:#15212C; --muted:#56636F; --line:#D8DDE4;
+  --accent:#2346A0; --accent-ink:#FFFFFF; --accent-soft:#E2E8F7;
+  --x0:#9B3D8F; --x1:#1F6FC5; --x2:#1E8A6E; --x3:#B4532A;
+  --good:#1E7F4F; --good-soft:#DFF1E7; --warn:#A56A12; --warn-soft:#F8EDD9; --bad:#B4352F; --bad-soft:#F7E1DF;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E151C; --surface:#16202A; --ink:#E5EBF1; --muted:#9AA8B5; --line:#2A3846;
+  --accent:#93AAF2; --accent-ink:#0E151C; --accent-soft:#1D2944;
+  --x0:#D78ACB; --x1:#73B0F0; --x2:#5FCBA9; --x3:#EE9A6E;
+  --good:#62CB8E; --good-soft:#163323; --warn:#E3B260; --warn-soft:#3A2C12; --bad:#EE7C74; --bad-soft:#3E1D1B;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E151C; --surface:#16202A; --ink:#E5EBF1; --muted:#9AA8B5; --line:#2A3846;
+  --accent:#93AAF2; --accent-ink:#0E151C; --accent-soft:#1D2944;
+  --x0:#D78ACB; --x1:#73B0F0; --x2:#5FCBA9; --x3:#EE9A6E;
+  --good:#62CB8E; --good-soft:#163323; --warn:#E3B260; --warn-soft:#3A2C12; --bad:#EE7C74; --bad-soft:#3E1D1B;
+  color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding:0 16px}
+.wrap{max-width:780px;margin:0 auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.9rem,5vw,2.6rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.45rem;font-weight:800}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.spacer{flex:1}
+button,.btn{font:inherit;font-weight:700;font-size:.95rem;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 16px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.link{background:none;border:none;padding:0;color:var(--accent);text-decoration:underline;font-weight:400}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,textarea:focus-visible,.opt:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+label.field{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:.92rem;flex:1;min-width:180px}
+input[type=text],textarea{font:inherit;font-weight:400;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+textarea{font-family:var(--mono);font-size:.82rem;min-height:120px;resize:vertical}
+
+/* start */
+.exam-trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.exam-card{border-top:4px solid var(--c);padding:12px 0 0}
+.exam-card b{font-family:var(--display);font-weight:600;font-size:1.02rem;display:block;line-height:1.2}
+.exam-card span{font-size:.85rem;color:var(--muted)}
+@media (max-width:560px){.exam-trio{grid-template-columns:1fr}}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:.92rem}
+.facts b{font-family:var(--mono);font-weight:500}
+
+/* quiz */
+.qbar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px;z-index:2;display:flex;flex-direction:column;gap:8px}
+.track{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent);transition:width .2s}
+.qmeta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.stem{font-size:1.15rem;line-height:1.5}
+.hint{font-size:.85rem;font-weight:700;color:var(--accent)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:12px 14px;cursor:pointer;background:var(--surface)}
+.opt:hover{border-color:var(--accent)}
+.opt.on{border-color:var(--accent);background:var(--accent-soft)}
+.opt input{margin-top:5px;accent-color:var(--accent);width:18px;height:18px;flex:none}
+.opt .letter{font-family:var(--mono);font-size:.85rem;color:var(--muted);margin-top:2px}
+.grid-nav{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px}
+.grid-nav button{padding:6px 0;font-family:var(--mono);font-weight:500;font-size:.8rem}
+.grid-nav button.done{background:var(--accent-soft);border-color:var(--accent)}
+.grid-nav button.flag{box-shadow:inset 0 -3px 0 var(--warn)}
+.grid-nav button.cur{outline:2px solid var(--ink)}
+
+/* results */
+.verdict{border-left:6px solid var(--c);padding:18px 22px}
+.verdict .big{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,4.5vw,2.1rem);line-height:1.1}
+.meters{display:flex;flex-direction:column;gap:16px}
+.meter{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:baseline}
+.meter .nm{font-weight:700}
+.meter .pct{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.bar{grid-column:1/-1;position:relative;height:12px;background:var(--bg);border:1px solid var(--line);border-radius:99px}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:99px;background:var(--c)}
+.bar .cut{position:absolute;top:-5px;bottom:-5px;left:75%;width:2px;background:var(--ink)}
+.cutlbl{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-align:right}
+.pill{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.b-ready{background:var(--good-soft);color:var(--good)} .b-close{background:var(--warn-soft);color:var(--warn)}
+.b-dev{background:var(--bad-soft);color:var(--bad)} .b-not{background:var(--bad-soft);color:var(--bad)}
+.topics{display:grid;grid-template-columns:minmax(0,1fr) 110px 46px;gap:8px 12px;align-items:center;font-size:.93rem}
+.topics .mini{height:8px;background:var(--bg);border:1px solid var(--line);border-radius:99px;position:relative}
+.topics .mini i{position:absolute;inset:0 auto 0 0;border-radius:99px}
+.topics .n{font-family:var(--mono);font-size:.82rem;text-align:right;font-variant-numeric:tabular-nums}
+.dots{display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.plan{counter-reset:p;display:flex;flex-direction:column;gap:14px;margin:0;padding:0;list-style:none}
+.plan li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:4px 10px}
+.plan li::before{counter-increment:p;content:counter(p);font-family:var(--mono);font-size:.85rem;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;grid-row:span 3}
+.plan .obj{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+.codebox{font-family:var(--mono);font-size:.82rem;word-break:break-all;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:12px}
+details.rev{border-top:1px solid var(--line);padding-block:10px}
+details.rev summary{cursor:pointer;display:flex;gap:10px;align-items:baseline}
+details.rev summary::marker{content:""}
+.mark{font-family:var(--mono);font-weight:500;width:20px;flex:none}
+.mark.y{color:var(--good)} .mark.n{color:var(--bad)}
+.rev ul{margin:8px 0;padding-left:20px;font-size:.93rem}
+.rev li.key{font-weight:700;color:var(--good)} .rev li.wrong{color:var(--bad);text-decoration:line-through}
+.why{font-size:.9rem;color:var(--muted)}
+
+/* teacher */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:760px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--mono);font-weight:500;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.chip{display:inline-block;min-width:44px;text-align:center;font-family:var(--mono);font-size:.8rem;padding:2px 6px;border-radius:6px}
+.examtag{font-weight:700;color:var(--c)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--surface)}
+.stat b{display:block;font-family:var(--display);font-size:1.6rem;font-weight:800}
+.stat span{font-size:.82rem;color:var(--muted)}
+.notice{font-size:.85rem;padding:10px 14px;border-radius:8px;background:var(--warn-soft);color:var(--ink)}
+.foot{font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<main class="wrap" id="app"></main>
+
+<script>
+const BANK = {"settings": {"id": "networking", "title": "Networking Certification Diagnostic", "eyebrow": "iTECH · Networking certification readiness", "heading": "Which networking exam are you ready for?", "minutes": 45, "review": "explain", "encode": true}, "exams": {"CCST": {"name": "Cisco Certified Support Technician: Networking", "short": "CCST", "vendor": "Cisco, delivered by Certiport", "weights": {"MOD": 0.07, "TYP": 0.12, "ADDR": 0.1, "PROT": 0.12, "MEDIA": 0.1, "INFRA": 0.13, "TOOLS": 0.14, "CISCO": 0.1, "SECF": 0.07, "NSEC": 0.05}}, "ITSN": {"name": "IT Specialist: Networking", "short": "ITS Net", "vendor": "Certiport / Pearson", "weights": {"MOD": 0.12, "TYP": 0.1, "ADDR": 0.14, "PROT": 0.18, "MEDIA": 0.14, "INFRA": 0.14, "TOOLS": 0.12, "CISCO": 0.04, "NSEC": 0.02}}, "ITSS": {"name": "IT Specialist: Network Security", "short": "ITS Sec", "vendor": "Certiport / Pearson", "weights": {"SECF": 0.25, "NSEC": 0.25, "OSSEC": 0.35, "SCMP": 0.15}}}, "topics": {"MOD": {"name": "OSI & TCP/IP Models", "study": "Name each OSI layer and what works there: devices, addresses, protocols, and PDUs (bits, frames, packets, segments). Map the OSI layers to the TCP/IP model and walk through encapsulation in order.", "objectives": "CCST 1.1 · ITS Net 4.1–4.2"}, "TYP": {"name": "Network Types, Performance & Cloud", "study": "LAN, WAN, MAN, CAN, PAN; physical vs. logical topologies; bandwidth vs. throughput, latency and jitter; IaaS, PaaS, SaaS and public/private/hybrid cloud; Type 1 vs. Type 2 hypervisors.", "objectives": "CCST 1.2–1.4, 3.3 · ITS Net 1.1–1.4"}, "ADDR": {"name": "IPv4 & IPv6 Addressing", "study": "Private ranges, address classes, CIDR and subnet masks: find the network, broadcast and usable hosts for a prefix. APIPA and loopback. IPv6 abbreviation rules, link-local vs. global unicast, SLAAC vs. DHCPv6.", "objectives": "CCST 2.1–2.3 · ITS Net 4.3–4.4"}, "PROT": {"name": "Protocols, Ports & Services", "study": "TCP vs. UDP; what DHCP, DNS, NAT/PAT, ARP and NTP do; DNS record types (A, AAAA, MX, PTR, CNAME); well-known ports for HTTP, HTTPS, FTP, SSH, Telnet, SMTP, IMAP, POP3, DNS and RDP; secure vs. insecure protocols.", "objectives": "CCST 1.5, 2.1 · ITS Net 4.5–4.8"}, "MEDIA": {"name": "Media, Wireless & WAN", "study": "Copper vs. fiber, Cat ratings, the 100 m limit, connectors, EMI and attenuation; 802.11 bands (2.4/5/6 GHz) and interference; Bluetooth, NFC, RFID, Zigbee; WAN choices (DSL, cable, fiber, cellular, satellite).", "objectives": "CCST 3.1–3.2 · ITS Net 2.2–2.4, 3.4"}, "INFRA": {"name": "Switching & Routing", "study": "How a switch learns and forwards (MAC table, flooding), VLANs, access vs. trunk ports, spanning tree; default gateway, routing tables, static vs. dynamic routing; Layer 2 vs. Layer 3 switches; device ports (SFP, PoE, console).", "objectives": "CCST 4.1–4.5 · ITS Net 2.1, 3.1–3.3"}, "TOOLS": {"name": "Troubleshooting & Tools", "study": "The troubleshooting steps in order; ping, ipconfig/ip, tracert/traceroute, nslookup/dig, netstat and arp, and what their output means; hardware tools (cable tester, toner, OTDR, Wi-Fi analyzer); Wireshark captures and filters.", "objectives": "CCST 3.4, 5.1–5.3 · ITS Net 5.1–5.5"}, "CISCO": {"name": "Cisco Devices & Management", "study": "Console vs. SSH vs. Telnet vs. SNMP access; reading show ip interface brief, show mac address-table, show ip route, show running-config, show version and show cdp neighbors; privilege levels and command help (?).", "objectives": "CCST 5.4–5.5 · ITS Net 3.5"}, "SECF": {"name": "Security Fundamentals", "study": "CIA triad, AAA, MFA, least privilege; threat vs. vulnerability vs. risk; attack types (malware families, social engineering, DoS, MITM, injection, brute force); physical security; full, incremental and differential backups.", "objectives": "CCST 6.2 · ITS Sec 1.1–1.5"}, "NSEC": {"name": "Network & Wireless Security", "study": "Stateful vs. stateless firewalls, IDS vs. IPS, SIEM, DMZ, NAT, VLAN isolation, VPN and IPsec; WPA2/WPA3 Personal vs. Enterprise, SSIDs and MAC filtering; secure protocols and their ports.", "objectives": "CCST 6.1, 6.3 · ITS Sec 3.1–3.4 · ITS Net 2.3"}, "OSSEC": {"name": "Operating System Security", "study": "Hardening and patching, Group Policy, UAC, Run As/sudo; NTFS and share permissions, inheritance, effective permissions; auditing; EFS, BitLocker and TPM; public/private keys and certificates; Kerberos.", "objectives": "ITS Sec 2.1–2.5"}, "SCMP": {"name": "Secure Computing", "study": "Phishing, pharming, spoofing and spam filtering; browser security settings and private browsing; installing, updating and running anti-malware; malware remediation steps.", "objectives": "ITS Sec 4.1–4.3"}}, "items": [{"id": "MOD1", "topic": "MOD", "type": "mc", "stem": "At which OSI layer does a router make forwarding decisions based on IP addresses?", "options": ["Session (Layer 5)", "Data link (Layer 2)", "Network (Layer 3)", "Transport (Layer 4)"], "k": "ff4ec750", "w": "KDpCoAcuJTXvbdw+tpCPYtyEpNiVcGD7ocutwJMVgWLe6xCilr3DhiP6coLtxe8J3ldsbprcJbCLSGMWUFdWumvT2MnHDRziTovmw3BVqAE/qORU43l4c19bd+qXhhbt6p8uhoDUd8rF1dO4VP5BmZt4ABnom+CsWyn/SNuuz0+mRb4kTjGY2w0="}, {"id": "MOD2", "topic": "MOD", "type": "mc", "stem": "What is the protocol data unit (PDU) called at the transport layer when TCP is used?", "options": ["Frame", "Segment", "Bit", "Packet"], "k": "df675aa7", "w": "2R5yXufSH79GARNYRhGJa+uIDLfi1NMqZLKNm38JIMIzfnEby5uD2BpI7ZRLfoQSdBKDHLVu/V0DEqRCPH7Rl0L2oZJiNKKeguGZuOHZJmQH5fmrR+TkYt889fj1ApdsEf2vONDgNSwEyhndyE2cSFiPR2gy11xDVS+1IB08KvsFIA5qJkPSObRi6jxohEnRrz/aYMFvwaCfD3hEa2RUCj0lgesWIKUZ41mB8KWvfhl4Xlz0"}, {"id": "MOD3", "topic": "MOD", "type": "mc", "stem": "When a host sends data, in what order is it encapsulated?", "options": ["Data → frame → packet → segment → bits", "Bits → frame → packet → segment → data", "Data → segment → packet → frame → bits", "Data → packet → segment → frame → bits"], "k": "6c69293e", "w": "dODJuW5ErBkKXnLe9qD6K9ttl2vfBzOTyt9hG69iYacKSchmzX90+yRErrzNZxDr331hocq3J3jnpaGcCQZSSnSZDg0OIB7Y4lsyQ+L9NiXcgWi/ZXVqMrDjFobd9V25GApigyKXQrszSHeWN48c3d9qv/otvfvVK58vXEV3IiJS3V3fgU8NTNKKqSaSbYTkR9U42pQJtY1b8T2ZN6r7nHU4NaUQYUPbRC6UDLXSLwnCX4GKWYx5D65n5uqn9qSRrk2Jugic9jhQ0q9E8Vo8l3KoqOM="}, {"id": "MOD4", "topic": "MOD", "type": "mc", "stem": "Which layer of the TCP/IP model covers the work of OSI layers 5, 6 and 7 (session, presentation and application)?", "options": ["Application", "Internet", "Network access", "Transport"], "k": "ad825548", "w": "kllvE/P3pAhq31J1D0FEHqfKo5k39dJdGObQ8hrYFdHL/JKrCJ2IJhO6ZAYl71ckLQO7asvCOro1UpUSlypQ+SIxbU0Yb/cKyex4Rz+Bbfv3cnCX0VtGOrWakARAskxqmA967S7tDOF595aS"}, {"id": "MOD5", "topic": "MOD", "type": "ma", "stem": "Which TWO are associated with the data link layer (OSI Layer 2)? (Choose two.)", "options": ["MAC addresses", "IP addresses", "Port numbers", "Frames"], "k": "38eafedb", "w": "3tD3jIFaJqKM9Q7vmq+buxStntKGltyEGiwtDDoKV9WJJY+k50D2AfYxasjmU4o1pxix+Ye2hwuZcS9LIqmrztF5YN02TaVSDQB1X6TmaSHjaKY+KAY0CI6tbJY2P6F2rDDiElZT2/xgG5zx1b4zWju9Ykez1I7zBes1Jo04vN7c"}, {"id": "TYP1", "topic": "TYP", "type": "mc", "stem": "A link is rated at 1 Gbps, but a large file transfer across it measures 620 Mbps. What does the 620 Mbps figure describe?", "options": ["Latency", "Throughput", "Bandwidth", "Jitter"], "k": "23c3e159", "w": "WTEOTNthgVEz67xUnZFal03RKAoGPB7lNA2ByaPyDrlrYBVTVBpRTyiyiLq2OWkWol/ty5WZgwciYhnhTKNqv7aWA2WucHMdyngb9BoGyqGRvr8h3XDTXVJQhWXwxPfFZnVGKpW+hxn6RewP4DvHbj5DYZMK8Og5R+FjD3oFM5c9U0X/X5c22zkw"}, {"id": "TYP2", "topic": "TYP", "type": "mc", "stem": "A real estate office wants to move its email and file sharing to the cloud and manage no servers or software updates at all. Which service model fits?", "options": ["IaaS", "On-premises hosting", "SaaS", "PaaS"], "k": "96c212c2", "w": "bhA6BbdK7LH3xBFam3/kTovOg2hKTqus7cS3IInECq7FTJ7fYmhH+fqxKvlP3xf8MpfAjIxymnzfk1SlThYl9s4X2JUvA/khhtvdQnCe7rKwYmSMbyfDmquuxqIsm3Y2EqAk8p3l9MYC4oPqXrXXLKh0c/Du7YrmdRsxfgJCw0A1Dr1isKhQ75maLYJA8VlLWjXAGz1c67WM4DaQSDSlfEau3JHxIHJOszUTjUYQXQ=="}, {"id": "TYP3", "topic": "TYP", "type": "mc", "stem": "Which type of hypervisor runs directly on the server hardware, without a host operating system underneath it?", "options": ["Virtual switch", "Type 1 (bare-metal) hypervisor", "Container engine", "Type 2 (hosted) hypervisor"], "k": "7f450513", "w": "hr/7J1K4Km4x01A/QYFyIsCIaOragMu1Kxjm1Fny3ZVyWjQ+kh6HKFBIRFtGRHwCrmG7kCyP/+tKi8qFu3qMU1S//UiZr0elOCY4fGyuAc9bvH9wC/6wezkHpNBKWinujY0jkw/PUXA4ri8uEXYTyvU67DVOMR2cLNDlnr4snTd9HTA66FvS9egAtXBX2AuCGQnVaxqe1VXl6UnffMAB1DkU7HUf8i3pk/UR7cm+/ajj"}, {"id": "ADDR1", "topic": "ADDR", "type": "mc", "stem": "Which of these is a private IPv4 address?", "options": ["172.20.14.9", "172.32.1.5", "11.0.0.1", "192.169.1.1"], "k": "e6f9de00", "w": "8Mjpwbq0iepXSUX6tiHNrPPTAgFFG/iLdzapl7LhpcmCvj3HnH5NIBT/PmYcZ8ZTioel7HSx0Us5TG/5qBE4ep2szU83Q+ACNugV6dpFGr5vMankzAB9sfua2+QGs1Clp6uKZbXM3mq8GCTKIHq60n07aFuxIfSwZhByr4CBCefqOdkwASWCvNOaSBBqvS3bZV8juuWlzClcEwTCtX7M"}, {"id": "ADDR2", "topic": "ADDR", "type": "mc", "stem": "A host is configured as 192.168.10.37/27. What is the network address of its subnet?", "options": ["192.168.10.32", "192.168.10.37", "192.168.10.63", "192.168.10.0"], "k": "577da669", "w": "CSFOUn+k0puWIKlQRUSRqZJS61hDpjBapxuQqkbnL/6dPeuPeEpyfZFIckmVZGStfzQ8yqtMCkwEYR7gyTkE+NDmMryz3ExRThW4l3iOFOqXR+V57GMEUw4Ox/GOmphvAl70nQ1nAOwR1mZ0n6ed3A2Of/+z6NbRsbziVBQq87WnO4P01QwJvkJKlLw/tfFF2WT0upgx"}, {"id": "ADDR3", "topic": "ADDR", "type": "mc", "stem": "How many usable host addresses does a /26 IPv4 subnet provide?", "options": ["126", "30", "64", "62"], "k": "cd0176b1", "w": "EWUD0a2+3ovll6oLX1CDNk95QW0878PdGETzifU+LX50O0KB8qxtc2MuTgqKzkIPVZmiAHvIuyYeE37GxsX7UpSevginR66ErcpL2xkej9KnhJusVWKHTW+ua/biajBDDY+VKZC6NAm2sqZKhHRWBN8="}, {"id": "ADDR4", "topic": "ADDR", "type": "mc", "stem": "A Windows PC reports its IPv4 address as 169.254.33.7. What does this most likely mean?", "options": ["It received a public address from the ISP", "It is using a loopback address", "It couldn't reach a DHCP server and gave itself an APIPA address", "Its DNS server is misconfigured"], "k": "58c68268", "w": "lMRkasa5o06KcoOY6n8GbMLHRhPTVP1ti+eH+jO/qQtKj1L4pIOzC7ny2rUTMgRtZmKIbmMWz9//TYWYyuHumfwUBx4yaLb9wJy4ofJatADUkT4WDZZI4lj9uGtfzeXCYGRuqm2EY4m45m6EeSeRFDRJ3W7gMnQFDn4nVcCK/lpqlct12mj4XGfcqawhWFaJLa0YrO6MvqhPltK5OZvE6Mzc"}, {"id": "ADDR5", "topic": "ADDR", "type": "ma", "stem": "Which TWO statements about IPv6 addresses are true? (Choose two.)", "options": ["An IPv6 address is 64 bits long", "2001:db8:0:0:0:0:0:1 can be written as 2001:db8::1", "Addresses starting with fe80:: are link-local and are not routed beyond the local link", "The double colon (::) can be used twice in one address"], "k": "bbd82259", "w": "QhFl9+E9/YqZKYrDvQ/CJ+bzdNx5QdYKIAGdd+owYb5Hi34cBouw6Bce6N0N0DqooaYGZSiV7mUGhCycSYL6pCPH1bOxf4C10H2dYSvG6AWWdBSzZMBRJRECDq+myy9zZUvIKJtrth2Ai09MnftAELOcmnn9aQi2HGwDTuBLOjzA6kx/Wgkf1kYZIQp/NLckfN1zpmu3GFYMcBYCoWrXzvE2+Fo8Lo3Rp2ZshTk="}, {"id": "PROT1", "topic": "PROT", "type": "mc", "stem": "Which service automatically gives a new laptop its IP address, subnet mask, default gateway and DNS server?", "options": ["DHCP", "NTP", "DNS", "ARP"], "k": "11c480f2", "w": "1Db98LDHJ0A1gwKhMPrCt7BT3ctEGQOGYhNiU6kFnmweY4UFxvBGrYB+f+df01Q+omIVmyAcR3Ui3db9cBhN8M+93mFyisFgbSHzzufqANJZPskxcplOc0HvPisd5WIip4LUuKXgla46tMIhS2S4UwtZPKaO"}, {"id": "PROT2", "topic": "PROT", "type": "mc", "stem": "A live video-calling app needs low delay and can tolerate a few lost packets. Which transport protocol suits it best?", "options": ["ARP", "UDP", "ICMP", "TCP"], "k": "56ac27da", "w": "yYF3r6Gnt/b2mA/eLONVRapnY/Cs/HY1STUoAX2VQnkSbnE4ekOQe0R8jrl/Ww4b8oLGAvWMQnPaJIRLIGL8RuTgmJsQYPA7ehUZUEQ19ePecFnSt29/ZE4BmHwihVY7SOosWfxeOjHZ54v6tlVXFsNiGjmYGrom/1bRBrxv15gd79yYPIs/vVG7NCqjW1LEZdvT+/YnJqY5ZNNnpZvTEVUonMb4lKLs"}, {"id": "PROT3", "topic": "PROT", "type": "mc", "stem": "A firewall must allow secure command-line management of the company's Linux servers. Which port should be opened?", "options": ["TCP 23", "TCP 22", "TCP 443", "TCP 3389"], "k": "b7bdc4a5", "w": "U9YmIFraBqFgQ8sNHJ/d5CZjBHBKk/LheHM4PnnetAGQXNzktEG2YH8vz65BiBBMozYuxm8OKiiRGhZRwK3gxcS3XhKXu14JWUZpF7eI3D5/Fce7TyIQW+MOK64eAgpEHev9guhBkLNalvEHRepe3E8TRAfxszHg5DY="}, {"id": "PROT4", "topic": "PROT", "type": "mc", "stem": "Which DNS record type maps a hostname to an IPv6 address?", "options": ["MX", "A", "PTR", "AAAA"], "k": "56634d6e", "w": "AjNvKA3wVEBdTryJXurJTNCqHlSmf5rS+wT0X91HReGoDCKduzsmeTQC6pTbwL1BiptmdtnZSavxd/0RnFOgMoQuKJpaYR1e1oqg0bNJf+yxk/wYnyXS2B95edBHgmOyPXDOLXMlyf4UL5fC7XOukAqGLsiLd9Qd+fQ2wzXl/PgAbwDGyq/BzSY="}, {"id": "PROT5", "topic": "PROT", "type": "mc", "stem": "Which form of NAT lets many private hosts share a single public IPv4 address by tracking port numbers?", "options": ["APIPA", "Dynamic NAT", "Port address translation (PAT)", "Static NAT"], "k": "c0e70c65", "w": "WeL6+yJYhgqqYZRfdjNyVS3fQf+v5L52Pldw/Vl5A0nbBs6iQ+ZM2G2Lvqfgj1R4eNPQczEXARttOSOLD7HjHgHBwqqjAmr+/cVILTfxDXGPeAH+Vr93jNc6THShgDBlidg1zzXk9k4j+Pm5Hv0RAE67durVrtImotzxCl7/pMXlLxXp8jZRdouU4uAUW5f5WSIMLgeD9VbCdlDbCo+WrJsSPdjiaWlA7zd0wUXm2lzkBL0olRTAJyzHe/EdXdaEFWqCA7v3oOmU45CbBRsZzWXYaLDAEg=="}, {"id": "PROT6", "topic": "PROT", "type": "ma", "stem": "Which TWO protocols send data, including usernames and passwords, in plain text and should be replaced with secure alternatives? (Choose two.)", "options": ["FTP", "SFTP", "SSH", "Telnet"], "k": "7a483cc3", "w": "eO+Q+fepuiAg4rgNFwvag+Lx+5ImNPFLoXBhWS3nN9Dn+ZFFPZyEmR2BHkLSM1oSK2eSfQbQnwMLErKKL32qgeDPyauFo5bZzL+GG7T+9MRKUcuxGQ=="}, {"id": "MEDIA1", "topic": "MEDIA", "type": "mc", "stem": "You need to connect two buildings 800 meters apart, and the cable run passes near heavy electrical equipment. Which media is the best choice?", "options": ["Cat5e STP", "Cat6 UTP", "Fiber optic", "RG-6 coaxial"], "k": "101cd4ac", "w": "AAXuhBcf6e+3WJwJFg0MrgvJvyrI0y9HqxcJnLwhuVEUDvMEAFhXxXF8zF8FfsCVRgV/ru+VvYU4FxB4kCAxhKWqCl2M41xufOUUcWkIopzrvwbQ65J/WAwOKXhPZpznSnPpHdJ19wdN7Thuh2UF49DxGh0PoKvmE5/QjRvQE6PUPj9LizE7B5Ia5VaPSz60iSSB7cXDoj9MtagxrvREC1RSU7KtuWo="}, {"id": "MEDIA2", "topic": "MEDIA", "type": "mc", "stem": "Which WAN technology delivers broadband internet over existing telephone lines?", "options": ["Cable", "Satellite", "DSL", "FTTx"], "k": "ee3564dd", "w": "xwuYc6RnlKUTZud2VMHzLLUdSgaYMrWqK0T+IpnsQd0Tgeyjl8BlBWUCi51vXMPJEbkOn0vzz5KEk7HGPgtv99FAvEIa38o6if52LZga9IeNfPg9O+XZm1V4+nOqPyoQp9ZEfxywFMJqfBPIGk7rTGVVj16eI+RKuN5xY3S1Y3Q6lq0WEck="}, {"id": "MEDIA3", "topic": "MEDIA", "type": "mc", "stem": "Users near the break room lose their Wi-Fi connection whenever the microwave oven is running. Which change helps most?", "options": ["Switch the network from WPA2 to WPA3", "Move them to 2.4 GHz channel 6", "Hide the SSID", "Connect those users on the 5 GHz band"], "k": "f137ed36", "w": "MESwGsVOsnfpbs/XVvpN7aqZnPRHALprPi4Nb6WgVSHnVqOyaME/V6wKscijLduI2L4RhNn9JuisArTeviHwr9Ftvu+DEB8UjK5+Gd7KXUwdQ9vFUen35rqGioq7xhyvyzltZctgsiNWO7luTJrozydobLSg4vD+GJreLN1HEOWnVtA3Sp23FBBe5jtNmtdVzsngd/i3gsTcIiA="}, {"id": "MEDIA4", "topic": "MEDIA", "type": "mc", "stem": "A warehouse wants to track pallets using battery-free tags that are read automatically as pallets pass through a dock door, without line of sight. Which technology fits?", "options": ["RFID", "NFC", "Bluetooth", "Zigbee"], "k": "df91af64", "w": "uFk4ytTZS/ToiGkLPz5KfPWyB4V368PchsUcsU8v9urC3uzR/GPOwVmehec7GjZ3ogYYxb+4+TlaSXYsZXWcAmVCkISiTpdxlmVk/TJtt55bLa6PyHRCmeoxmIgpd+GyZyVHs4Lt6+jb8/+BlHXRmrayc3J7rTkQQPwpT6htpWU2r5fzPhrsruwv1LFYeoAdfFUCs/6o8EgFtFjZ903naPyE4yCUVNoRTakpHK97Q1Z4N5eTAA1ydZP1ys9T94s="}, {"id": "INFRA1", "topic": "INFRA", "type": "mc", "stem": "How does a switch build its MAC address table?", "options": ["It reads the IP address in each packet", "It records the source MAC address of each incoming frame and the port it arrived on", "It records the destination MAC address of each frame it forwards", "It copies the router's ARP table"], "k": "b0050264", "w": "fFHoxJsAcXavrMBDkzeSiNg1F5y+BAYpr6FxrdoZqPn97JnMqcFMuPZiiBQ2MRIWkDQ+nA7vwia+H+K24g/OgJzpSBVcpwhY+9Nb57cyf6RUGvPISd+8ZiormexiUO/ZXGDrmHzbpz9HClY/ywLp7jNo2UeTkI/G8TC3WzEPaaAY8atk3/4bcn2MbuoFYhJ1NjTEQrvXKn0hwQ=="}, {"id": "INFRA2", "topic": "INFRA", "type": "mc", "stem": "A switch receives a frame whose destination MAC address is not in its MAC address table. What does the switch do?", "options": ["Drops the frame", "Forwards it to the default gateway", "Floods it out every port in that VLAN except the one it arrived on", "Sends it back out the port it came from"], "k": "bf82037b", "w": "2SwY9wr3Oqdj2Qb1wJ+gKU1WsJSley44QlwJ4fjREqREGbOy9e/sSm+E2vO6FJAUuRU4Oe5tlqPSCq3+yqKagkRYe7PUYcNpnhMz3Vj1uP03OZE9UhUov6yCyZKouZ2TJHu4CgB7uVh7lrbpfyIo8gaDC0TDjKQCB8EQNGu82fhx8X2iWW+9sygp"}, {"id": "INFRA3", "topic": "INFRA", "type": "mc", "stem": "A PC needs to reach a server on a different subnet. Where does the PC send the packet?", "options": ["Directly to the server's MAC address", "To the DNS server", "To its default gateway", "To the broadcast address"], "k": "40ea9d50", "w": "cQ96kDhaqU6S/PGp7Aan7vIU72bNmK49iy7NT1ZTrpep7GwCinXQ32BKkiwL9M7JFKTwfRs47N6rjawz3piE7lpNm8t9LSGvSzT1sJ0alV1uYB5FjgZl0H8umsma9LX1UfU1ehjTihRxbQvw8ZmR/m+6XGzeqkweKKo2CoeU"}, {"id": "INFRA4", "topic": "INFRA", "type": "mc", "stem": "Which protocol prevents broadcast storms caused by redundant links between switches?", "options": ["Power over Ethernet (PoE)", "OSPF", "802.1Q VLAN tagging", "Spanning Tree Protocol (STP)"], "k": "c525aac9", "w": "I2fRIN66GrV1dlombdBacCj4BC4ngPN2sL9w/MvcIBxWqVY/XkA1H0hFvzYMzPgb8c3d4+6D3DkxbXNcJIOLsD5PXvFaLGhcVO0ejMGt3VbeghyUfV86QImhMY2WuUA+PC0izQzpKi5O/uOkih910A+cTQcKT5hK31W4wQ09kh/E4NorvIyJVHQaCpFMK+vlUrK+rj1iexzJ1f/0LFgNj71nHZOvnwdCo9qBRpdEdQ=="}, {"id": "INFRA5", "topic": "INFRA", "type": "ma", "stem": "Which TWO statements about switch port types are true? (Choose two.)", "options": ["A trunk port can only connect to end-user PCs", "An access port adds a VLAN tag to every frame it sends to a PC", "An access port carries traffic for a single VLAN", "A trunk port carries traffic for multiple VLANs using 802.1Q tags"], "k": "0ef25739", "w": "1D+5cfbJcBQXy0xK8abNVDTfEcBi8IzWTPNTOkeIhtUjvmklompMDB8MyrIgKs2qPhhdecYqpQlHibKjRDuE9/D8sWoMV4Ez4A7d22KyPYw/xReIjPGMng2AaolrDb0SmoDLj+c7mqwhIpwwqH0+HtOn5M2BXB/iS9WNYUgjUqwKjR1uOLBBAnGI0LfZhgHI6KHQUXEqgA4NFkyBokAbO1c7dg=="}, {"id": "TOOLS1", "topic": "TOOLS", "type": "mc", "stem": "A user can ping 8.8.8.8 but can't open www.example.com in a browser. Which command best tests the most likely cause?", "options": ["nslookup www.example.com", "tracert 8.8.8.8", "ipconfig /release", "arp -a"], "k": "bbb5d112", "w": "bwZ0jNYk1Zxzu6E9vOb5i0TKDuByHjNzXQwsfGj52cR3LRNvSX6YSNsO1Ec2X7TVE5exnd59lQ+ZFpK4DlrsibdGhfP7eVhkcwIpP2uMHtQi90+uNivkpYeRkglOiU43RInbzL0to6A63yE1k4+f7RXrO7mT8jPqpVLWgZCKrcBDMR93cWWG9buHytKAHX2EItob3/ciqiw="}, {"id": "TOOLS2", "topic": "TOOLS", "type": "mc", "stem": "Which Windows command shows each adapter's IP address, subnet mask and default gateway, plus its DNS servers and MAC address?", "options": ["ipconfig /all", "netstat -an", "ipconfig", "hostname"], "k": "821715e7", "w": "LBDwXhXEObjgtcjslQSGcqIa/hSyukJyyWQIxxsSQ/7pLlBbMKvzrNgyzwxJy1Tb+GvNPtscxIO4zzvv0ETHg4rzgMqfZaUcA6F/dDDkJ3yR9Ugt/yzmRHFPRTLhZNq2xE3ltL5iRgeYjXIYvPkYxJ8Z9h+78RYvG57DMLikvQ1C/vUK+g=="}, {"id": "TOOLS3", "topic": "TOOLS", "type": "mc", "stem": "In a standard troubleshooting process, what is the next step after identifying the problem?", "options": ["Establish a theory of probable cause", "Document findings and lessons learned", "Verify full system functionality", "Implement the solution"], "k": "deae468c", "w": "YvUXq2+9OT1xKfg8W4qIgPzwrv8rkgJ+yyD/zMUjm4w2ykLpeMPPuvLAEJS3udoocntLg+0hzVmAh18Y8vTKmMWfggPHCr4DM5GSYwH4CMmGvJSbqdsJ9M2IWNyzM3XqnwrE3/XdBbTQ+jgUkvaL0Yg8JA761vgwnGghdOGLNcF5DwCpzoeS2oXE1RgIXn8zCKh+GX5V7jLIH9raREenfbi7jKo="}, {"id": "TOOLS4", "topic": "TOOLS", "type": "mc", "stem": "You need to find which wall jack connects to which port on an unlabeled patch panel. Which tool should you use?", "options": ["Loopback plug", "Toner and probe", "Optical time-domain reflectometer (OTDR)", "Multimeter"], "k": "f8cef6d0", "w": "IrYyGY6CntPdWUOa7lkyA05N7c/gaddheccK/8mM5cNvMPN3oiH+jgrTh98DloluLxPfhkHia+epUUxdKO4v5SCWkswW8VsO4r3vmZTehWnD45bWaN0aGrBW9chHTx3ORB+M4BV3vgj03ANYB6k4c0l7p2tRJZS9KXuq4zTnVWPvYW3eT9gzc3wOYMHjJj7P8p7D7C4jjwReQiMArwdSzq4="}, {"id": "CISCO1", "topic": "CISCO", "type": "mc", "stem": "Which Cisco IOS command gives a one-line summary of every interface's IP address and up/down status?", "options": ["show ip interface brief", "show running-config", "show cdp neighbors", "show version"], "k": "30675372", "w": "cOoNJBCgRM6oOrTihLyhlZ9TS0cCmv+jHAxPyo+hrSvN2TY8qJfRsZQuOPKeyCreO9qW38+r8WTc52ECSJPolQkruZJqp89MzodgoiwZkdabKZMKUTgwNsNBUnJRECBwvOsqVQQv4gVhWzES0lzJQSQa2US1/w/6Pie3qLwnJpEnBOS6k2r3VIbDrEM3QZodbYigm810Cc/K6bT/w+I7xLV4BfS33bTNrEk2Fw=="}, {"id": "CISCO2", "topic": "CISCO", "type": "mc", "stem": "Which command shows the device MAC addresses a Cisco switch has learned and the port each one is on?", "options": ["show inventory", "show mac address-table", "show ip route", "show interfaces status"], "k": "754efa5a", "w": "fmqBbjcqWmxs2DIDMvDfEB8iS/cU+qyL+TIlBglIbeEm/tTlL/iDAtiLktyhVnzPN0/0GlhKpj3BAxeJgwWsNHa3FDRPStwnVMXG9rSBcErajYmhQZmDyaIKaqkDbf2oaerQF3iNc2tyRbh083hBrLSQiDZeQ3kYnEcaM0/qPtXz3dA0zQWnASEzpDEdftXO+F0tFtWRyw=="}, {"id": "CISCO3", "topic": "CISCO", "type": "mc", "stem": "A brand-new switch has no IP address or passwords configured yet. How does a technician connect to it for the first time?", "options": ["SSH", "Telnet", "SNMP", "Through the console port with a console cable and terminal emulator"], "k": "dc60a097", "w": "JIMgBPAB6XZ5P5nOd3Iq5YyKUu/d55I7beBhz+AT7LgVUbcADL16OsZ9e6QFjAsX/HZ5bUZ4BKHrRY/3ZAqjwCDI/z/yhxj7esGmZKtVO971BUG6uS5LsPyjZT7qm+6qAv2hvUl9KaxQqotEkQg+4LtIECQoyty3410cKqiSkDSy/8me1aP0TyS5Lw=="}, {"id": "SECF1", "topic": "SECF", "type": "mc", "stem": "A clinic encrypts the patient records stored on its laptops so that a thief can't read them. Which part of the CIA triad does this protect most directly?", "options": ["Integrity", "Confidentiality", "Availability", "Non-repudiation"], "k": "fbbd10db", "w": "QeUgY/+IzNcSMnG9F0tJ6R9yyOkCSrA4qPWngSMuT/tTAPy+RYcGUEmMmx5M3LdBCeKiKLsVgLJZb97PLwfKu5dOzKvsEQZ0RlUgDnLDxdcaa9FaIg7KSgkLEcZIMe1HLtd/xCgFO9bgfgeXNJHvGRWOj+3+hEFm4ezXLzSyPvclcUABBeOGIVhO9ZLDkg=="}, {"id": "SECF2", "topic": "SECF", "type": "mc", "stem": "Someone calls the help desk claiming to be a manager who is traveling and asks for an urgent password reset. What type of attack is this?", "options": ["Brute force", "Denial of service", "SQL injection", "Social engineering"], "k": "2a1ef968", "w": "1uLo9duARrMGHt6amOUUnr1GO067X3pPbRpNm3xpBiDKKiKH78U3Jods2+mm/OdeMjDrr3PukQphDNJc0qyjZ7/SwN7wT9/VVMPsXgsf3HlsNOH89yQJ+kt4ubou08FrzAwG+r7+runflYuqHyRq/3LOFVCv7uqPd3nrq5N9xjDIZ8PB4nHpHbLVbLWjUB/inQ/y/Ph0Bp+o"}, {"id": "SECF3", "topic": "SECF", "type": "mc", "stem": "A full backup runs on Sunday and a differential backup runs every night after that. The server fails on Thursday morning. What do you need to restore it?", "options": ["Sunday's full backup and every differential from Monday to Wednesday", "Only Sunday's full backup", "Sunday's full backup and Wednesday's differential backup", "Only Wednesday's differential backup"], "k": "a4b65947", "w": "f8Us2cFzCVZzgeGJ6CuVDOWhkyWj2Wp0SqsmfFJY5DkAWuuet0x278G+HaANETLCHhYwqH7y/qtJ+vbni6ifQg/iiK0RKhG0QDl9CTvhZKBDIWgDn6aWZDF2C2Awmy1K5H1bKsZXhxAqJ6vXkfHw2Xaj62WUHHBSpcR/FXZcKcCgLtSxOPFw+rjmbVEeBkqqtHNo371rn1HH3+G1VOUIUrIwAbkp/CzbRi513gVdENLaHiNzDtA5deOT89NtrcQOmFGI8Nrm"}, {"id": "SECF4", "topic": "SECF", "type": "ma", "stem": "Which TWO are examples of multifactor authentication? (Choose two.)", "options": ["Two different passwords", "A password plus a security question", "A password plus a code from an authenticator app", "A smart card plus a PIN"], "k": "c621399d", "w": "wkJndS6BWgv/OcQQ7alnJKbyq/8ixcofCCC7cxijH836fwO8SlCqwYD5k+HUkyAHfBC6d7q/vRvhm3JP00xNzSlI7wSZkQq+Un6H6DWoMydSCdA1LWEC/oiPKpZBLyMpneLjjbH7PdPhZ2rlFqjcA2xc6tn/ncu+hOYToLUKntQjhjzq/shFSIIQxQVHAuc4WpmepRDFpzMt"}, {"id": "NSEC1", "topic": "NSEC", "type": "mc", "stem": "Which type of firewall keeps track of each connection and automatically allows return traffic for sessions started from inside the network?", "options": ["Stateful firewall", "Content filter", "Honeypot", "Stateless packet filter"], "k": "3553dc6c", "w": "iGeE3zkHT6ezsq0eR21Lf/MCsKmmlgCGFlqTTZmQRMR15+dJxT1lgt9ZCudb3PLjruIKzzAUMmoNzHFrBXKLj2CFUrJjRCAkQQ+L4PnIeAwqjyid8cD2sykqN1oMOo3lFlWDlTXobe7rBBKyAGSTGjZE2c8vjRhF6yx3xCpHfnMWF6Vxbrz2F7/p+tmLwQ+HbNXchapC0pOXD288wlUcnMMcIFey0n4QnU2UeS8lsywfaNKBoMm22GpG47gv"}, {"id": "NSEC2", "topic": "NSEC", "type": "mc", "stem": "A company places its public web server on a separate network segment between the internet and the internal LAN. What is this segment called?", "options": ["Perimeter network (DMZ)", "Air-gapped network", "Intranet", "VLAN trunk"], "k": "a5d7a4d5", "w": "NLOz3esFFUFyMWlPP7IZWLpAIeUjW9mp56q/LRYbulavYppBySpbLRse1hrcMf79TuXMWz7M8hgQs8OJ2c5R2F+FE9hWUgEsKQpFSm6kJsG1XB+dn7ySrwT5arAAQDDnKNg4lWvual17+YKGCXeESZ8iETYswhGseMcWJ/92x0WqZ2tNA52eaHAnnIM="}, {"id": "NSEC3", "topic": "NSEC", "type": "mc", "stem": "Which device sits inline, detects suspicious traffic, and actively blocks it?", "options": ["SIEM", "Intrusion detection system (IDS)", "Honeypot", "Intrusion prevention system (IPS)"], "k": "9b5aab9d", "w": "2ManHnKQtt6DEfVkjK5nefbGZZfOEenq2ANKwHd+OMDYiFxYRh8wT7nnHCyb8tr4eGsU/fr6GfDFxMnu570CGueixyJ7ucmqEgZwBvjrBdIUdINn9y/iIEjWn8bUq51IuifaQj33nbxijfo="}, {"id": "NSEC4", "topic": "NSEC", "type": "mc", "stem": "A small office has no authentication server. Which Wi-Fi security setting gives the strongest protection?", "options": ["WPA-Personal (TKIP)", "WPA2-Personal (AES)", "WEP", "WPA3-Personal"], "k": "f9de57b0", "w": "Wy9mh0GT8wfqWVVLrjnQO/tGCRcTg/ur4EZHMTcbryr+oMB3c7GpHwXilVjZwtNqbsbybUaAJZZTmv5xPJ+5x+5xEW8+9HVHeGfLo3UbtCgWfe0dxLR9a8ijKCA+PS2B3GCCIJkkWP10LAfQX8HE9105z0SvjxNWIKbkMYoFu75/hCP9j/7Ie3yDJOZ72DJR"}, {"id": "NSEC5", "topic": "NSEC", "type": "ma", "stem": "Which TWO statements about VPNs are true? (Choose two.)", "options": ["IPsec is commonly used to protect VPN traffic", "A VPN creates an encrypted tunnel across an untrusted network such as the internet", "Traffic inside a VPN tunnel is sent unencrypted", "A VPN removes the need for antivirus software"], "k": "617599a6", "w": "pMmI9PlCcZ55RxI5OMFWX+Ab+fb0bcfnZZNFyJ5TWVkarW3apYk/n/ROxb/7HLmC9XmfTscmCAiBiGkB9phgPz/lfqeIBciWhr1hiGlvSxLstvvtuyxVnWoRcFNWsHUNFz2saT0u2VFZfPtHE0gKMEV3cNEAeKwsHXMrj1pVk4kTsdqX"}, {"id": "OSSEC1", "topic": "OSSEC", "type": "mc", "stem": "In a Windows domain, which feature lets an administrator push the same security settings, such as password policy and software restrictions, to hundreds of computers?", "options": ["User Account Control", "Windows Defender Firewall", "BitLocker", "Group Policy"], "k": "a983fa15", "w": "CRxJWh8Ed9rsb5SdLFi1rctkWtaMKVQKKSoU4xvaf0Byf96aele+zEHf7Kkq158fzZgkeolrCNVGaYg0sKlSqLc4F+v+3weaBPeoBXdxOX2mV6QAnfXUTYqyGic7QznfsL5glr24SXJmpqwrnwSMVUj0iXgftXzw/rCkQCf5TfpVbb8hu3hEEGN/lsNfY5+L"}, {"id": "OSSEC2", "topic": "OSSEC", "type": "mc", "stem": "A user belongs to two groups. One group has Read permission on a folder; the other has Modify. Neither has a Deny entry. What are the user's effective NTFS permissions?", "options": ["Modify", "Read", "Full Control", "No access"], "k": "56e5178f", "w": "g9VM+BG+OCqzUaigauqzIJ+np0uZIZkg3x6qubBuWmjlPlVV9qNUr8P+tjcE+QutN8rQ1UtgacewDHtqTrXILCSNIbO3StamN73iyWR+SaZ35ai2kKrNZnCJerRpj4dZUJtDvMfwTPK+cTNCFsBUieYri6hvs9qTSE9ULTmSc0ZfdSXIpnvy2Rw4xpPj3vKVFlI="}, {"id": "OSSEC3", "topic": "OSSEC", "type": "mc", "stem": "Which Windows feature encrypts an entire drive and can use the computer's TPM chip to protect the encryption key?", "options": ["User Account Control", "BitLocker", "Encrypting File System (EFS)", "Windows Update"], "k": "d67c7f4d", "w": "nATVj4hPlwV0RZp/1eUgl4JrpnkFVgHespIFQLekaCQdM7r6vq4TyRgeeOnBntZaGrtve6zt8/XZ7OMKrBziz2Bb7ifQlJ1X6+/FVKBYTti5Xxqc+ewRwXAd5TU7KBlaSU3Xz4KvsvbdNpB+yWIB0/TF3qMLiYhP"}, {"id": "OSSEC4", "topic": "OSSEC", "type": "mc", "stem": "With asymmetric (public key) encryption, which key does a shopper's browser use to encrypt data sent to an online store?", "options": ["The store's private key", "A shared password", "The store's public key", "The shopper's private key"], "k": "739c6aca", "w": "ym+tYraJsEk4XAkg16r0jkwEcrOgjz6mtYmq5kdOCSbpHNGn1WghA/DSKwnD9y2GfUqFpW8YzPBg1WkXyz8CZJYhhDLKQlw4jeyspuMnA3s9L+QatGzB8GYoigs4+pTyIk99HNWPVRbVCl8lFq46zcrSvbGTiZQtd+0uGpqrXo1twrnZ/98kaFJPO161qonAhjGqutDw0uq5"}, {"id": "SCMP1", "topic": "SCMP", "type": "mc", "stem": "Employees receive emails that look like they're from their bank and link to a fake login page. What is this attack?", "options": ["Spam", "Adware", "Pharming", "Phishing"], "k": "6f8d8793", "w": "9JX7DQ5oBz7OEzQaHgaGGiUWFKu9DJU+lv/76XwWgZxwS8b5PeLRvh4iMpgbM9hYkSJhc7DkqcK5IVvEi5D48FiDxz4DuCT2Hmi1F37iBG6kS+XZ8oFsTArM68pi4yrZUBPFtQfkldcnX5TOUtDuMQ4ZVR09D6CTwSSSanSveXJWyh4J+tIAiLYa+eulkl5/Ekf92bcmgMfuaZrBbTlvUoO0TUlpaEpMkrBiby4fNt5Y"}, {"id": "SCMP2", "topic": "SCMP", "type": "mc", "stem": "Antivirus software alerts that a workstation is infected. What should a technician do first?", "options": ["Run a disk cleanup", "Delete the user's temporary files", "Reinstall the operating system", "Disconnect the computer from the network to quarantine it"], "k": "e08bb5d6", "w": "QXu9pF0LOlf+DJlFqOl5F+AKuH7XAC1lJ7yGXQturJ4QQCp7S74DU/nEt5XslgSQj7d2wpVmfH4tgsd289L7NJ+vOW0sOMDNAynp5F1H/Z9sVQUizikJtGzimEyfv+V+84jSAs1LZnRIS/d90uUIwPOxsKMb2LK13rWRw5M1xeABe+7sGRsOzYAMtQnt"}], "salt": "1a800a18e496bffd"};
+const ITEMS = BANK.items, TOPICS = BANK.topics, EXAMS = BANK.exams;
+const CFG = Object.assign({id:"pack", eyebrow:"Certification readiness", heading:"Which exam are you ready for?", intro:"", minutes:40, review:"explain", org:""}, BANK.settings||{});
+const EXAM_KEYS = Object.keys(EXAMS);
+const EXAM_COLOR = Object.fromEntries(EXAM_KEYS.map((e,i)=>[e,`var(--x${i%4})`]));
+const SHORT = e => EXAMS[e].short || EXAMS[e].name;
+const READY = 75, CLOSE = 60, DEV = 40;
+const SAVE_KEY = "cdx-attempt-" + CFG.id;
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fnv = s => { let h=0x811c9dc5; for(const ch of s){ h^=ch.codePointAt(0); h=Math.imul(h,0x01000193)>>>0;} return h; };
+const hex8 = n => n.toString(16).padStart(8,"0");
+
+/* ---------- encoded packs ----------
+   A private pack is published with each key stored as a hash and each explanation
+   XOR-encoded, so the answers can't be read from the page source. This keeps honest
+   students honest; it is not secure against someone running code in the console. */
+function stream(seed){ let x = seed || 1; return () => { x ^= x<<13; x>>>=0; x ^= x>>>17; x ^= x<<5; x>>>=0; return x & 255; }; }
+function decodeWhy(it){
+  if (it.why !== undefined) return it.why;
+  const next = stream(fnv(BANK.salt+"|w|"+it.id));
+  const bytes = Uint8Array.from(atob(it.w), c => c.charCodeAt(0) ^ next());
+  return (it.why = new TextDecoder().decode(bytes));
+}
+for (const it of ITEMS){
+  if (it.answer) continue;
+  const n = it.type === "ma" ? 2 : 1;
+  for (let m = 1; m < (1<<it.options.length); m++){
+    if (popcount(m) === n && hex8(fnv(BANK.salt+"|"+it.id+"|"+m)) === it.k){
+      it.answer = it.options.map((_,k)=>k).filter(k => (m>>k)&1); break;
+    }
+  }
+  if (!it.answer) throw new Error("Answer key for " + it.id + " could not be decoded");
+}
+const keyMask = it => it.answer.reduce((m,a)=>m|(1<<a),0);
+const need = it => it.answer.length;
+
+/* ---------- scoring (pure) ---------- */
+function score(masks){ // masks: array aligned with ITEMS (canonical option indices)
+  const topic = {};
+  for (const t in TOPICS) topic[t] = {n:0, c:0};
+  const correct = ITEMS.map((it,i)=> masks[i] === keyMask(it));
+  ITEMS.forEach((it,i)=>{ topic[it.topic].n++; if(correct[i]) topic[it.topic].c++; });
+  for (const t in topic) topic[t].pct = topic[t].n ? topic[t].c/topic[t].n : 0;
+  const exam = {};
+  for (const e of EXAM_KEYS){
+    const w = EXAMS[e].weights; let s = 0;
+    for (const t in w) s += w[t]*topic[t].pct;
+    exam[e] = Math.round(s*100);
+  }
+  const ranked = EXAM_KEYS.slice().sort((a,b)=> exam[b]-exam[a]);
+  const total = correct.filter(Boolean).length;
+  return {topic, exam, ranked, best: ranked[0], correct, total, overall: Math.round(100*total/ITEMS.length)};
+}
+function band(p){ return p>=READY?{k:"ready",t:"Likely ready",c:"b-ready"}: p>=CLOSE?{k:"close",t:"Almost there",c:"b-close"}: p>=DEV?{k:"dev",t:"Developing",c:"b-dev"}:{k:"not",t:"Not yet",c:"b-not"}; }
+function studyPlan(r, e){
+  const w = EXAMS[e].weights;
+  return Object.keys(w).map(t=>({t, w:w[t], pct:r.topic[t].pct, gain:w[t]*(1-r.topic[t].pct)}))
+    .filter(x=> x.pct < 0.8).sort((a,b)=> b.gain-a.gain);
+}
+
+/* ---------- results code ---------- */
+function b64u(str){ return btoa(String.fromCharCode(...new TextEncoder().encode(str))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function unb64u(s){ s=s.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; return new TextDecoder().decode(Uint8Array.from(atob(s),c=>c.charCodeAt(0))); }
+function makeCode(rec){
+  const clean = v => String(v).replace(/~/g,"-").trim().slice(0,60);
+  const payload = ["2", CFG.id, clean(rec.name), clean(rec.period), rec.date, rec.minutes, rec.masks.map(m=>m.toString(16)).join("")].join("~");
+  return "AIDX-" + b64u(payload) + "." + check(payload, 2);
+}
+// v1 codes (first AI release) have no pack id and belong to the "ai" pack
+const check = (payload, v) => (fnv((v===1?"itech-ai|":"cdx|")+payload)%1679616).toString(36).padStart(4,"0");
+function parseCodes(text){
+  const out=[], seen=new Set(); let bad=0, other=0;
+  for (const m of text.matchAll(/AIDX-([A-Za-z0-9_-]+)\.([a-z0-9]{4})/g)){
+    if (seen.has(m[0])) continue; seen.add(m[0]);
+    try{
+      const payload = unb64u(m[1]); let p = payload.split("~"); const v = +p[0];
+      if (v===1 && p.length===6) p = ["1","ai",...p.slice(1)];
+      else if (v!==2 || p.length!==7) throw 0;
+      if (p[1]!==CFG.id){ other++; continue; }
+      if (p[6].length!==ITEMS.length) throw 0;
+      out.push({name:p[2], period:p[3], date:p[4], minutes:+p[5], masks:[...p[6]].map(h=>parseInt(h,16)), verified: check(payload, v)===m[2], code:m[0]});
+    }catch(e){ bad++; }
+  }
+  return {rows:out, bad, other};
+}
+
+/* ---------- Canvas "Student Analysis" CSV ---------- */
+function csvRows(text){
+  const rows=[]; let row=[], f="", q=false;
+  for (let i=0;i<text.length;i++){
+    const c=text[i];
+    if (q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else if (c==='"') q=true;
+    else if (c===','){ row.push(f); f=""; }
+    else if (c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n') i++; row.push(f); rows.push(row); row=[]; f=""; }
+    else f+=c;
+  }
+  if (f!==""||row.length){ row.push(f); rows.push(row); }
+  return rows;
+}
+const norm = s => String(s).toLowerCase().replace(/<[^>]*>/g,"").replace(/&[a-z#0-9]+;/g,"").replace(/[^a-z0-9]/g,"").slice(0,60);
+function parseCanvas(text){
+  const rows = csvRows(text); if (rows.length<2) return [];
+  const h = rows[0].map(x=>x.trim());
+  const nameCol = h.findIndex(x=>x.toLowerCase()==="name");
+  if (nameCol<0) return [];
+  const secCol = h.findIndex(x=>x.toLowerCase()==="section");
+  const subCol = h.findIndex(x=>x.toLowerCase()==="submitted");
+  const byStem = new Map(ITEMS.map((it,i)=>[norm(it.stem),i]));
+  const map = []; // [colIndex of score, itemIndex]
+  h.forEach((x,c)=>{ const m = x.match(/^\d+:\s*([\s\S]+)/); if(!m) return; const i = byStem.get(norm(m[1])); if(i!==undefined) map.push([c+1,i]); });
+  if (!map.length) return [];
+  return rows.slice(1).filter(r=> r[nameCol] && r[nameCol].trim()).map(r=>{
+    const masks = ITEMS.map(()=>0);
+    for (const [c,i] of map){ const v = parseFloat(r[c]); if (v>=0.999) masks[i] = keyMask(ITEMS[i]); }
+    const sub = subCol>=0 ? (r[subCol]||"").slice(0,10) : "";
+    return {name:r[nameCol].trim(), period: secCol>=0?(r[secCol]||"").trim():"", date:sub, minutes:0, masks, verified:true, code:"canvas:"+r[nameCol], canvas:true, matched:map.length};
+  });
+}
+
+/* ---------- attempt state ---------- */
+let S = null;
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function newAttempt(name, period){
+  return {name, period, order: shuffle(ITEMS.map((_,i)=>i)),
+    perm: ITEMS.map(it=> shuffle(it.options.map((_,k)=>k))),
+    masks: ITEMS.map(()=>0), flags: ITEMS.map(()=>false), idx:0, start: Date.now(), end:null};
+}
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const s = JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(s && s.masks && s.masks.length===ITEMS.length) return s; }catch(e){} return null; }
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+const answeredCount = () => S.masks.filter((m,i)=> popcount(m)===need(ITEMS[i])).length;
+function popcount(m){ let c=0; while(m){ c+=m&1; m>>=1;} return c; }
+
+/* ---------- views ---------- */
+function footer(){
+  return `<footer class="foot"><span>Original practice questions written to each exam's published objectives. Readiness is an estimate from this diagnostic, not an official score prediction. Not affiliated with or endorsed by any exam vendor; exam names are trademarks of their owners.${CFG.org?" "+esc(CFG.org)+".":""}</span>
+  <button class="link" id="toTeacher">Teacher view</button></footer>`;
+}
+function viewStart(){
+  const saved = load();
+  app.innerHTML = `
+  <header class="stack">
+    <div class="eyebrow">${esc(CFG.eyebrow)}</div>
+    <h1>${esc(CFG.heading)}</h1>
+    <p class="muted" style="max-width:62ch">${esc(CFG.intro || `This diagnostic covers what ${EXAM_KEYS.length} certification exams test. When you finish, you'll see your readiness for each exam, the one you are most likely to pass, and the topics to study first.`)}</p>
+  </header>
+  <section class="exam-trio" style="grid-template-columns:repeat(${Math.min(EXAM_KEYS.length,3)},minmax(0,1fr))">
+    ${EXAM_KEYS.map(e=>`<div class="exam-card" style="--c:${EXAM_COLOR[e]}"><b>${esc(EXAMS[e].name)}</b><span>${esc(EXAMS[e].vendor)}</span></div>`).join("")}
+  </section>
+  <section class="panel stack">
+    <div class="facts"><span><b>${ITEMS.length}</b> questions</span><span>about <b>${CFG.minutes}</b> minutes</span><span><b>${Object.keys(TOPICS).length}</b> topic areas</span><span>“Choose two” items need both answers right</span></div>
+    ${saved && !saved.end ? `<div class="notice">You have an unfinished attempt for <b>${esc(saved.name)}</b> (${saved.masks.filter(Boolean).length} answered). <button class="link" id="resume">Resume it</button></div>`:""}
+    <form id="startForm" class="stack" novalidate>
+      <div class="row">
+        <label class="field" for="nm">Your name<input type="text" id="nm" autocomplete="name" required></label>
+        <label class="field" for="pd">Class or period<input type="text" id="pd" placeholder="e.g. CSIT AM"></label>
+      </div>
+      <p id="err" class="muted" hidden style="color:var(--bad)">Enter your name to start.</p>
+      <div class="row"><button class="primary" type="submit">Start the diagnostic</button>
+      <span class="muted" style="font-size:.88rem">Answer every question even if you're unsure. Guessing tells your teacher more than a blank.</span></div>
+    </form>
+  </section>
+  ${footer()}`;
+  document.getElementById("startForm").onsubmit = ev => {
+    ev.preventDefault();
+    const nm = document.getElementById("nm").value.trim();
+    if(!nm){ document.getElementById("err").hidden=false; return; }
+    S = newAttempt(nm, document.getElementById("pd").value.trim()); save(); viewQuiz();
+  };
+  const r = document.getElementById("resume"); if (r) r.onclick = ()=>{ S = saved; viewQuiz(); };
+  document.getElementById("toTeacher").onclick = viewTeacher;
+}
+
+function viewQuiz(){
+  const pos = S.idx, i = S.order[pos], it = ITEMS[i], multi = it.type==="ma";
+  const done = answeredCount();
+  app.innerHTML = `
+  <div class="qbar">
+    <div class="qmeta"><span>Question ${pos+1} of ${ITEMS.length}</span><span>${done} answered</span></div>
+    <div class="track"><i style="width:${100*done/ITEMS.length}%"></i></div>
+  </div>
+  <section class="panel stack" aria-live="polite">
+    <p class="stem">${esc(it.stem)}</p>
+    ${multi?`<p class="hint">Select ${need(it)} answers.</p>`:""}
+    <div class="opts" role="${multi?"group":"radiogroup"}">
+      ${S.perm[i].map((k,n)=>{
+        const on = (S.masks[i]>>k)&1;
+        return `<label class="opt ${on?"on":""}"><input type="${multi?"checkbox":"radio"}" name="q" id="o${k}" value="${k}" ${on?"checked":""}><span class="letter">${"ABCD"[n]}</span><span>${esc(it.options[k])}</span></label>`;
+      }).join("")}
+    </div>
+  </section>
+  <div class="row">
+    <button id="prev" ${pos===0?"disabled":""}>Back</button>
+    <button id="flag">${S.flags[i]?"Unflag":"Flag for review"}</button>
+    <span class="spacer"></span>
+    ${pos<ITEMS.length-1?`<button class="primary" id="next">Next</button>`:`<button class="primary" id="finish">Review &amp; submit</button>`}
+  </div>
+  <details class="panel"><summary class="eyebrow" style="cursor:pointer">Jump to a question</summary>
+    <div class="grid-nav" style="margin-top:12px">${S.order.map((q,p)=>`<button data-p="${p}" class="${popcount(S.masks[q])===need(ITEMS[q])?"done":""} ${S.flags[q]?"flag":""} ${p===pos?"cur":""}">${p+1}</button>`).join("")}</div>
+  </details>`;
+  app.querySelectorAll(".opts input").forEach(inp=> inp.onchange = ()=>{
+    const k = +inp.value;
+    if (!multi) S.masks[i] = 1<<k;
+    else {
+      let m = S.masks[i] ^ (1<<k);
+      if (popcount(m) > need(it)) { inp.checked = false; return; }
+      S.masks[i] = m;
+    }
+    save();
+    app.querySelectorAll(".opt").forEach(l=> l.classList.toggle("on", l.querySelector("input").checked));
+    const d = answeredCount();
+    app.querySelector(".qmeta span:last-child").textContent = d+" answered";
+    app.querySelector(".track i").style.width = (100*d/ITEMS.length)+"%";
+  });
+  const go = p => { S.idx = p; save(); viewQuiz(); window.scrollTo(0,0); };
+  document.getElementById("prev").onclick = ()=> go(pos-1);
+  const nx = document.getElementById("next"); if (nx) nx.onclick = ()=> go(pos+1);
+  const fi = document.getElementById("finish"); if (fi) fi.onclick = viewReview;
+  document.getElementById("flag").onclick = ()=>{ S.flags[i]=!S.flags[i]; save(); viewQuiz(); };
+  app.querySelectorAll(".grid-nav button").forEach(b=> b.onclick = ()=> go(+b.dataset.p));
+}
+
+function viewReview(){
+  const missing = S.order.map((q,p)=>({q,p})).filter(x=> popcount(S.masks[x.q])!==need(ITEMS[x.q]));
+  const flagged = S.order.map((q,p)=>({q,p})).filter(x=> S.flags[x.q]);
+  app.innerHTML = `
+  <header class="stack"><div class="eyebrow">Before you submit</div><h2>${answeredCount()} of ${ITEMS.length} answered</h2></header>
+  <section class="panel stack">
+    ${missing.length?`<p>Still open (unanswered, or not enough answers picked): ${missing.map(x=>`<button class="link" data-p="${x.p}">${x.p+1}</button>`).join(", ")}</p>`:`<p>Every question has an answer.</p>`}
+    ${flagged.length?`<p>Flagged: ${flagged.map(x=>`<button class="link" data-p="${x.p}">${x.p+1}</button>`).join(", ")}</p>`:""}
+    <div class="row"><button id="back">Keep working</button><span class="spacer"></span><button class="primary" id="submit">Submit and see my results</button></div>
+    ${missing.length?`<p class="muted" style="font-size:.88rem">Open questions count as wrong.</p>`:""}
+  </section>`;
+  app.querySelectorAll("[data-p]").forEach(b=> b.onclick=()=>{ S.idx=+b.dataset.p; viewQuiz(); });
+  document.getElementById("back").onclick = ()=> viewQuiz();
+  document.getElementById("submit").onclick = ()=>{ S.end = Date.now(); save(); viewResults(); window.scrollTo(0,0); };
+}
+
+function meterHTML(e, pct){
+  const b = band(pct);
+  return `<div class="meter" style="--c:${EXAM_COLOR[e]}"><span class="nm">${esc(EXAMS[e].name)}</span>
+    <span><span class="pill ${b.c}">${b.t}</span> <span class="pct">${pct}%</span></span>
+    <div class="bar" role="img" aria-label="${pct} percent readiness"><i style="width:${pct}%"></i><span class="cut"></span></div></div>`;
+}
+function topicRows(r){
+  return Object.keys(TOPICS).map(t=>{
+    const p = Math.round(r.topic[t].pct*100);
+    const col = p>=80?"var(--good)":p>=60?"var(--warn)":"var(--bad)";
+    const dots = EXAM_KEYS.filter(e=> EXAMS[e].weights[t]).map(e=>`<i style="--c:${EXAM_COLOR[e]}" title="${esc(EXAMS[e].name)}"></i>`).join("");
+    return `<span>${esc(TOPICS[t].name)}<span class="dots">${dots}</span></span><div class="mini"><i style="width:${p}%;background:${col}"></i></div><span class="n">${r.topic[t].c}/${r.topic[t].n}</span>`;
+  }).join("");
+}
+
+function viewResults(){
+  const r = score(S.masks), best = r.best, second = r.ranked[1], bb = band(r.exam[best]);
+  const plan = studyPlan(r, best);
+  const minutes = Math.max(1, Math.round((S.end - S.start)/60000));
+  const code = makeCode({name:S.name, period:S.period||"", date:new Date(S.end).toISOString().slice(0,10), minutes, masks:S.masks});
+  let headline;
+  if (bb.k==="ready") headline = `You're on track to pass ${EXAMS[best].name}.`;
+  else if (bb.k==="close") headline = `${EXAMS[best].name} is your closest exam. A focused review should get you there.`;
+  else headline = `${EXAMS[best].name} is your best starting point. Build these topics before you schedule it.`;
+  app.innerHTML = `
+  <header class="stack">
+    <div class="eyebrow">Score report · ${esc(S.name)}${S.period?" · "+esc(S.period):""} · ${minutes} min</div>
+    <h1>${r.total} of ${ITEMS.length} correct</h1>
+  </header>
+  <section class="panel verdict stack" style="--c:${EXAM_COLOR[best]}">
+    <div class="eyebrow">Recommended exam</div>
+    <div class="big">${esc(EXAMS[best].name)}</div>
+    <p>${esc(headline)} Next closest: <b>${esc(EXAMS[second].name)}</b> at ${r.exam[second]}%.</p>
+  </section>
+  <section class="panel stack">
+    <div class="row"><h2>Exam readiness</h2><span class="spacer"></span><span class="cutlbl">line = ${READY}% readiness target</span></div>
+    <div class="meters">${r.ranked.map(e=> meterHTML(e, r.exam[e])).join("")}</div>
+    <p class="muted" style="font-size:.86rem">Each exam's readiness weights your topic scores by how much of that exam the topic covers.</p>
+  </section>
+  <section class="panel stack">
+    <h2>Study plan for ${esc(EXAMS[best].name)}</h2>
+    ${plan.length?`<p class="muted">Ordered by how many points each topic is worth on this exam.</p><ol class="plan">${plan.map(x=>`<li><b>${esc(TOPICS[x.t].name)} · ${Math.round(x.pct*100)}%</b><span>${esc(TOPICS[x.t].study)}</span><span class="obj">${esc(TOPICS[x.t].objectives)}</span></li>`).join("")}</ol>`
+      :`<p>You scored 80% or higher on every topic this exam covers. Take a full-length practice test, then schedule the exam.</p>`}
+  </section>
+  <section class="panel stack">
+    <h2>Topic scores</h2>
+    <p class="muted" style="font-size:.86rem">Dots show which exams test each topic: <span class="dots">${EXAM_KEYS.map(e=>`<i style="--c:${EXAM_COLOR[e]}"></i>`).join("")}</span> ${EXAM_KEYS.map(e=>`<span class="examtag" style="--c:${EXAM_COLOR[e]}">${esc(SHORT(e))}</span>`).join(" · ")}</p>
+    <div class="topics">${topicRows(r)}</div>
+  </section>
+  <section class="panel stack">
+    <h2>Turn in your results code</h2>
+    <p>Copy this code and paste it where your teacher asked (Canvas assignment or form).</p>
+    <div class="codebox" id="code">${esc(code)}</div>
+    <div class="row"><button class="primary" id="copy">Copy code</button><span id="copied" class="muted" aria-live="polite"></span></div>
+  </section>
+  <section class="panel">
+    <details><summary style="cursor:pointer"><h2 style="display:inline">Review your answers</h2></summary>
+    <p class="muted" style="font-size:.86rem;margin-top:8px">${CFG.review==="full"?"Correct answers are shown in green.":CFG.review==="none"?"Shows which questions you got right. Ask your teacher to go over the ones you missed.":"Your answers are marked right or wrong, with an explanation. Correct answers aren't shown, so you can work them out."}</p>
+    <div style="margin-top:10px">${S.order.map((q,p)=>{
+      const it = ITEMS[q], ok = r.correct[q];
+      return `<details class="rev"><summary><span class="mark ${ok?"y":"n"}">${ok?"✓":"✗"}</span><span>${p+1}. ${esc(it.stem)}</span></summary>
+        ${CFG.review==="none" ? `<p class="why">${esc(TOPICS[it.topic].name)}</p>` : `
+        <ul>${it.options.map((o,k)=>{ const key=it.answer.includes(k), mine=(S.masks[q]>>k)&1;
+          const cls = CFG.review==="full" ? (key?"key":mine?"wrong":"") : (mine?(ok?"key":"wrong"):"");
+          return `<li class="${cls}">${esc(o)}${mine?" (your answer)":""}</li>`;}).join("")}</ul>
+        <p class="why">${esc(decodeWhy(it))}</p>`}</details>`;}).join("")}</div></details>
+  </section>
+  <div class="row"><button id="again">Start a new attempt</button></div>
+  ${footer()}`;
+  document.getElementById("copy").onclick = async ()=>{
+    const out = document.getElementById("copied");
+    try{ await navigator.clipboard.writeText(code); out.textContent="Copied."; }
+    catch(e){ const rg=document.createRange(); rg.selectNodeContents(document.getElementById("code")); const s=getSelection(); s.removeAllRanges(); s.addRange(rg); out.textContent="Selected. Press Ctrl+C to copy."; }
+  };
+  document.getElementById("again").onclick = ()=>{ clearSave(); S=null; viewStart(); };
+  document.getElementById("toTeacher").onclick = viewTeacher;
+}
+
+/* ---------- teacher ---------- */
+let T = {rows:[], sort:"name", dir:1, example:false};
+function exampleCodes(){
+  const names = ["Example Student A","Example Student B","Example Student C","Example Student D","Example Student E","Example Student F"];
+  // Each example student is strong in the topics of one exam: the first three in all of
+  // that exam's topics, the rest in only its two biggest, so the class shows a realistic spread.
+  const strengths = names.map((_,s)=>{
+    const w = EXAMS[EXAM_KEYS[s % EXAM_KEYS.length]].weights;
+    const ranked = Object.keys(w).sort((a,b)=> w[b]-w[a]);
+    return s < 3 ? ranked : ranked.slice(0, 2);
+  });
+  let seed = 7; const rnd = ()=> (seed = (seed*16807)%2147483647)/2147483647;
+  return names.map((n,s)=> makeCode({name:n, period:"EXAMPLE", date:"2026-10-01", minutes:28+s*3,
+    masks: ITEMS.map(it=> rnd() < (strengths[s].includes(it.topic)?0.88:0.4) ? keyMask(it) : (1<<((it.answer[0]+1)%4)) | (it.type==="ma"?1<<((it.answer[0]+2)%4):0))
+  })).join("\n");
+}
+function viewTeacher(){
+  app.innerHTML = `
+  <header class="stack"><div class="eyebrow">Teacher view</div><h1>Class results</h1>
+    <p class="muted" style="max-width:62ch">Paste results codes from Canvas or a form. You can paste a whole export: the page finds the codes inside it. If you gave the test as a Canvas quiz, open its Student Analysis CSV instead. Nothing you paste leaves this browser.</p></header>
+  <section class="panel stack">
+    <label class="field" for="codes">Results codes<textarea id="codes" placeholder="AIDX-…"></textarea></label>
+    <div class="row"><button class="primary" id="go">Show results</button><label class="btn" for="file" style="cursor:pointer">Open a .csv or .txt file</label><input type="file" id="file" accept=".csv,.txt,text/plain,text/csv" hidden>
+      <span class="spacer"></span><button id="ex">Load example class</button><button id="back">Back to the test</button></div>
+    <p id="parseMsg" class="muted" aria-live="polite"></p>
+  </section>
+  <div id="tout" class="stack"></div>`;
+  const ta = document.getElementById("codes");
+  const run = ()=>{ const {rows:codeRows,bad,other} = parseCodes(ta.value); const canvasRows = parseCanvas(ta.value);
+    const rows = codeRows.concat(canvasRows);
+    T.rows = rows.map(x=>({...x, r:score(x.masks)})); T.example = rows.some(r=>r.period==="EXAMPLE");
+    const cv = canvasRows.length ? ` Canvas report: ${canvasRows.length} student${canvasRows.length>1?"s":""}, ${canvasRows[0].matched} of ${ITEMS.length} questions matched.` : "";
+    document.getElementById("parseMsg").textContent = rows.length ? `${rows.length} result${rows.length>1?"s":""} loaded${bad?`, ${bad} code${bad>1?"s":""} could not be read`:""}.${cv}${other?` ${other} code${other>1?"s":""} from a different diagnostic skipped.`:""}` : (bad?`${bad} code(s) could not be read. Check that each one was copied in full.`:"No results found. Paste codes that start with AIDX-, or open the Canvas Student Analysis CSV.");
+    renderTeacher(); };
+  document.getElementById("go").onclick = run;
+  document.getElementById("ex").onclick = ()=>{ ta.value = exampleCodes(); run(); };
+  document.getElementById("file").onchange = ev=>{ const f=ev.target.files[0]; if(!f) return; f.text().then(t=>{ ta.value=t; run(); }); };
+  document.getElementById("back").onclick = ()=> S && !S.end ? viewQuiz() : S && S.end ? viewResults() : viewStart();
+  if (T.rows.length) renderTeacher();
+}
+function renderTeacher(){
+  const out = document.getElementById("tout"); if(!out) return;
+  const rows = T.rows; if(!rows.length){ out.innerHTML=""; return; }
+  const avg = f => Math.round(rows.reduce((s,x)=>s+f(x),0)/rows.length);
+  const recCount = Object.fromEntries(EXAM_KEYS.map(e=>[e, rows.filter(x=>x.r.best===e).length]));
+  const readyCount = rows.filter(x=> x.r.exam[x.r.best]>=READY).length;
+  const topicAvg = Object.keys(TOPICS).map(t=>({t, p: rows.reduce((s,x)=>s+x.r.topic[t].pct,0)/rows.length})).sort((a,b)=>a.p-b.p);
+  const itemPct = ITEMS.map((it,i)=>({it, p: rows.filter(x=>x.r.correct[i]).length/rows.length})).sort((a,b)=>a.p-b.p).slice(0,6);
+  const sorted = rows.slice().sort((a,b)=>{
+    const k=T.sort, d=T.dir;
+    const v = x => k==="name"?x.name.toLowerCase(): k==="period"?x.period.toLowerCase(): k==="date"?x.date: k==="overall"?x.r.overall: k==="rec"?x.r.best: x.r.exam[k];
+    return v(a)>v(b)?d: v(a)<v(b)?-d:0;});
+  const chip = p => { const b=band(p); return `<span class="chip ${b.c}">${p}%</span>`; };
+  const th = (k,l)=>`<th data-k="${k}" aria-sort="${T.sort===k?(T.dir>0?"ascending":"descending"):"none"}">${l}${T.sort===k?(T.dir>0?" ▲":" ▼"):""}</th>`;
+  out.innerHTML = `
+  ${T.example?`<p class="notice">These are example students generated to show the layout. They are not real results.</p>`:""}
+  ${rows.some(x=>!x.verified)?`<p class="notice">${rows.filter(x=>!x.verified).length} code(s) failed the check digits and may have been edited. They are marked with ⚠.</p>`:""}
+  <section class="stats">
+    <div class="stat"><b>${rows.length}</b><span>students</span></div>
+    <div class="stat"><b>${avg(x=>x.r.overall)}%</b><span>average score</span></div>
+    <div class="stat"><b>${readyCount}</b><span>likely ready for their recommended exam</span></div>
+    ${EXAM_KEYS.map(e=>`<div class="stat" style="border-top:4px solid ${EXAM_COLOR[e]}"><b>${recCount[e]}</b><span>recommended ${esc(EXAMS[e].name)}</span></div>`).join("")}
+  </section>
+  <div class="tablewrap"><table>
+    <thead><tr>${th("name","Student")}${th("period","Class")}${th("date","Date")}${th("overall","Score")}${EXAM_KEYS.map(e=>th(e,esc(SHORT(e)))).join("")}${th("rec","Recommended")}<th>Study first</th></tr></thead>
+    <tbody>${sorted.map(x=>{ const pl = studyPlan(x.r, x.r.best).slice(0,2);
+      return `<tr><td>${x.verified?"":"⚠ "}${esc(x.name)}</td><td>${esc(x.period)}</td><td class="num">${esc(x.date)}</td><td class="num">${x.r.total}/${ITEMS.length}</td>
+      ${EXAM_KEYS.map(e=>`<td>${chip(x.r.exam[e])}</td>`).join("")}
+      <td><span class="examtag" style="--c:${EXAM_COLOR[x.r.best]}">${esc(EXAMS[x.r.best].name)}</span></td>
+      <td>${pl.length?pl.map(p=>esc(TOPICS[p.t].name)).join("<br>"):"Ready to test"}</td></tr>`;}).join("")}</tbody>
+  </table></div>
+  <div class="row"><button id="csv">Download CSV</button><button id="copycsv">Copy as CSV</button><span id="csvMsg" class="muted" aria-live="polite"></span></div>
+  <section class="panel stack"><h2>Class topic averages</h2><p class="muted" style="font-size:.86rem">Weakest first. Dots show which exams test the topic.</p>
+    <div class="topics">${topicAvg.map(({t,p})=>{ const q=Math.round(p*100); const col=q>=80?"var(--good)":q>=60?"var(--warn)":"var(--bad)";
+      return `<span>${esc(TOPICS[t].name)}<span class="dots">${EXAM_KEYS.filter(e=>EXAMS[e].weights[t]).map(e=>`<i style="--c:${EXAM_COLOR[e]}"></i>`).join("")}</span></span><div class="mini"><i style="width:${q}%;background:${col}"></i></div><span class="n">${q}%</span>`;}).join("")}</div>
+  </section>
+  <section class="panel stack"><h2>Most-missed questions</h2>
+    ${itemPct.map(({it,p})=>`<div><span class="pill ${band(Math.round(p*100)).c}">${Math.round(p*100)}% correct</span> <span class="eyebrow">${it.id} · ${esc(TOPICS[it.topic].name)}</span><p style="margin-top:4px">${esc(it.stem)}</p></div>`).join("")}
+  </section>`;
+  out.querySelectorAll("th[data-k]").forEach(h=> h.onclick=()=>{ const k=h.dataset.k; T.dir = T.sort===k? -T.dir : (["name","period","rec"].includes(k)?1:-1); T.sort=k; renderTeacher(); });
+  const csv = ()=> { const q=v=>`"${String(v).replace(/"/g,'""')}"`;
+    const head = ["Student","Class","Date","Minutes","Correct","Overall %",...EXAM_KEYS.map(e=>EXAMS[e].name+" %"),"Recommended exam", ...Object.keys(TOPICS).map(t=>TOPICS[t].name+" %"),"Verified"];
+    return [head.map(q).join(","), ...rows.map(x=>[x.name,x.period,x.date,x.minutes,x.r.total,x.r.overall,...EXAM_KEYS.map(e=>x.r.exam[e]),EXAMS[x.r.best].name,...Object.keys(TOPICS).map(t=>Math.round(x.r.topic[t].pct*100)),x.verified?"yes":"no"].map(q).join(","))].join("\n"); };
+  const msg = document.getElementById("csvMsg");
+  document.getElementById("copycsv").onclick = async ()=>{ try{ await navigator.clipboard.writeText(csv()); msg.textContent="Copied. Paste into Excel or Sheets."; }catch(e){ msg.textContent="Copy was blocked in this view. Use Download CSV."; } };
+  const dl = document.getElementById("csv");
+  (async ()=>{ const d = window.claude ? await window.claude.use("downloads").catch(()=>null) : null;
+    if (d) dl.onclick = async ()=>{ try{ await d.save({filename:CFG.id+"-diagnostic-results.csv", data:csv()}); msg.textContent="Saved."; }catch(e){ msg.textContent="Download was cancelled or blocked."; } };
+    else if (!window.claude) dl.onclick = ()=>{ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv()],{type:"text/csv"})); a.download=CFG.id+"-diagnostic-results.csv"; a.click(); };
+    else dl.hidden = true; })();
+}
+
+/* ---------- boot ---------- */
+if (location.hash === "#teacher") viewTeacher();
+else { const s = load(); if (s && s.end) { S = s; viewResults(); } else viewStart(); }
+</script>
+</body></html>

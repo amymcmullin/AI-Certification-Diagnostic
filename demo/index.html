@@ -451,7 +451,13 @@ function viewResults(){
 let T = {rows:[], sort:"name", dir:1, example:false};
 function exampleCodes(){
   const names = ["Example Student A","Example Student B","Example Student C","Example Student D","Example Student E","Example Student F"];
-  const strengths = [["PRM","CRT","VER","ETH","GEN"],["AZR","GEN","ETH","PRM"],["DAT","MOD","OPS","FND"],["FND","PRM","ETH"],["DAT","MOD","FND","ETH","OPS","AZR"],["CRT","VER","PRM","ETH","GEN","AZR"]];
+  // Each example student is strong in the topics of one exam: the first three in all of
+  // that exam's topics, the rest in only its two biggest, so the class shows a realistic spread.
+  const strengths = names.map((_,s)=>{
+    const w = EXAMS[EXAM_KEYS[s % EXAM_KEYS.length]].weights;
+    const ranked = Object.keys(w).sort((a,b)=> w[b]-w[a]);
+    return s < 3 ? ranked : ranked.slice(0, 2);
+  });
   let seed = 7; const rnd = ()=> (seed = (seed*16807)%2147483647)/2147483647;
   return names.map((n,s)=> makeCode({name:n, period:"EXAMPLE", date:"2026-10-01", minutes:28+s*3,
     masks: ITEMS.map(it=> rnd() < (strengths[s].includes(it.topic)?0.88:0.4) ? keyMask(it) : (1<<((it.answer[0]+1)%4)) | (it.type==="ma"?1<<((it.answer[0]+2)%4):0))

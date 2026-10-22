@@ -52,6 +52,25 @@ How the weights were set:
 - **AI-901:** Microsoft publishes 40–45% for "Identify AI concepts and capabilities" and 55–60% for "Implement AI solutions using Microsoft Foundry." The hands-on Foundry work maps mostly to AZR, and the concepts domain is split across GEN, ETH, PRM and FND.
 - **ITS AI:** the five objective domains (Problem Definition; Data Collection, Processing & Engineering; Algorithms & Models; Integration & Deployment; Maintaining & Monitoring). Data and models carry the most weight, as they do in the sample items.
 
+### Networking diagnostic weights
+
+| Topic | CCST Networking | ITS Networking | ITS Network Security |
+|---|---|---|---|
+| OSI & TCP/IP Models (MOD) | 0.07 | 0.12 | – |
+| Network Types, Performance & Cloud (TYP) | 0.12 | 0.10 | – |
+| IPv4 & IPv6 Addressing (ADDR) | 0.10 | 0.14 | – |
+| Protocols, Ports & Services (PROT) | 0.12 | 0.18 | – |
+| Media, Wireless & WAN (MEDIA) | 0.10 | 0.14 | – |
+| Switching & Routing (INFRA) | 0.13 | 0.14 | – |
+| Troubleshooting & Tools (TOOLS) | 0.14 | 0.12 | – |
+| Cisco Devices & Management (CISCO) | 0.10 | 0.04 | – |
+| Security Fundamentals (SECF) | 0.07 | – | 0.25 |
+| Network & Wireless Security (NSEC) | 0.05 | 0.02 | 0.25 |
+| Operating System Security (OSSEC) | – | – | 0.35 |
+| Secure Computing (SCMP) | – | – | 0.15 |
+
+None of the three vendors publishes domain percentages. The weights are estimated from the breadth of each exam's published objectives and from how a commercial practice-test bank spreads its items across those objectives. The 50 questions lean toward the objectives the author's students missed most in practice tests: OSI/TCP-IP models, IPv4 addressing, switching, and Cisco show commands.
+
 ## 4. Readiness bands
 
 | Readiness | Label | Meaning for the student |

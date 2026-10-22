@@ -13,6 +13,19 @@
   "public_keys": false
  },
  {
+  "id": "networking",
+  "title": "Networking Certification Diagnostic",
+  "heading": "Which networking exam are you ready for?",
+  "exams": [
+   "Cisco Certified Support Technician: Networking",
+   "IT Specialist: Networking",
+   "IT Specialist: Network Security"
+  ],
+  "questions": 50,
+  "minutes": 45,
+  "public_keys": false
+ },
+ {
   "id": "demo",
   "title": "AI Diagnostic Demo",
   "heading": "Which AI exam are you ready for?",

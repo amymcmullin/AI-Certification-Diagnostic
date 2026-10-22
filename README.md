@@ -2,20 +2,18 @@
 
 An open-source practice test engine for IT career and technical education. A student takes one diagnostic and gets back two things: **which of several related certification exams they are most likely to pass**, and **which topics to study first**. Teachers get a class view of the same results.
 
-The first diagnostic covers three AI certifications:
+| Diagnostic | Exams it compares | Questions |
+|---|---|---|
+| **AI** | Generative AI Foundations (Certiport) · Azure AI Fundamentals AI-901 (Microsoft) · IT Specialist: Artificial Intelligence (Certiport) | 45 |
+| **Networking** | Cisco Certified Support Technician: Networking (Cisco/Certiport) · IT Specialist: Networking (Certiport) · IT Specialist: Network Security (Certiport) | 50 |
 
-| Exam | Vendor |
-|---|---|
-| Generative AI Foundations | Certiport / Pearson |
-| Azure AI Fundamentals (AI-901) | Microsoft |
-| IT Specialist: Artificial Intelligence | Certiport / Pearson |
-
-Diagnostics for other subjects with overlapping certifications (networking, cloud) and for multi-domain exams (A+, Tech+) are planned.
+Diagnostics for cloud and for multi-domain exams (A+, Tech+) are planned.
 
 **Live site:** https://amymcmullin.github.io/AI-Certification-Diagnostic/
 - [AI Certification Diagnostic](https://amymcmullin.github.io/AI-Certification-Diagnostic/ai/): 45 questions, answer keys encoded
+- [Networking Certification Diagnostic](https://amymcmullin.github.io/AI-Certification-Diagnostic/networking/): 50 questions, answer keys encoded
 - [Demo](https://amymcmullin.github.io/AI-Certification-Diagnostic/demo/): 12 public sample questions, with answers shown after submitting
-- Add `#teacher` to either address to open the Teacher view
+- Add `#teacher` to any of these addresses to open the Teacher view
 
 ## What it does
 
@@ -54,7 +52,7 @@ build/build_qti.py       Canvas QTI 1.2 builder
 packs/demo/              Public sample pack (pack.json) and its builds
 tests/test.js            Checks a built page against its source pack
 index.html, catalog.json Landing page and the list of published diagnostics (generated)
-ai/, demo/               Published diagnostics (generated; served by GitHub Pages)
+ai/, networking/, demo/ Published diagnostics (generated; served by GitHub Pages)
 docs/                    Scoring method, pack format, Canvas guide
 ```
 
