@@ -57,6 +57,12 @@ assert.strictEqual(score(parsed.rows[0].masks).total, N);
 const tampered = code.slice(0, -1) + (code.endsWith("a") ? "b" : "a");
 assert.strictEqual(parseCodes(tampered).rows[0].verified, false);
 assert.strictEqual(parseCodes(exampleCodes()).rows.length, 6);
+// A code copied without its check characters still reads, marked unverified
+const noCheck = parseCodes("Here is my code " + code.split(".")[0] + " thanks");
+assert.strictEqual(noCheck.rows.length, 1);
+assert.strictEqual(noCheck.rows[0].verified, false);
+assert.strictEqual(noCheck.rows[0].nocheck, true);
+assert.strictEqual(score(noCheck.rows[0].masks).total, N);
 // A code from another diagnostic is skipped, not misread
 const foreign = "AIDX-" + Buffer.from(["2", "other", "X", "", "2026-10-01", "5", "0".repeat(N)].join("~")).toString("base64url") + ".0000";
 const pf = parseCodes(foreign);

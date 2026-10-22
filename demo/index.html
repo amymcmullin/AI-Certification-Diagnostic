@@ -99,7 +99,7 @@ textarea{font-family:var(--mono);font-size:.82rem;min-height:120px;resize:vertic
 .plan li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:4px 10px}
 .plan li::before{counter-increment:p;content:counter(p);font-family:var(--mono);font-size:.85rem;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;grid-row:span 3}
 .plan .obj{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
-.codebox{font-family:var(--mono);font-size:.82rem;word-break:break-all;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:12px}
+.codebox{user-select:all;-webkit-user-select:all;cursor:text;font-family:var(--mono);font-size:.82rem;word-break:break-all;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:12px}
 details.rev{border-top:1px solid var(--line);padding-block:10px}
 details.rev summary{cursor:pointer;display:flex;gap:10px;align-items:baseline}
 details.rev summary::marker{content:""}
@@ -202,7 +202,7 @@ function makeCode(rec){
 const check = (payload, v) => (fnv((v===1?"itech-ai|":"cdx|")+payload)%1679616).toString(36).padStart(4,"0");
 function parseCodes(text){
   const out=[], seen=new Set(); let bad=0, other=0;
-  for (const m of text.matchAll(/AIDX-([A-Za-z0-9_-]+)\.([a-z0-9]{4})/g)){
+  for (const m of text.matchAll(/AIDX-([A-Za-z0-9_-]+)(?:\.([a-z0-9]{4}))?/g)){
     if (seen.has(m[0])) continue; seen.add(m[0]);
     try{
       const payload = unb64u(m[1]); let p = payload.split("~"); const v = +p[0];
@@ -210,7 +210,7 @@ function parseCodes(text){
       else if (v!==2 || p.length!==7) throw 0;
       if (p[1]!==CFG.id){ other++; continue; }
       if (p[6].length!==ITEMS.length) throw 0;
-      out.push({name:p[2], period:p[3], date:p[4], minutes:+p[5], masks:[...p[6]].map(h=>parseInt(h,16)), verified: check(payload, v)===m[2], code:m[0]});
+      out.push({name:p[2], period:p[3], date:p[4], minutes:+p[5], masks:[...p[6]].map(h=>parseInt(h,16)), verified: !!m[2] && check(payload, v)===m[2], nocheck: !m[2], code:m[0]});
     }catch(e){ bad++; }
   }
   return {rows:out, bad, other};
@@ -420,7 +420,7 @@ function viewResults(){
   </section>
   <section class="panel stack">
     <h2>Turn in your results code</h2>
-    <p>Copy this code and paste it where your teacher asked (Canvas assignment or form).</p>
+    <p>Click <b>Copy code</b> and paste the whole code where your teacher asked (Canvas assignment or form). It ends with a period and four characters; include them.</p>
     <div class="codebox" id="code">${esc(code)}</div>
     <div class="row"><button class="primary" id="copy">Copy code</button><span id="copied" class="muted" aria-live="polite"></span></div>
   </section>
@@ -503,7 +503,7 @@ function renderTeacher(){
   const th = (k,l)=>`<th data-k="${k}" aria-sort="${T.sort===k?(T.dir>0?"ascending":"descending"):"none"}">${l}${T.sort===k?(T.dir>0?" ▲":" ▼"):""}</th>`;
   out.innerHTML = `
   ${T.example?`<p class="notice">These are example students generated to show the layout. They are not real results.</p>`:""}
-  ${rows.some(x=>!x.verified)?`<p class="notice">${rows.filter(x=>!x.verified).length} code(s) failed the check digits and may have been edited. They are marked with ⚠.</p>`:""}
+  ${rows.some(x=>!x.verified)?`<p class="notice">${rows.filter(x=>!x.verified).length} code(s) couldn't be verified and are marked with ⚠. ${rows.some(x=>x.nocheck)?"Codes missing their last few characters (after the period) were usually copied by hand; the answers in them are still complete. ":""}${rows.some(x=>!x.verified&&!x.nocheck)?"A code whose check characters don't match may have been edited.":""}</p>`:""}
   <section class="stats">
     <div class="stat"><b>${rows.length}</b><span>students</span></div>
     <div class="stat"><b>${avg(x=>x.r.overall)}%</b><span>average score</span></div>
