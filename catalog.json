@@ -13,6 +13,18 @@
   "public_keys": false
  },
  {
+  "id": "it-support",
+  "title": "IT Support Certification Diagnostic",
+  "heading": "Which IT support exam should you take first?",
+  "exams": [
+   "Cisco Certified Support Technician: IT Support",
+   "IT Specialist: Device Configuration and Management"
+  ],
+  "questions": 50,
+  "minutes": 45,
+  "public_keys": false
+ },
+ {
   "id": "networking",
   "title": "Networking Certification Diagnostic",
   "heading": "Which networking exam are you ready for?",

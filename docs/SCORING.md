@@ -71,6 +71,26 @@ How the weights were set:
 
 None of the three vendors publishes domain percentages. The weights are estimated from the breadth of each exam's published objectives and from how a commercial practice-test bank spreads its items across those objectives. The 50 questions lean toward the objectives the author's students missed most in practice tests: OSI/TCP-IP models, IPv4 addressing, switching, and Cisco show commands.
 
+### IT support diagnostic weights
+
+Most students take both of these exams, so here the recommendation answers **which one to take first**.
+
+| Topic | CCST IT Support | ITS Device Config |
+|---|---|---|
+| Help Desk Practice (HELP) | 0.14 | – |
+| Hardware, Ports & Peripherals (HDW) | 0.15 | 0.10 |
+| Network Connectivity (NET) | 0.12 | 0.05 |
+| macOS & Mobile Devices (MOB) | 0.10 | – |
+| Threats, Authentication & Device Security (SEC) | 0.10 | 0.15 |
+| Windows Troubleshooting & Recovery (TRB) | 0.10 | 0.14 |
+| Cloud, Virtualization & Remote Support (CLD) | 0.08 | 0.05 |
+| Directory Services, Sharing & Permissions (ACC) | 0.07 | 0.14 |
+| Windows Setup, Accounts & Settings (WIN) | 0.06 | 0.15 |
+| Applications, Updates & Windows Features (APPS) | 0.05 | 0.10 |
+| Storage, File Systems & Backup (STOR) | 0.03 | 0.12 |
+
+Neither vendor publishes domain percentages. The weights are estimated from the breadth of each exam's published objectives (CCST IT Support objectives 09/2024; ITS Device Configuration and Management objectives 01/2025). About half of each exam's content is shared: hardware and ports, Active Directory and Group Policy basics, MFA and malware response, Windows updates and settings, Task Manager, Event Viewer, Device Manager, and basic connectivity commands. The topics only one exam tests decide the recommendation: help desk practice and macOS/mobile for CCST, and file systems, share vs. NTFS permissions, policy precedence and recovery for ITS.
+
 ## 4. Readiness bands
 
 | Readiness | Label | Meaning for the student |
