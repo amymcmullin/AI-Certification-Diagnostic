@@ -93,6 +93,28 @@ Neither vendor publishes domain percentages. The weights are estimated from the 
 
 The 50 questions lean toward what the author's students missed most in GMetrix practice tests (CCST IT Support: up to 39 students; Device Configuration: up to 8). Connectivity and resource access, hardware issues, and Windows troubleshooting and permissions get extra questions. Security, where students scored highest on both exams, gets fewer.
 
+### IT foundations diagnostic weights
+
+This version adds **CompTIA Tech+ (FC0-U71)** to the two IT support exams and marks it as the **end goal** (`"goal": true`). Tech+ is recommended first only when a student reaches the 75% line on it. Otherwise the report recommends the stronger of CCST IT Support and Device Configuration and Management, and shows Tech+ readiness in its own "End goal" panel with the topics to work on next.
+
+CCST IT Support and Device Configuration and Management keep the weights above. Tech+ uses CompTIA's published domain percentages (1.0 IT Concepts and Terminology 13%, 2.0 Infrastructure 24%, 3.0 Applications and Software 18%, 4.0 Software Development Concepts 13%, 5.0 Data and Database Fundamentals 13%, 6.0 Security 19%), spread across the diagnostic's topics one objective at a time:
+
+| Topic | Tech+ weight | Tech+ objectives |
+|---|---|---|
+| Threats, Authentication & Device Security (SEC) | 0.19 | 6.1–6.5 |
+| Software Development Concepts (DEV) | 0.13 | 4.1–4.4 |
+| IT Concepts, Devices & Units (CONC) | 0.115 | 1.1–1.3, 2.1 |
+| Applications, Updates & Windows Features (APPS) | 0.11 | 3.3–3.5 |
+| Data & Database Fundamentals (DATA) | 0.10 | 5.1–5.3 |
+| Hardware, Ports & Peripherals (HDW) | 0.09 | 2.2–2.5 |
+| Network Connectivity (NET) | 0.085 | 2.7–2.9 |
+| Storage, File Systems & Backup (STOR) | 0.06 | 2.3, 3.1, 5.4 |
+| Windows Setup, Accounts & Settings (WIN) | 0.055 | 3.1–3.2 |
+| Help Desk Practice (HELP) | 0.04 | 1.4 |
+| Cloud, Virtualization & Remote Support (CLD) | 0.025 | 2.6 |
+
+The 60 questions are the IT support diagnostic's 50, minus two from topics students already score well on, plus 12 new ones: Software Development (4), Data & Databases (4), IT Concepts (3) and wireless security (1). The new topics get extra questions because they were the weakest areas in the author's class GMetrix results for IT Fundamentals+ (FC0-U61), the exam Tech+ replaced: databases 50% and software development 51%, against 61–65% for infrastructure and security (up to 16 students). There was no GMetrix data for Tech+ itself yet.
+
 ## 4. Readiness bands
 
 | Readiness | Label | Meaning for the student |

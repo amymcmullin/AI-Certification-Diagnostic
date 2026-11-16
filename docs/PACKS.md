@@ -50,6 +50,7 @@ packs/demo/pack.json                         public sample (this repo)
 | `settings.encode` | `true` for real banks, `false` only for public samples. |
 | `exams.<code>.weights` | The share of the exam each topic covers. Must add up to 1. A topic an exam doesn't test is left out. |
 | `exams.<code>.short` | Label for table columns and legends. |
+| `exams.<code>.goal` | Optional. `true` marks one exam as the end goal, such as a multi-domain exam the others build toward. Its readiness is always shown, but it is recommended first only when the student reaches the 75% line. Otherwise the report recommends the strongest of the other exams and lists what to work on for the goal. |
 | `topics.<code>.study` | Appears in the student's study plan. |
 | `items[].type` | `mc` (one answer) or `ma` (choose two, scored all-or-nothing). |
 | `items[].answer` | Option indexes, counting from 0. Put correct answers in varied positions. |

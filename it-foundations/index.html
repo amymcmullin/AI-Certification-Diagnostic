@@ -1,0 +1,560 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{margin:0}[hidden]{display:none!important}*,*::before,*::after{box-sizing:border-box}</style></head><body><title>IT Foundations Certification Diagnostic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: one score-report column; exam colors carry meaning, the accent stays for actions */
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --ink:#15212C; --muted:#56636F; --line:#D8DDE4;
+  --accent:#2346A0; --accent-ink:#FFFFFF; --accent-soft:#E2E8F7;
+  --x0:#9B3D8F; --x1:#1F6FC5; --x2:#1E8A6E; --x3:#B4532A;
+  --good:#1E7F4F; --good-soft:#DFF1E7; --warn:#A56A12; --warn-soft:#F8EDD9; --bad:#B4352F; --bad-soft:#F7E1DF;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E151C; --surface:#16202A; --ink:#E5EBF1; --muted:#9AA8B5; --line:#2A3846;
+  --accent:#93AAF2; --accent-ink:#0E151C; --accent-soft:#1D2944;
+  --x0:#D78ACB; --x1:#73B0F0; --x2:#5FCBA9; --x3:#EE9A6E;
+  --good:#62CB8E; --good-soft:#163323; --warn:#E3B260; --warn-soft:#3A2C12; --bad:#EE7C74; --bad-soft:#3E1D1B;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E151C; --surface:#16202A; --ink:#E5EBF1; --muted:#9AA8B5; --line:#2A3846;
+  --accent:#93AAF2; --accent-ink:#0E151C; --accent-soft:#1D2944;
+  --x0:#D78ACB; --x1:#73B0F0; --x2:#5FCBA9; --x3:#EE9A6E;
+  --good:#62CB8E; --good-soft:#163323; --warn:#E3B260; --warn-soft:#3A2C12; --bad:#EE7C74; --bad-soft:#3E1D1B;
+  color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;padding:0 16px}
+.wrap{max-width:780px;margin:0 auto;padding-block:28px 64px;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(1.9rem,5vw,2.6rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.45rem;font-weight:800}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:0}
+.muted{color:var(--muted)}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.spacer{flex:1}
+button,.btn{font:inherit;font-weight:700;font-size:.95rem;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 16px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.link{background:none;border:none;padding:0;color:var(--accent);text-decoration:underline;font-weight:400}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,textarea:focus-visible,.opt:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+label.field{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:.92rem;flex:1;min-width:180px}
+input[type=text],textarea{font:inherit;font-weight:400;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+textarea{font-family:var(--mono);font-size:.82rem;min-height:120px;resize:vertical}
+
+/* start */
+.exam-trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.exam-card{border-top:4px solid var(--c);padding:12px 0 0}
+.exam-card b{font-family:var(--display);font-weight:600;font-size:1.02rem;display:block;line-height:1.2}
+.exam-card span{font-size:.85rem;color:var(--muted)}
+@media (max-width:560px){.exam-trio{grid-template-columns:1fr}}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:.92rem}
+.facts b{font-family:var(--mono);font-weight:500}
+
+/* quiz */
+.qbar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px;z-index:2;display:flex;flex-direction:column;gap:8px}
+.track{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent);transition:width .2s}
+.qmeta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.stem{font-size:1.15rem;line-height:1.5}
+.hint{font-size:.85rem;font-weight:700;color:var(--accent)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:12px 14px;cursor:pointer;background:var(--surface)}
+.opt:hover{border-color:var(--accent)}
+.opt.on{border-color:var(--accent);background:var(--accent-soft)}
+.opt input{margin-top:5px;accent-color:var(--accent);width:18px;height:18px;flex:none}
+.opt .letter{font-family:var(--mono);font-size:.85rem;color:var(--muted);margin-top:2px}
+.grid-nav{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px}
+.grid-nav button{padding:6px 0;font-family:var(--mono);font-weight:500;font-size:.8rem}
+.grid-nav button.done{background:var(--accent-soft);border-color:var(--accent)}
+.grid-nav button.flag{box-shadow:inset 0 -3px 0 var(--warn)}
+.grid-nav button.cur{outline:2px solid var(--ink)}
+
+/* results */
+.verdict{border-left:6px solid var(--c);padding:18px 22px}
+.verdict .big{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,4.5vw,2.1rem);line-height:1.1}
+.meters{display:flex;flex-direction:column;gap:16px}
+.meter{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:baseline}
+.meter .nm{font-weight:700}
+.meter .pct{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.bar{grid-column:1/-1;position:relative;height:12px;background:var(--bg);border:1px solid var(--line);border-radius:99px}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:99px;background:var(--c)}
+.bar .cut{position:absolute;top:-5px;bottom:-5px;left:75%;width:2px;background:var(--ink)}
+.cutlbl{font-family:var(--mono);font-size:.72rem;color:var(--muted);text-align:right}
+.pill{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.b-ready{background:var(--good-soft);color:var(--good)} .b-close{background:var(--warn-soft);color:var(--warn)}
+.b-dev{background:var(--bad-soft);color:var(--bad)} .b-not{background:var(--bad-soft);color:var(--bad)}
+.topics{display:grid;grid-template-columns:minmax(0,1fr) 110px 46px;gap:8px 12px;align-items:center;font-size:.93rem}
+.topics .mini{height:8px;background:var(--bg);border:1px solid var(--line);border-radius:99px;position:relative}
+.topics .mini i{position:absolute;inset:0 auto 0 0;border-radius:99px}
+.topics .n{font-family:var(--mono);font-size:.82rem;text-align:right;font-variant-numeric:tabular-nums}
+.dots{display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.plan{counter-reset:p;display:flex;flex-direction:column;gap:14px;margin:0;padding:0;list-style:none}
+.plan li{display:grid;grid-template-columns:30px minmax(0,1fr);gap:4px 10px}
+.plan li::before{counter-increment:p;content:counter(p);font-family:var(--mono);font-size:.85rem;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;grid-row:span 3}
+.plan .obj{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+.codebox{user-select:all;-webkit-user-select:all;cursor:text;font-family:var(--mono);font-size:.82rem;word-break:break-all;background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:12px}
+details.rev{border-top:1px solid var(--line);padding-block:10px}
+details.rev summary{cursor:pointer;display:flex;gap:10px;align-items:baseline}
+details.rev summary::marker{content:""}
+.mark{font-family:var(--mono);font-weight:500;width:20px;flex:none}
+.mark.y{color:var(--good)} .mark.n{color:var(--bad)}
+.rev ul{margin:8px 0;padding-left:20px;font-size:.93rem}
+.rev li.key{font-weight:700;color:var(--good)} .rev li.wrong{color:var(--bad);text-decoration:line-through}
+.why{font-size:.9rem;color:var(--muted)}
+
+/* teacher */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:760px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--mono);font-weight:500;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;white-space:nowrap}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.chip{display:inline-block;min-width:44px;text-align:center;font-family:var(--mono);font-size:.8rem;padding:2px 6px;border-radius:6px}
+.examtag{font-weight:700;color:var(--c)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:var(--surface)}
+.stat b{display:block;font-family:var(--display);font-size:1.6rem;font-weight:800}
+.stat span{font-size:.82rem;color:var(--muted)}
+.notice{font-size:.85rem;padding:10px 14px;border-radius:8px;background:var(--warn-soft);color:var(--ink)}
+.foot{font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:14px;display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:space-between}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<main class="wrap" id="app"></main>
+
+<script>
+const BANK = {"settings": {"id": "it-foundations", "title": "IT Foundations Certification Diagnostic", "eyebrow": "iTECH · IT foundations certification readiness", "heading": "Which IT foundations exam should you take first?", "intro": "This diagnostic covers what three foundations exams test: Cisco Certified Support Technician (CCST) IT Support, IT Specialist: Device Configuration and Management, and CompTIA Tech+. CCST and Device Configuration are smaller, single-subject exams. Tech+ covers the most ground, so it's the end goal they build toward. When you finish, you'll see your readiness for all three, which exam to take first, and a study plan ordered by what each weak topic is worth.", "minutes": 55, "review": "explain", "encode": true}, "exams": {"CCSTIT": {"name": "Cisco Certified Support Technician: IT Support", "short": "CCST IT", "vendor": "Cisco, delivered by Certiport", "weights": {"HELP": 0.1, "HDW": 0.22, "NET": 0.12, "ACC": 0.08, "SEC": 0.07, "TRB": 0.1, "WIN": 0.06, "APPS": 0.05, "MOB": 0.12, "CLD": 0.06, "STOR": 0.02}}, "ITSDC": {"name": "IT Specialist: Device Configuration and Management", "short": "ITS Devices", "vendor": "Certiport / Pearson", "weights": {"WIN": 0.15, "HDW": 0.1, "APPS": 0.1, "STOR": 0.12, "ACC": 0.14, "SEC": 0.15, "TRB": 0.14, "NET": 0.05, "CLD": 0.05}}, "TECHP": {"name": "CompTIA Tech+ (FC0-U71)", "short": "Tech+", "vendor": "CompTIA", "goal": true, "weights": {"CONC": 0.115, "HELP": 0.04, "HDW": 0.09, "STOR": 0.06, "CLD": 0.025, "NET": 0.085, "WIN": 0.055, "APPS": 0.11, "DEV": 0.13, "DATA": 0.1, "SEC": 0.19}}}, "topics": {"HDW": {"name": "Hardware, Ports & Peripherals", "study": "Name and match connectors (HDMI, DisplayPort, DVI, VGA, USB-A/B/C, Thunderbolt, RJ-45) and when a converter is needed; identify CPU, RAM, storage (SATA, SSD, NVMe/M.2) and expansion cards; ESD and electrical safety; 32-bit vs. 64-bit vs. ARM requirements; troubleshooting printers and other peripherals.", "objectives": "CCST 2.1, 2.3–2.5, 3.2 · ITS 1.1, 2.4, 5.3 · Tech+ 2.2–2.5"}, "WIN": {"name": "Windows Setup, Accounts & Settings", "study": "Upgrade vs. custom install; Microsoft, local and domain accounts; standard vs. administrator accounts and user profiles; display modes (duplicate, extend) and resolution; power settings; accessibility features such as Sticky Keys, Magnifier, Narrator and live captions.", "objectives": "CCST 4.1 · ITS 1.3–1.6, 2.5 · Tech+ 3.1–3.2"}, "APPS": {"name": "Applications, Updates & Windows Features", "study": "Installing, modifying and removing apps and who has permission to; Program Files vs. Program Files (x86); the Microsoft Store and approved-app policies; optional Windows features; what the Registry stores; Windows Update settings, optional and driver updates, and update history. For Tech+: productivity and collaboration software, web browser settings (private browsing, extensions, cache, pop-up blockers, password manager), and everyday uses of AI.", "objectives": "CCST 4.1, 4.5 · ITS 1.7, 2.1–2.3 · Tech+ 3.3–3.5, 6.2"}, "STOR": {"name": "Storage, File Systems & Backup", "study": "When to use NTFS, FAT32 and exFAT (the 4 GB file limit); GPT vs. MBR; partitioning and formatting in Disk Management; what happens to permissions and attributes when files are copied or moved; File History, previous versions, and full disk backup and restore.", "objectives": "CCST 4.1 · ITS 3.1, 3.3 · Tech+ 2.3, 3.1, 5.4"}, "ACC": {"name": "Directory Services, Sharing & Permissions", "study": "Active Directory: domain vs. local accounts, groups, and joining a domain; Group Policy precedence (local, site, domain, OU) and gpupdate /force and gpresult; share vs. NTFS permissions and how to find effective permissions; mapping drives; checking group membership.", "objectives": "CCST 3.1 · ITS 1.2, 3.2, 5.1, 5.4"}, "SEC": {"name": "Threats, Authentication & Device Security", "study": "Malware types (virus, worm, trojan, ransomware, spyware, adware) and how to respond; phishing, vishing, smishing and impersonation, especially of the help desk; MFA and authenticator apps; Windows Hello; firewall profiles (private, public, guest) and allowing apps; UAC. For Tech+: confidentiality, integrity and availability; authentication, authorization and accounting; least privilege; password best practices; encryption at rest and in transit; and securing a small wireless network (change defaults, WPA3).", "objectives": "CCST 3.1, 5.1–5.3 · ITS 4.1–4.5 · Tech+ 6.1–6.5"}, "TRB": {"name": "Windows Troubleshooting & Recovery", "study": "Which tool fits the problem: Task Manager, Event Viewer, Device Manager, Disk Management, System Information and Services; rolling back drivers; safe mode and advanced startup; reset or roll back Windows; repairing or reinstalling apps.", "objectives": "CCST 2.2, 2.5, 4.1 · ITS 5.1–5.3"}, "NET": {"name": "Network Connectivity", "study": "What DHCP and DNS do; recognizing APIPA (169.254.x.x) and IPv6 link-local (fe80::) addresses; whether an address and gateway are in the right subnet; public vs. private ranges; ipconfig /all, /release, /renew, /flushdns, ping, tracert, nslookup and netstat; how a firewall affects connectivity. For Tech+: internet service types (fiber, cable, DSL, satellite, cellular), what modems, routers, switches and access points do, and 802.11 bands (2.4, 5 and 6 GHz).", "objectives": "CCST 3.3 · ITS 5.4 · Tech+ 2.7–2.9"}, "HELP": {"name": "Help Desk Practice", "study": "Ticket queues, priorities, SLAs and KPIs; writing clear ticket notes (problem, steps taken, result); the troubleshooting process in order; knowing when to escalate; protecting PII; using search, forums, knowledge bases and AI responsibly. Know both troubleshooting orders: Cisco's (define, gather information, probable cause, plan, implement, observe, document) and CompTIA's (identify, theory of probable cause, test the theory, plan and implement, verify functionality, document).", "objectives": "CCST 1.1–1.3, 5.3, 6.2 · ITS 5.1 · Tech+ 1.4"}, "MOB": {"name": "macOS & Mobile Devices", "study": "macOS tools: Activity Monitor, About This Mac, System Settings, Console; app permissions under Privacy & Security; Time Machine and iCloud; mounting drives and AirDrop; iOS and Android basics: charging, connectivity, email setup and what MDM can do.", "objectives": "CCST 4.2–4.3"}, "CLD": {"name": "Cloud, Virtualization & Remote Support", "study": "Cloud storage and sync (OneDrive, keeping files offline); cloud providers and service models; virtual machines and Type 1 vs. Type 2 hypervisors; remote tools: Remote Desktop vs. Remote Assistance or Quick Assist, and third-party tools such as TeamViewer and VNC.", "objectives": "CCST 4.4, 6.1 · ITS 2.1, 3.1 · Tech+ 2.6"}, "CONC": {"name": "IT Concepts, Devices & Units", "study": "Input, processing, output and storage; converting between binary, decimal and hexadecimal; bits vs. bytes and storage units (KB to PB); throughput (bps to Gbps) and processing speed (MHz, GHz); common devices, servers and IoT devices.", "objectives": "Tech+ 1.1–1.3, 2.1"}, "DEV": {"name": "Software Development Concepts", "study": "Interpreted (scripting, markup), compiled, query and assembly languages; data types (char, string, integer, float, Boolean); variables, constants, arrays, functions, and objects with properties and methods; reading pseudocode and flowcharts with sequence, branching and loops.", "objectives": "Tech+ 4.1–4.4"}, "DATA": {"name": "Data & Database Fundamentals", "study": "The value of data (analytics, data-driven decisions); why a database beats a flat file (concurrent users, scale, speed); structured, semi-structured and unstructured data; relational tables, records, fields, primary and foreign keys; non-relational (key/value, document) databases; querying with SQL.", "objectives": "Tech+ 5.1–5.3"}}, "items": [{"id": "HDW1", "topic": "HDW", "type": "mc", "stem": "A user's laptop has only an HDMI output. The new monitor has only a DisplayPort input. What is the best way to connect them?", "options": ["Use a USB-B cable", "Replace the monitor; HDMI and DisplayPort can't be connected", "Use a standard DisplayPort cable with an HDMI end pushed in", "Use an HDMI-to-DisplayPort converter"], "k": "4eaaac90", "w": "gu8LMVqPfZPpIerq3hPiLdVmSgkvuWTTJIQrdFH6KTeK66WXI+ZGNJZrAFiUqPppbrlrncT2elawVEYq1el/iyZABikloi5HnqzGvwt5zIEs4SsIim2uaBGL9xK7sgQsvSXXJY2LM2YvjBl3iSJQ9I8En4UGaKXoHYbCt6jcFUq5nYTzf0gYJsF/KpCBlf5HUA=="}, {"id": "HDW2", "topic": "HDW", "type": "mc", "stem": "Which connector can carry data, video and charging power through one cable and is used by Thunderbolt 3 and 4?", "options": ["Mini HDMI", "USB-C", "USB-B", "DVI-D"], "k": "1048aad3", "w": "adsHvlLVVADoOEQE0K5SjyMwGiZ3E8FcAmdB6dzsdjiEiVn6D0jLEdwRpOGQbse177TRQ3vb4JKalcWGlE+ywqfPkXeOl7geuyRDFL4khGvg8Fojk1cQFNNFk09psYqHr8S+NG/ajt3lKPLrlZzD"}, {"id": "HDW3", "topic": "HDW", "type": "mc", "stem": "You're about to install a RAM module in a desktop computer. Which step best protects the components from electrostatic discharge (ESD)?", "options": ["Touch the RAM chips first so your hands are at the same charge", "Wear rubber-soled shoes and work on a carpeted floor", "Leave the computer running so the case stays grounded", "Shut down and unplug the computer, then wear an antistatic wrist strap clipped to bare metal on the case"], "k": "2bc5bece", "w": "VvdWk++rYLoABH07fjkghjEFZHe9wGgK4MLxSQ8tlgb4vgVQRfse4DFqgo2ww8krZ56tQgIIG7YF1yKLGZlY/GxQg2r7nj5XRBDsx4xw6KirFU022LHQK5HwNeDBFQKHIQwvyULIjb/ZNY3PPEyrex9pEDJ8/DrljohjhqJ53Ta9qFQx+HMrGQPjZIjYpfBiFO7DMefRDJGLuW6Uh4cZ1P4SlxbPKo0audERFeIdDi1luDkkYhXsvEzfTUmzTbmOa7zB9zaBZ8s="}, {"id": "HDW4", "topic": "HDW", "type": "mc", "stem": "A user's PC has a 64-bit (x64) processor but a 32-bit edition of Windows. A new application they need is 64-bit only. What is true?", "options": ["It will run in compatibility mode", "Updating the graphics driver will let it run", "The application can't run until a 64-bit edition of Windows is installed", "Adding more RAM will let it run"], "k": "04a4fa13", "w": "N+CNl1S4yK9xV3gGvGaIFjVV68HxwHpL7EkluSx8a7V3B3QbF89dNXfTZF629/kFQipJNPqJ08M/YirXr35l0VmJMxQ5k9TY4VbThPgqR01JOP4mhkAp0T0WpApCIZySwYEYVKCggAKsGL0moCKzR8+/csDriNHon7jiXZuxG0CgkivCIZkJgNvyjt8F5FFfdERD82Z/dnSrYeVm/rziNNJQ4Op+wBXaCms="}, {"id": "HDW5", "topic": "HDW", "type": "ma", "stem": "You install an NVMe M.2 SSD in a desktop, but the system doesn't detect it. Which TWO are likely causes? (Choose two.)", "options": ["The motherboard's M.2 slot supports SATA drives only", "The monitor is plugged into the wrong video port", "The network cable is unplugged", "The drive isn't fully seated and secured in the slot"], "k": "a30dc18f", "w": "b34sW+nWaUEDFhcG3fz2ESUrZtNv4S6HXRSPqXXovXagafWDipuhaPGYEm3MJRb613JhYm4/dnYCuZU8Z2mH7AAkqpxHsZK+jCB1Xmmw0RHgUBVeo+Uvy0DbuenWISLXDzc9GmA7rFezUNmxQDX4ucFfGDBJuNmHlUarrSecQEQf8V4f+ySWBsw+34KziFtwbnuQfS10grDIyKJQ/qUtvWEqM+0xfTEolhxjL7BT09l0PYCvZ1kaKwC8FQ=="}, {"id": "WIN1", "topic": "WIN", "type": "mc", "stem": "You're installing Windows on a brand-new, empty drive. Which installation type should you choose?", "options": ["Repair install from Windows Update", "Reset this PC", "Custom (clean) install", "Upgrade"], "k": "c7683801", "w": "FBZjOHsLgmqC8PLICgGEWWHyuJTMspP/M8EzvIDaaFVdSgGHoM0buv9aE1QCaAVniekU0hZgCiO5qCjmQjj7z1fCLrYEQ7K+ctS7Igm8xlIFYRP5UbI7phIWJWLo7B5Xkp6mR+nzyE9Ue1OEPjPadXRwkJJ9mSsy6Zyi6JjSt1RUJijqFrgudkWkpyMLO0fyDOnreNc9Yh1lWnw0g9wMX+hwb9RfYBuCrKrn7PgWziiy2yqUTcMq3w=="}, {"id": "WIN2", "topic": "WIN", "type": "mc", "stem": "An employee does daily work on a company PC but occasionally needs software installed. What is the best account setup?", "options": ["Give them the shared local Administrator password", "Make their account an administrator so they don't need to call IT", "Give them a standard account; IT enters administrator credentials at the UAC prompt when an install is approved", "Have them sign in with the Guest account for installs"], "k": "e94fa7d0", "w": "rcELfxoWa16sm5YauogGjZ2QYFjMc4r+qWH9vOD9sCiGNh6zzuXwvlTyhblBDWu0MGEpqEQCf2fN3C67xNqCQdxQa7qg1IaWdq4eHE7gavWP7QDoGp25km+ikWhdWGrl8WoZaYRGMM62Iz2EI4H1FbQAnN3wUxo2rLAXMilZR1XX2+67HHO17oV3Zw304B+ukU+45lUhXmZDbxGcCkH28bswfPXI/VA="}, {"id": "WIN3", "topic": "WIN", "type": "mc", "stem": "A presenter wants slides on the projector while the laptop screen shows speaker notes. Which display mode should they choose?", "options": ["PC screen only", "Duplicate", "Second screen only", "Extend"], "k": "63e707af", "w": "7M38XFN8sUoNNJhqLRgPfjzDFWHX9hxyEXLvIIIVxjbeJDuidz931emWimQqjx81cTOn9Xmmj2K1ICCzqinIOYNDV3uJ6/nAbnMp6ZT0LpcbCX8x914Ys5Aa1sSpIwqxYqyeJnYPeBtRIyOywyMEde0wjo+dw/PCADb6GVpBHA=="}, {"id": "WIN5", "topic": "WIN", "type": "mc", "stem": "A new employee signs in to a domain-joined PC with their domain account for the first time. What does Windows create on that PC?", "options": ["A new domain account in Active Directory", "A new Microsoft account", "A user profile with their own desktop, Documents folder and settings", "A copy of the local Administrator account"], "k": "798ac82d", "w": "aCpGRmaJ58p1olutw4qz2l8LfeKPnbMnTsTC02bl+CbXKMvwhjJv4z1pxsD7qls+AbzS4mu38OdmuBuh5VduKtgatsqj0JT7fQbZuaaq/r4raHQTypS14wYAhvN7Sp9eFkoWehLjI2nY5sgJmXH1/+fQLGCqXaJcLlhfvWf+6iPok46ZTgAZ+xKN5I1yUvqeEk+FnjAmtYRVkBJrkx6Q2DjGjKVTROEh30sltGbO8si/kCHPKg=="}, {"id": "APPS1", "topic": "APPS", "type": "mc", "stem": "On 64-bit Windows, where are 32-bit desktop applications installed by default?", "options": ["C:\\Program Files", "C:\\Users\\Public", "C:\\Windows\\System32", "C:\\Program Files (x86)"], "k": "c59e0e13", "w": "VhRu5TTIRQv5DRhc5JH1sf8T+qjG0gXccm6X3R5Q7DE7QHspgjy9tfBxIfALV5Eso3qI8ajsP2dZLlJJpckVFCtXcct+D+VCXPpudb4Sl8s8bICSt0BrA95L/D2jh0955g=="}, {"id": "APPS2", "topic": "APPS", "type": "mc", "stem": "What is the Windows Registry?", "options": ["A log of errors and warnings", "The folder where Windows stores installed drivers", "A database of Windows settings, application settings and user preferences", "The list of apps available in the Microsoft Store"], "k": "429c4f3a", "w": "iLxkkA2v2lXrd+eAiXq+zqnu1KLqr7IcvRfBnomiT5XL2SM7Dn1X1X2UHBmlspQfTHUDH41r9khPl0c+6fTFBiljLACPMd7WkhJPtORWH48reul4kaF7wIrHFuDgdU7Cq+qVD2Czjw3GNdF5r0jNJpwUhNbYxreT6u8pES+vXBeQfV6PXWrQmiwAHC6lpB/IbWo3Eg=="}, {"id": "APPS3", "topic": "APPS", "type": "mc", "stem": "A user asks you to install a free tool they found on a website. Company policy allows only approved software. What should you do?", "options": ["Explain the policy and offer an approved app from the company's app catalog or the Microsoft Store, or submit a request to have the tool reviewed", "Install it, since it's free", "Install it but turn off the antivirus during setup", "Give the user administrator rights so they can install it"], "k": "ac200c9e", "w": "m29OKaRZSvrGQr38Dh7LPOFNqG56LNpdw/N2lQxj6OrjzwDsJ4uJFsxQ2eQGc4OMIdw4xH1zUx1aOByLH1BAUT00Pj4dXZKbGkSyd6pmn9oRXNn1bShRpj5NiaOx0Lya5ekh8zNdIntOU7RGpLhRbwah8YfML7OF5k6DlSGnOwGzCahazncP9SBgno4u"}, {"id": "APPS4", "topic": "APPS", "type": "ma", "stem": "Which TWO statements about Windows Update are true? (Choose two.)", "options": ["Updates can only be installed by an administrator typing commands", "Optional updates can include device driver updates", "Update history lists installed updates and has an option to uninstall some of them", "Windows Update never installs drivers"], "k": "22e4f746", "w": "asl+ek8zsQRCP5w5kTwBULNnLn1TkklZE2jVlM0EgwoYGXVjOeD8jpE2z4/Hh6gRsesSupinRBT4mAM5Gkb/STpex4159GtvNXAGiulxO9s/SMFfY5J4lQJ5DB9j8XNQyOIO8bHSP/hJN5qTahvr2kjKyTQi5Z9oPyGon2qZlxtthWHBoddj+Q8II5b9KyLHFO0="}, {"id": "STOR1", "topic": "STOR", "type": "mc", "stem": "A flash drive must work on both Windows and macOS and hold video files larger than 4 GB. Which file system should you format it with?", "options": ["exFAT", "ReFS", "FAT32", "NTFS"], "k": "bd9a24e2", "w": "rPY+k0fX5XubYkhAmcOcJWP91bTbzkuCn6vyTuCxKF9gpl924kojExN27GREChqjk2l6+Z2drcr3dCfrBuN77yhIX7m3lGvJOPuL0wJSzCwWj1FJILZlZ4OZBe3CwPJiVejUyqT/UxhPEq8F+9hzCuaBMBwscmJUJK35w+7qDSa7iqi7VsFwXyMIEVY="}, {"id": "STOR2", "topic": "STOR", "type": "mc", "stem": "A new 4 TB drive will be the boot drive on a UEFI computer. Which partition style should you use?", "options": ["GPT", "Dynamic", "FAT32", "MBR"], "k": "818100b7", "w": "eiMS5CzDoCMquNKpEoTIlk7XmlIUh0u3416i71Di+7H3FTuqHjaq+lCUSJNFlgz80P36VVO7MBbtS6Gz/QyDovnPLS1vqEFaLk9D3SelGnj/om78aKIHwtjQXQU6iPYcFXZXZAwRL6MXMCbuzsU+XbpTNcRRnV04UvO93p5mbJkodwYPUQSw"}, {"id": "STOR3", "topic": "STOR", "type": "mc", "stem": "A compressed file with custom NTFS permissions is copied from an NTFS drive to a FAT32 flash drive. What happens?", "options": ["The file is converted to read-only", "The file keeps its permissions and compression", "The copy is blocked because FAT32 doesn't support permissions", "The file copies, but loses its NTFS permissions and compression"], "k": "67190907", "w": "z7Ia/+tumyzBLaW6xa2RxJupixkLCSvBOy/fiF6145UDhJaenGcGRtWFK006YOz6k6ulbywsSSjaAHXO8vRHBcdmBvLpK+N0M+6sSHKuiD+znI+wB24XrtXXluw+rhNUxQ=="}, {"id": "STOR4", "topic": "STOR", "type": "mc", "stem": "A user saved over an important document in their Documents folder yesterday. File History is turned on. What is the fastest fix?", "options": ["Restore the earlier version of the file from File History (Previous Versions)", "Use System Restore to go back to yesterday", "Perform a full disk restore", "Reset this PC and keep files"], "k": "fb38e659", "w": "jN047kEBa0Gv7qv48e0B4fGRb73X/VgAZa5/dhwOzPiKrqIyyHqkBOO0BPdXqKWpmTVfxIlunI05mLn2BLtHof8DRUsWDqoIP2M/t7l9KoVWle6mNzuLc8BGvoXnrK52VSIBj3KOf5EGYUoiANSk1j0TRAzvNlhGWobnbeAPXCuS9f4BbasQmnakbJnImnQjdwZzM3BywKNESgAoi2HbdEy4Twq/GlRP2CVinOmqs8B0CWlex9vpGMPTKUbkTIlWRoKu"}, {"id": "STOR5", "topic": "STOR", "type": "mc", "stem": "A folder is moved (not copied) to another folder on the same NTFS volume. What happens to its NTFS permissions?", "options": ["It takes on the permissions of the destination folder", "It keeps its original permissions", "It gets Full Control for Everyone", "Its permissions are removed"], "k": "66bca6e3", "w": "j55t4IQ8zVG0e+d4ffanSq9NSwavyLlmjLcMN6uPVNzhfOmtvJ6KwXbc2FUKSk+ldJynyVi7c3TuqkxFJ3Vzy3MwcQuSeJh3aQeg1Lht01znAlEY6DByQ5EI1N899tIelIfzw+KGTDA9pn9Ty7WzPbN+qULt7YHqbnXdWqJxDxxVW0ZKcwrzHtbfJZJA8h2YWPpo4dF6za8+iguX5z5CugYhqo3mH3vo/prkYQ=="}, {"id": "ACC1", "topic": "ACC", "type": "mc", "stem": "A shared folder gives Everyone the Read share permission. Its NTFS permissions give the Sales group Modify. What can a Sales user do when opening the folder over the network?", "options": ["Nothing", "Read only", "Full Control", "Modify"], "k": "e616057e", "w": "s5BmslqfEUhfUpLYiCqMUmpG4XgOZseW8OFQA8CN2bLBaOp7OZEIbFUA26UQMIGlT5V5ArsbNy19Q2DvEZD6isSzCH38fbS/Kwzf41iXfnM8sAZoRh7g16us+IVgSYnshTw8e4A7Ib5x3Qavpk3/HOlQ1sfU1EOFOWIuCaj0kl+1MDYTvKtIfXgJtV9WA1Q="}, {"id": "ACC2", "topic": "ACC", "type": "mc", "stem": "A local policy on a PC sets one desktop wallpaper. A Group Policy Object linked to the computer's organizational unit (OU) sets a different one. Which wallpaper applies?", "options": ["The one from the GPO linked to the OU", "The one from the local policy", "Whichever was created first", "Neither; conflicting policies cancel out"], "k": "212f2816", "w": "IG4KH1bsoC9L8IDLcuAyb9t4CLfezjJVmcKAux0YV2fymYt8WO75rbMOAMrqKm/E58ndHsSVXxYrbXSZQ4Q+IdnP0NZnhw4hVSubjtQPfI7BqTCGuCvqFAtY1Av0pOmahPPAvqR+CG+buLGouS1EVQXZEHfiMUjbfUjY6A=="}, {"id": "ACC3", "topic": "ACC", "type": "ma", "stem": "An administrator changed a Group Policy setting, but a user's PC doesn't show it yet. Which TWO commands help? (Choose two.)", "options": ["gpupdate /force", "ipconfig /renew", "sfc /scannow", "gpresult /r"], "k": "ba310991", "w": "w33/xk8Y1PFs2/XVcWxpzOqMnm+/WxJ9W2kJ4zH0qWGxcuWNASox3eppy0nRKKM5Cn7x8WMNyb8KLap3i6jgQSqE88Tck512ujfGUSN37UiFiyVKwgQEIx8VQZ3BOUZvMjabrBGr6/e0ay2c//SaMWG0wRqc7rSenLpCBa3Osfsjz1mwjQWE3Fh/fCuf"}, {"id": "ACC4", "topic": "ACC", "type": "mc", "stem": "A user can't open a department shared folder that coworkers on the same team can. What should you check first?", "options": ["Whether the file server needs a new hard drive", "Whether the user's monitor resolution is correct", "Whether the user is a member of the security group that has access to the folder", "Whether the user's browser cache is full"], "k": "148b75c3", "w": "SYuIZ6/FssP4zTYLP/g1OtTaneKvWul7U+YFjVukVN1nh9XFCoNuDiUKNqrXsU5AS7CEnZBVWmoqSmEr2Hey5kZLoNKqCBd2Y+xkfAoHu1Sgs+VgN0YZ83rGiznm5cyjKDc2tjNu6hjVxHfIuoEzgtdY0x85gp6WWUB0t4dMf+q6kmGJ"}, {"id": "ACC5", "topic": "ACC", "type": "mc", "stem": "What is the main difference between a domain user account and a local user account?", "options": ["A domain account is stored in Active Directory and can sign in to any domain-joined computer; a local account exists only on one PC", "A local account always has administrator rights", "A domain account works without a network connection only", "There is no difference except the name"], "k": "baf449d7", "w": "VRwPhD+2n/t9vFv+5ywYZN4grvyWbB0m2J2KtSqNXsCGtCZ1PObUe0c72NEP7J5wmvjPy521FkQtVKAlvdXak26yFV6uB1mapPuTccIFDv7jOQEiHsvRv22t/KgWclbh37C2rA8svJcM1IQ5m19xc9nwf6Z7xYE2ZwKRKGOrpU0Q2lVEFfpU1VsT7CdqJyZq/LGlUg8TJ5wqAdaGBn7Ob3qUu8qem5BnPOwa2Y4="}, {"id": "SEC2", "topic": "SEC", "type": "mc", "stem": "A caller says they are a vice president, they're in a hurry, and they need their password reset and sent to a new phone number right away without the usual identity check. What should you do?", "options": ["Reset it right away because the caller is an executive", "Reset it, but send the password by email instead", "Ask the caller for their old password to confirm who they are", "Treat it as possible social engineering: follow the identity-verification policy before making any change"], "k": "d09e30d5", "w": "q1HCo7j4sbl82h0jWGjl7qfXlE6S3vvYlUS0xT2D+IOa4+vjR5RH6onzD+2H+JfWdhVbtIzo2GF6bwKjCUYeg5GZuFA6GMGJXqOWMDhjNPIgTd/79Hjpfcky+/a+hDINrkQWh6ncf12+FGzU8OuAAWLK/qI0QHt+Gctf5zn3AaKCJXBJjvSCiSaTy3Vurh3TOCjkOpA+dSjr42oIGSr8oTDhmV9oeMZcyvLNO0bZT5H4rFPiyNtkD/1FPGNnCEI="}, {"id": "SEC4", "topic": "SEC", "type": "mc", "stem": "What does User Account Control (UAC) do?", "options": ["Scans files for viruses", "Encrypts the hard drive", "Asks for consent or administrator credentials before changes that need administrator rights", "Blocks all incoming network traffic"], "k": "a9b93cc7", "w": "PpVNuZsQvXMfVpjqqaRRU8gS/9PT60KOzf7HPMA8w5TGpluhqa4NmFpNDQt0wsrSG55t7ZW4tN6yqjTlRyqznMvAUL1SKeXoEvxxdxRpus9fOpreiecnKWJo84Zx9aatnuPUhOAuI0Un1sU76qJrizsnFlwgnVqbMv/uBkxJqTk4ZNbuH54+cZrb0vJ517eaorgjLgk0yj3TvBdnqCaLcBVoa/yfNYMCYw=="}, {"id": "SEC5", "topic": "SEC", "type": "mc", "stem": "A user calls: their files won't open and a message demands payment to unlock them. What should you do first?", "options": ["Restart the computer several times", "Disconnect the computer from the network and escalate to the security team", "Delete the message and close the ticket", "Tell the user to pay so they can keep working"], "k": "2921d376", "w": "d53m0dyz7fyeVZyehz2yVIKyk/VmxbO8ovC9SfuQbQw6E40nvf7dW4kCgy7BaZWMZYHNEFjKC7l2X9zb0ZS13AAZx8f9KuxTVQlHYR2x2IHsMf0E4AfR7dkr5hVHkjQ+7s6XO1IxTqvXO7IjyOabTDZdhGdd7QACaI4d9BdAQ3EsksPryz1L9HYQvd3oCgHuo/Yr8PpnFg=="}, {"id": "TRB1", "topic": "TRB", "type": "mc", "stem": "After a new graphics driver is installed, the user's screen flickers. What is the quickest fix?", "options": ["Run Disk Cleanup", "Roll back the driver in Device Manager", "Reset this PC", "Replace the monitor"], "k": "ccd58f21", "w": "Gl20CYU2hhlao1+CAssASjpTeiQtrh2q3IAqnedyE5uc2hdkTwchFBGE6IHZBLxYva4pne8N+WFxY8n3SMZCCVNWB4i1eWJRNHzHnGOuDv4PSOADUxkXscz3hKFLsF9pL+Q4YpePc50="}, {"id": "TRB3", "topic": "TRB", "type": "mc", "stem": "After an update, Windows won't start normally. You want to start it with only basic drivers and services so you can troubleshoot. What should you use?", "options": ["Safe mode, from Advanced startup", "A BIOS update", "A clean install", "Disk Management"], "k": "26dc4b6e", "w": "S3x7fQ870JTunCvedqN4dboT4zq/0A9MNm552wvPOs3jl8ka5lpqm7YAZd6VMVEW62oVhreTl5RPJDHjpVbRm3bGkJCeqLF/kWQS5AlnqlmPq0lWJ+CV6hOfJPmiMVYAHgIazNl47G0c9hMlPNJApJ6VOHWDGgvTmEwIML2rwx3bvytIJpf1RVip4RdHijEURZaTLvhVOfT7FKhl7Q9nlUVFjxzg1bpH"}, {"id": "TRB4", "topic": "TRB", "type": "mc", "stem": "An application keeps crashing. Where can you find logged error details with the time each crash happened?", "options": ["Device Manager", "Disk Management", "The Registry", "Event Viewer, in the Application log"], "k": "a7a145d4", "w": "gI0xHDemeB436qZ5SLPRLjjP94iqISKD15ICtIGTaZ7jwgEQ/a7u28KIZONLySKGw6LwyJZrBQa4AAzo0J4t9yCfR/ye8YIThO/2W7t8IQ4rbhOx6ePD22R0LX/aLKP85j0Zx06M+Np0IKuijVFyK49axo3oDomYCq4cu79PfiM="}, {"id": "TRB5", "topic": "TRB", "type": "mc", "stem": "An application fails because a Windows service it depends on is stopped. Where can you start the service and set it to start automatically?", "options": ["Event Viewer", "Disk Management", "The Services console (services.msc)", "The Display settings page"], "k": "1cb3021b", "w": "qzVYWOTtQYIF0imZE4TclDwlMj60O0NAH644h+XcAtmYz1otl8Alm6Gan8fFLJP+jzcPk0kt8yo2Qp/t9ypAR+za2rwTQH07A7blHf7KH6XgEz5fREkXJZ8m4y8Rb3g2yjAyY5sWSDevZ+FZ212LCweUkU0+g9hm3kuwI5kPSjfiL3ZMaipz0lpEhGaR0cD6m6AkHlWNZ4uYn3U6zIJnKZWpdpJeeG+NfJcb1KBrk702Ig=="}, {"id": "NET1", "topic": "NET", "type": "mc", "stem": "ipconfig shows a user's IPv4 address is 169.254.37.12. What does this most likely mean?", "options": ["The computer couldn't get an address from a DHCP server", "The computer is connected to a VPN", "The computer has a valid public address", "DNS is misconfigured"], "k": "341337c1", "w": "dG7J3CmeLUJ4jajdskX2NtZyXm5QxzMSYhT0k1eih1vwv3AtQz9DVRLBkMFMSxnqvE631qW5hcS2F/gYWunqBKr70KmF4UuxEU8CWLtLjTJf0ktV1+Va488Ptyxm/pIN80+DrFIsEl7D0PpAGJje3ahJ4yXYd4owy4oIQy8knhAJJ+c+Yo81iyiLmNBgQpBfZzoXXakeAXRx"}, {"id": "NET2", "topic": "NET", "type": "ma", "stem": "A user can ping 8.8.8.8 but can't open any website by name. Which TWO commands help confirm a DNS problem? (Choose two.)", "options": ["nslookup example.com", "ipconfig /all", "ipconfig /release", "netstat -an"], "k": "c58f727e", "w": "yNakZijUMWGEtU5F7Up5wyZKwoeu/OQmUXj/ekEMkgG03BMgQ46Aw63rCB2kipGRbmVRfppJmR6m2X8gbjun8GGg785yWziMZVcwQGYtdFutiHtKHuOTckMN4nb6q2epVcWLJHpcYSDFxVHV5ZSqSJsxsz2Fm2Wz6PzhLRlbBp+MsanUEJ/CM92AeVaanCcL5nqBVVqKSf0vDOnJQ+pmbaQq4wMe+FrvuRDSh8txdj3u6sJOWfOWPFo="}, {"id": "NET3", "topic": "NET", "type": "mc", "stem": "Which commands get a computer a new address from the DHCP server?", "options": ["ipconfig /flushdns, then ping", "tracert, then nslookup", "netstat, then ipconfig /all", "ipconfig /release, then ipconfig /renew"], "k": "4df81758", "w": "oynlju64Z0nSNUMQtWWmxMAephixmaiJ7p0sj9/Ch4BPCJAmjfFM7VMSVACOJ/OWK5cJQNDRdzheZsv6OId/x60lDRJ7CA9XuXncK6vWl3SpSGrEdRz/85tuM0YgQihzwXmKXTGy9gF9BBuK"}, {"id": "NET4", "topic": "NET", "type": "mc", "stem": "A computer's only IPv6 address starts with fe80::. What does that tell you?", "options": ["It has a global address that works on the internet", "It has only a link-local address, so it can talk on the local network but hasn't received a global address", "It is using a public IPv4 address", "IPv6 is disabled on the computer"], "k": "f57474b7", "w": "5ZxaWVPRObmhrwsWEZb4Fd5v1vXFFtZJ8Y0O/UoQhj1uutfXesIKhLKTdNpwm/H0QrrX8tsncSG0k5EgrT/WVPshbmzVEoJsUJmHIQz2cLH5h4aFfd5iMkmZoAtYt3/ofHw8bN6nvsUCimSet9VBDN4T8EFVun0bEmr/vE0mFZ8fLvFDXMKxaitb+e8sVFFyA+4iwC02VDX5TwdclM5FY+xAEmW+MQoZ"}, {"id": "NET5", "topic": "NET", "type": "mc", "stem": "A laptop is set to 192.168.1.50 with mask 255.255.255.0 and default gateway 192.168.2.1. It can print to a local printer but can't reach the internet. What is the problem?", "options": ["192.168.1.50 is a public address", "The printer is using the laptop's address", "The subnet mask is too large", "The default gateway isn't on the same subnet as the laptop"], "k": "00f16f82", "w": "Onf1s6RmUn8a3UPhQySdAgCK8aQA8KPMDTt+pwyEs+1aKtP5U+fgmWYh1ZpWSB7rGcQ/qyeDUTnghZTvaHf+MKfWrnGgUfwKXJtceX9IpDXSX1ZLGEonodLSNB6Ykq0oY3rjm0xCQGPgOHtRY/dE+vWgZ3pp+iXvm1B6nXTvimDz9RfVTk3khJharU48nZ1ad+/neLJftmnuhISqcjbXPG1IcAInFGGe5LLvrTJTGFCWS2WpuGFrHzX7FAOmSyo="}, {"id": "HELP1", "topic": "HELP", "type": "mc", "stem": "Your queue has a new ticket for an outage stopping 30 users from working and a request from yesterday to install a font for one user. What should you work on first?", "options": ["Whichever is quicker to close", "The font request, because it is older", "The outage, because it has the higher impact and priority under the SLA", "Both at the same time, splitting your time evenly"], "k": "99effbd2", "w": "6bkWBhSoMp3zo4t8fS5bz6SbE+w/lzZ0Gj/puNzYBH45wNXRxOJIMnApAm+L/r2SQFWuRP1igvmuCRXsLxTJkT/3SuJGZEg4SSBN0292HIrNu/r6Q5jHEkF341l6c3S53vIJ5FJK8i+Q6PWmJIMS/9FXlQqiaH9pPLM5Bfk+Hxh9cX8lAvdRW/hTcAa0fX/vvbcDFJT+hdDfm7LfyRU="}, {"id": "HELP2", "topic": "HELP", "type": "mc", "stem": "Which ticket note is the best documentation of a customer interaction?", "options": ["Spent a while on the printer, tried a few things, it seems fine now.", "Printer was broken again. User wasn't happy.", "Fixed it.", "User can't print to 2nd-floor printer since 9 AM. Cleared the print queue and restarted the spooler; test page printed. User confirmed printing works."], "k": "2f6c3cdb", "w": "nLL+wtaqylyQZxtXcmTKD4UtpkPy1BnI2TSKQV8vRG8cyF0Uj1QDOFYPG18jvhAf6fktIFlWrfjQ3mhW2V1E7M+WTQgbf9Me9Y+Y0+c3sezxmjCWgwuxerCZ64OIzN+aVKO2A4YsFNHDSzXMti/r/1n6sgsOgYBtRg9JL1XXi8KtKU22M8nh"}, {"id": "HELP3", "topic": "HELP", "type": "mc", "stem": "Following Cisco's CCST problem-solving process, you have identified a probable cause. What is the next step?", "options": ["Gather detailed information", "Document the changes and close the ticket", "Devise a plan to resolve the problem", "Observe the results of the changes"], "k": "ca5a99c4", "w": "A9T9hM3jGJr4ApyrnS39w8R76Erub6Y7ts6Xsv7UadB0IHcHJASDexOzdvQ8JtOAXYlPk6PC0GBHdIxXzjaH8kugJ7LELqEVjpt6xuIvF3AvImwEfICZ9UBpLGxWYfEei+OGNQqUZ0P7wL+91+gI3IBPkDk5txhvrBfO7NrrXa+oU/WM+lt4sLI2rl8NJHUjjXS2ukKtIxe0hHxLbnWIjBEP72b7nQ=="}, {"id": "HELP4", "topic": "HELP", "type": "ma", "stem": "You use a generative AI tool to research an error message. Which TWO are good practices? (Choose two.)", "options": ["Paste the whole ticket, including the user's personal information, so the answer is accurate", "Check the suggested fix against vendor documentation or the knowledge base before applying it", "Remove names, account details and other confidential data before entering the problem", "Apply any registry change it suggests right away, since AI is trained on documentation"], "k": "51d6c4c3", "w": "41TzHwlfL4s1Y9g7WV5XQfHowi0QOOmPuJQQMKRZB2rT0aOVd2a3Pd8loySavEC6ZW9/HFdXUAFELnLIgmKoIcbFcUMeeXaEq1wB+7sCgkRDrwIVLG4tcoC9uBAsRG/Qt1aj6iCaUwneLpQ5C8bsf+qQQXmIhD9e9K1OCv9CjVzKBgDVr90KWvehcwzvNMVzEavWjqZ8lg=="}, {"id": "MOB1", "topic": "MOB", "type": "mc", "stem": "An app on a Mac has frozen. Which macOS tool shows running processes and can force one to quit, like Task Manager in Windows?", "options": ["Finder", "Activity Monitor", "Time Machine", "Console"], "k": "f6ac97a7", "w": "7sTjiv+6cEFld/Hq/zDHlZ+p4S6KBfRKJ+jyXz2NF/5mp35FpNH9Bg9zus4w54xRtW/npYeMfY6EeWdUOX6/WEnOPc5a/s5TDjfLs0Ev1dHsP1FdQbfHunvrZ5QFXYXTbUenIqA="}, {"id": "MOB3", "topic": "MOB", "type": "mc", "stem": "On a Mac, a video-conferencing app can't use the camera, but the camera works in FaceTime. What is the likely fix?", "options": ["Replace the camera", "Turn off the firewall", "Reinstall macOS", "Allow the app under System Settings > Privacy & Security > Camera"], "k": "912b642f", "w": "l4UZZG3C0P3cGLlE12/eDTvSsan4B4cSe2SODUB25ijIoYzbKXMNibC7rNdfCX+SzoGI4dsBNcwcxpCWQmqEXMFpDGrpX3/APK4exKlEuXoJqthoI40C6qrMerGinlzgUuIBzTqKcmiMjlJUiQ+989C4ZK/i6/QxIskBijWOuy21v/PfG3Ng3/DzT22gqKxD5RaJItuvfIRnru8="}, {"id": "MOB4", "topic": "MOB", "type": "mc", "stem": "What does mobile device management (MDM) let a company do with employees' phones and tablets?", "options": ["Enforce security policies, push approved apps, and remotely lock or wipe a lost device", "Read all of the employee's personal messages", "Make the device's battery last longer", "Replace the phone's operating system with Windows"], "k": "354b5ab1", "w": "45YhjAEDH0xPagzNbSSq2Z+GbVFC936xTwM0JRn/aDvZAJocNr7NEWSqDSrwCb2/jFO51sfpDtT7x9fqvKeDCZwDFZsrelvrghxmw0u3zIV0OTrrHFdLgvheWQK76NciTpYH2DvG2RXNOthzmbUZBRQfiA/kuknAtE1TS166bA=="}, {"id": "CLD1", "topic": "CLD", "type": "mc", "stem": "A student installs VirtualBox on their Windows 11 laptop to run a Linux virtual machine. What kind of hypervisor is VirtualBox?", "options": ["Type 2 (hosted)", "A container runtime", "A cloud SaaS application", "Type 1 (bare metal)"], "k": "1c64af63", "w": "FWuX/UQ3pUmBr3SQSULzZUCBWQwOLiCNewWUJgReFMYhHIgPuW7Wv8WrzQlNWz4CwdTjyB1CBdUEus8laDYEDvmzM3wCSiBylQ5nIVzCg1CrbJNBSLig3hVewWT+6efFIev0VM8d+FWZfZHxh5uwItdubwG9SqOOvUU8n51qp2vehbaVHl4qKWT2Kv+lMUska1nKr1M5RroK6cQS9E8SDwXnSA=="}, {"id": "CLD2", "topic": "CLD", "type": "mc", "stem": "A user wants you to see their screen and walk them through a fix while they stay signed in and watch. Which Windows tool fits best?", "options": ["Event Viewer", "Remote Assistance or Quick Assist", "Remote Desktop, which signs you in to the computer in your own session", "File Explorer"], "k": "f502d1db", "w": "osPmJTv0a9PnSBTe1ZV7apf4RgaOe2SuC51dePy0k9jJDY9hyI4J0H0sYKPGBOKskZA+Ae3lZj9HpeGOJ6D9dSrpKUW9BbVIIOX8iOOEAiHWUB9S1sYYfibusSN+qrjrapJ6cMRmbMPEMXqSiQdgshbC/fSS0Ook6WHMPppjaA55W8aYTAomcOXKk78BCnKNlwP1A2uCfm4ICXRyPNSc6A+tiHbT8F5VQM2DR0hOG+2EAA=="}, {"id": "CLD3", "topic": "CLD", "type": "mc", "stem": "A user will be on a flight with no internet and needs a OneDrive folder. What should they do before leaving?", "options": ["Nothing; OneDrive files open without internet by default", "Right-click the folder and choose 'Always keep on this device'", "Turn off OneDrive", "Share the folder with themselves by email"], "k": "867f0c98", "w": "+0MDsZEyfoBTloAOnpV/5ReR/AtnVkxnWff9RNYdQLCwDpXx1Qd26gqhODTm9ICSgPSa3axGnMpTnxytotSsOxPbwF/9cS2KXzWMbiJZmjOoDYCBTqHLgWi37CvLQjIcbn8IZ3RRbcVbf56EkOLNv7EZWjh1g7UB5KcyCIGh+PHlYCNZNve/N7uwEsFzabB9Q0EJypGvwIuu6fdBFAkkVLkxyW8HG9u/MVKc6/YrvBHtxF/7p0dKLRiGpU4="}, {"id": "HDW6", "topic": "HDW", "type": "mc", "stem": "An external USB drive shows as Healthy in Disk Management, but it doesn't appear in File Explorer. What is the most likely fix?", "options": ["Assign the drive a letter in Disk Management", "Run ipconfig /renew", "Update the BIOS", "Format the drive"], "k": "e726f252", "w": "D2iyIX/Oviuzgc6YCULJioEGB75sqbicJ2AB7Y7q4nFTdiFV6Eq96dCxiEtigQeQG+w7Q9WUliFSNjlK5AQ7NkoorYSIFAXGaKoI6a0KWasfJ8Mh7P4Z/1UcwScTwawWoIjAv1pNAfLB0GMiP1KFZiHoxw4eafD/djk73euNByPNDPteyK5xO3g5syorsyEJeEW5RM6kxadkoRcg+33TX0Cl8e1ZoUC/BAVHOgA0M8idMusaxzRoJbapNA=="}, {"id": "ACC6", "topic": "ACC", "type": "mc", "stem": "Which type of Active Directory group is used only for email lists and can't be used to grant access to files and folders?", "options": ["Security group", "Local group", "Distribution group", "Organizational unit"], "k": "f1930049", "w": "h0y0ksNq5qYRtW1GLSBDNlLMjAomZCvh/d3YZaI4dpKkK9hS9gexhJcuBhBKX+R2dDh5/69DgjWmZyJhoVqJq85Hkb5Pjup/Heeq/P/4/JlvOv2aZa37/yahA0lS8H5EVAALpTTKVBO/5jnpG9hDIyyx9x6AHv17yiPCDUKKvHsig6nkcAaWRe53nn6kypR5jfTQaIiFnMjBC1RRXkwmp2C1MZr3zCSg17FUzc9lL6LXONitblc9GyeFASdYKQ=="}, {"id": "TRB6", "topic": "TRB", "type": "mc", "stem": "In Device Manager, a USB device's icon has a small downward-pointing arrow. What does that mean?", "options": ["The driver is missing or has a problem", "The device has been disabled", "The device is working normally", "Windows doesn't recognize the device type"], "k": "8d36ca84", "w": "nHQ1XhD3uvcfRuICHhgrQr3TMlhR+ZTvu70wQcaKFPUF9OW+dqarsGFkl9tGye8heOc79WSN8wWVKXAlPFISG65kQLRUcuyQor2Q+xps62REDfglks4MTgzQQ6eE+WA25dBmr1IpsKl27p9xLluOq4Ljx/RbkDLot3+M7UdHKI/+LIeZAdeUE/j6XhcZqBVNuYn3/a0zTWRSDC4TpLyV9PYgLouLvVDQDuIG4ZgKdNBeAwikEorOEvgxRXBPskTulO0SZoL0GiRTCFxxUcsF8dFanhc5bT/G"}, {"id": "CONC1", "topic": "CONC", "type": "mc", "stem": "What is the decimal value of the binary number 1101?", "options": ["15", "13", "1,101", "11"], "k": "c0c57432", "w": "E8YzpFSqZPvhCbtTp2L55qwfp8XduZ2FJAJvZO5UJegsJaGfVDiB9MIfkNEW+KxRvN0REC0zvL2cD6oaYiFnJ+B/v7Sha3YKI4vEDERh5K7S2nRRPTNjZrfIUh8zslE="}, {"id": "CONC2", "topic": "CONC", "type": "mc", "stem": "A network adapter's MAC address is 3C:22:FB:1A:09:7E. Which notational system is it written in?", "options": ["Decimal", "Hexadecimal", "Binary", "Octal"], "k": "18645e97", "w": "EplGD1NgkC51ad7XLd06Mi8LsYkJTiBVQArDtCe27JOIQVukN9qQW10qRQCGendUU2ywxxmSpuWlFnH0yhcnIG386hNP/XI3ISLUE3gqMgFTGLyFjzyPDUP7FIg9C4Oj+XAfk9zc2JjaxQnmkXJdMPEyUcmodjs="}, {"id": "CONC3", "topic": "CONC", "type": "mc", "stem": "An internet plan is advertised at 400 Mbps. At full speed, about how long does it take to download a 1 GB file?", "options": ["About 2.5 seconds", "About 400 seconds", "About 1 second", "About 20 seconds"], "k": "a3e08fe2", "w": "HVhy5t+EVoUUSsj0obJFmHC7gwDViRgdBvhh9uh9UaCuBW0sFXsaCCtamrUisnfXN5eOAaDQA+G0rT4AEzQYggO7/C/D8GpkhTlrwWcctQRhbYYCNM3IdPwwxI13tzi+y2Tob64Dc6NXtCXNitXJbzvFKcasomTvQ5icDar6TAypELdXBrUaS/fh0Lm3+PIc4m1Of7GrT5GPUZLlSnHDCtufYFQnC6k630NyCMPUyuv/E6XFV+L400R/m4c9TZ9dopoiyXn9/GFASw=="}, {"id": "DEV1", "topic": "DEV", "type": "mc", "stem": "A developer writes a program in C++ and must turn it into an executable file before anyone can run it. Which category of language is C++?", "options": ["Compiled", "Interpreted scripting", "Markup", "Query"], "k": "80c6d39d", "w": "zrQPWgLHubAtFNVVtC5Kh8e8SR3mwN5IQO+XGBZyNgFiGsrFcvn5Tmh6njq/TodzPVntE3BDg2OSuzXBOccw36jkW62h4dluzxJyVfC7Twm9C74j5ejMEuyTvXyEXvqMyG3slINa/A+zgCn56Yl++1m3ThzWmMl5u+bG4jpUTaTCCptiQBzhqxK/TdlPUB3+WUC8Fhj4vU2gx8DW6Q/dAQHSVs+BotURmSnTp3eB/uagpz32siOD4vhGtl+b/w=="}, {"id": "DEV2", "topic": "DEV", "type": "mc", "stem": "Which data type should a program use to store a product price such as 19.99?", "options": ["Boolean", "Integer", "Char", "Float"], "k": "8943c9af", "w": "81xHrD2t9/uPIvod66roWki7Nk7+O9behSkjBQR9HQGbQp7PsAzpQ5slVppUFUmBN/2JA9ouP9m/xbVWGXJLbSbUbgvxT6K318oK9YTO0WnTkV9CTv65YRuiqLb4NlaErf8bte+tNKZRUMeq7o16tXOM0hd8Z2reLtqC3Pxw2L4+z97yev01JWqxDqmLqA3Cp7OU8OI="}, {"id": "DEV3", "topic": "DEV", "type": "mc", "stem": "In object-oriented programming, a Car object has a color and a model, and it can start() and stop(). What are start() and stop()?", "options": ["Properties", "Arrays", "Methods", "Constants"], "k": "0eac69d0", "w": "1259pkiKVm56omwXM/0HnWyguuXREVCu8Kf5eTBASLyEfGjIHYV3KhtAI1IgBdtqUqS9xW20evykpzS++XDuf0THNCESboy7b2FyN+HqEWHFiGQ3S+0Xur5GYbBKPkA="}, {"id": "DEV4", "topic": "DEV", "type": "mc", "stem": "How many times does this pseudocode print \"Hi\"?  SET count = 0 · WHILE count < 3: PRINT \"Hi\", then SET count = count + 1 · END WHILE", "options": ["2", "It never stops", "3", "4"], "k": "9ee78a2d", "w": "2jmodF1BcyVZvATNSjrAKiw4X4ATcR9N7rYw98Axmxc4zOAe/9bJY1nlGUTNPkHfeFcNegWaH1Yx9LVAXdZNgFGQF/Ge7x25nGvdGCY5bV8slqEnKUAQcojQ8J+yMWeXUENlf6wuOldLwADKQNZAU6VKU6VUqc11Y0YtoHAud0f6RdX7j9hz6lRQwy7RaueGX/xcoRp3iw=="}, {"id": "DATA1", "topic": "DATA", "type": "mc", "stem": "A Students table gives each student a unique StudentID. An Enrollments table also has a StudentID column, which shows which student took each class. In the Enrollments table, StudentID is a…", "options": ["Record", "Foreign key", "Primary key", "Schema"], "k": "61015071", "w": "aVYBAySScXj0+eMkQ7Vm+k4w4A813UWqgJvXT2MV0mtWAI+Y1PM4mRPICJ4k0YHJZRcGgEVSziE1bdrjCWEqEUNQetJnD/ymWW0mL0IGMRQB8xaZFi9pxDnVBYOM4JsEsTGyt6XSKR0jmmc6RjU3V1rq8xWQ00CvMz/ygTFUIhAJ0ZneBSfRg0/9zquFkot/zWRQH967eiR2tr14EQMceg=="}, {"id": "DATA2", "topic": "DATA", "type": "mc", "stem": "A small office tracks customers in one spreadsheet. Several employees now need to update it at the same time, and it is growing quickly. Why would a database be a better choice?", "options": ["A database supports many users at once and scales as the data grows", "A spreadsheet can't store text", "A database never needs to be backed up", "A database can't be queried, so it's more secure"], "k": "ce851421", "w": "2vZaSk5SVY+ifJv4RCQMgwejYo6h4nQJxTIppBZl1pxgj2IwBA6HfIdKB5CixpLJ/4BQBai38gWtO2uXLq4frQF6mjgji/gxGnbkocuAy4CtyULGilakQnqRsuKzTwh6PXuBZr91rdW5FTZal2dCgYnGNitE5NuAlrpUjK6bPPcJxosMVxhMdFBB4KFjDnguCljoYw=="}, {"id": "DATA3", "topic": "DATA", "type": "mc", "stem": "Which of these is an example of unstructured data?", "options": ["A CSV export of employee names and IDs", "Rows in a SQL table of orders", "A folder of recorded customer-support phone calls", "A JSON file of product settings"], "k": "c008149d", "w": "AR18+WnEV5z6poAn2JpadNJ94nkAZ/NsK+8sHF1HJ99Lz/u3qd45mfRNbwR9pBEV4dtSvcdHMg2waskNrqxmK6n2HzZOvaJpxH7eMmG9/TmyldpSadJOHZQgrJ6MJGz0YI5FI/YzoOBGlSQVJO55BWL5idVTNJsiVarwiN34S7XJleAMDGsSsr0oDumDlTor/v/+s8Gc"}, {"id": "DATA4", "topic": "DATA", "type": "mc", "stem": "Which SQL command retrieves (queries) records from a table?", "options": ["INSERT", "SELECT", "UPDATE", "CREATE"], "k": "35ccfdb2", "w": "u9Ig/fcixKRShhJqCxLl/HXKbiEIBQ2jCHND8Ky0M5V7v0FRcTpG7Q10LlB8eSGSfsLfph1rlyVXHs/LkwqlGAly4uLB+s+kmCoPMDAOzMUc+4NQzIc7r8tnvlBGeRdLktNShuRS1k3+29IIr2dG2YzcxAUPjHm7baff52KAOQbHew=="}, {"id": "SEC6", "topic": "SEC", "type": "ma", "stem": "You're setting up a new wireless router for a small office. Which TWO steps best secure it? (Choose two.)", "options": ["Use WEP because every device supports it", "Leave the network open and rely on the firewall", "Change the router's default admin username and password", "Use WPA3 encryption (or WPA2 if a device can't support WPA3)"], "k": "9d300954", "w": "03yjjKp9xhXUjbRMmvifbswiUTrFtN8A4g1AvsK9cvcZ2WPEZUwirlnZlWlYMYCcsBaSk/Exeob1Fm3ssmeIKAhGEF2+3v3AARPpu5Z1MRFGRKMGO0lJMfV4WE47MLhXb4SpsUrAnz0i6oItJ730lqxpCVqa2YVt1Qr+qpbAUpskjJt4nQfWCDyriINYgrG8cpiO12I+76yTZgZHX+98IaJMZiI+Ggvq5VIOLd1Y"}], "salt": "b4abcf4eeb02cb7c"};
+const ITEMS = BANK.items, TOPICS = BANK.topics, EXAMS = BANK.exams;
+const CFG = Object.assign({id:"pack", eyebrow:"Certification readiness", heading:"Which exam are you ready for?", intro:"", minutes:40, review:"explain", org:""}, BANK.settings||{});
+const EXAM_KEYS = Object.keys(EXAMS);
+const EXAM_COLOR = Object.fromEntries(EXAM_KEYS.map((e,i)=>[e,`var(--x${i%4})`]));
+const SHORT = e => EXAMS[e].short || EXAMS[e].name;
+// An exam marked "goal" (e.g. a multi-domain exam the others build toward) is shown as the
+// end goal and recommended first only once the student is likely ready for it.
+const GOAL = EXAM_KEYS.find(e=> EXAMS[e].goal) || null;
+const READY = 75, CLOSE = 60, DEV = 40;
+const SAVE_KEY = "cdx-attempt-" + CFG.id;
+const app = document.getElementById("app");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fnv = s => { let h=0x811c9dc5; for(const ch of s){ h^=ch.codePointAt(0); h=Math.imul(h,0x01000193)>>>0;} return h; };
+const hex8 = n => n.toString(16).padStart(8,"0");
+
+/* ---------- encoded packs ----------
+   A private pack is published with each key stored as a hash and each explanation
+   XOR-encoded, so the answers can't be read from the page source. This keeps honest
+   students honest; it is not secure against someone running code in the console. */
+function stream(seed){ let x = seed || 1; return () => { x ^= x<<13; x>>>=0; x ^= x>>>17; x ^= x<<5; x>>>=0; return x & 255; }; }
+function decodeWhy(it){
+  if (it.why !== undefined) return it.why;
+  const next = stream(fnv(BANK.salt+"|w|"+it.id));
+  const bytes = Uint8Array.from(atob(it.w), c => c.charCodeAt(0) ^ next());
+  return (it.why = new TextDecoder().decode(bytes));
+}
+for (const it of ITEMS){
+  if (it.answer) continue;
+  const n = it.type === "ma" ? 2 : 1;
+  for (let m = 1; m < (1<<it.options.length); m++){
+    if (popcount(m) === n && hex8(fnv(BANK.salt+"|"+it.id+"|"+m)) === it.k){
+      it.answer = it.options.map((_,k)=>k).filter(k => (m>>k)&1); break;
+    }
+  }
+  if (!it.answer) throw new Error("Answer key for " + it.id + " could not be decoded");
+}
+const keyMask = it => it.answer.reduce((m,a)=>m|(1<<a),0);
+const need = it => it.answer.length;
+
+/* ---------- scoring (pure) ---------- */
+function score(masks){ // masks: array aligned with ITEMS (canonical option indices)
+  const topic = {};
+  for (const t in TOPICS) topic[t] = {n:0, c:0};
+  const correct = ITEMS.map((it,i)=> masks[i] === keyMask(it));
+  ITEMS.forEach((it,i)=>{ topic[it.topic].n++; if(correct[i]) topic[it.topic].c++; });
+  for (const t in topic) topic[t].pct = topic[t].n ? topic[t].c/topic[t].n : 0;
+  const exam = {};
+  for (const e of EXAM_KEYS){
+    const w = EXAMS[e].weights; let s = 0;
+    for (const t in w) s += w[t]*topic[t].pct;
+    exam[e] = Math.round(s*100);
+  }
+  const ranked = EXAM_KEYS.slice().sort((a,b)=> exam[b]-exam[a]);
+  const steps = GOAL ? ranked.filter(e=> e!==GOAL) : ranked;
+  const best = GOAL && (exam[GOAL] >= READY || !steps.length) ? GOAL : steps[0];
+  const total = correct.filter(Boolean).length;
+  return {topic, exam, ranked, best, correct, total, overall: Math.round(100*total/ITEMS.length)};
+}
+function band(p){ return p>=READY?{k:"ready",t:"Likely ready",c:"b-ready"}: p>=CLOSE?{k:"close",t:"Almost there",c:"b-close"}: p>=DEV?{k:"dev",t:"Developing",c:"b-dev"}:{k:"not",t:"Not yet",c:"b-not"}; }
+function studyPlan(r, e){
+  const w = EXAMS[e].weights;
+  return Object.keys(w).map(t=>({t, w:w[t], pct:r.topic[t].pct, gain:w[t]*(1-r.topic[t].pct)}))
+    .filter(x=> x.pct < 0.8).sort((a,b)=> b.gain-a.gain);
+}
+
+/* ---------- results code ---------- */
+function b64u(str){ return btoa(String.fromCharCode(...new TextEncoder().encode(str))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function unb64u(s){ s=s.replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; return new TextDecoder().decode(Uint8Array.from(atob(s),c=>c.charCodeAt(0))); }
+function makeCode(rec){
+  const clean = v => String(v).replace(/~/g,"-").trim().slice(0,60);
+  const payload = ["2", CFG.id, clean(rec.name), clean(rec.period), rec.date, rec.minutes, rec.masks.map(m=>m.toString(16)).join("")].join("~");
+  return "AIDX-" + b64u(payload) + "." + check(payload, 2);
+}
+// v1 codes (first AI release) have no pack id and belong to the "ai" pack
+const check = (payload, v) => (fnv((v===1?"itech-ai|":"cdx|")+payload)%1679616).toString(36).padStart(4,"0");
+function parseCodes(text){
+  const out=[], seen=new Set(); let bad=0, other=0;
+  for (const m of text.matchAll(/AIDX-([A-Za-z0-9_-]+)(?:\.([a-z0-9]{4}))?/g)){
+    if (seen.has(m[0])) continue; seen.add(m[0]);
+    try{
+      const payload = unb64u(m[1]); let p = payload.split("~"); const v = +p[0];
+      if (v===1 && p.length===6) p = ["1","ai",...p.slice(1)];
+      else if (v!==2 || p.length!==7) throw 0;
+      if (p[1]!==CFG.id){ other++; continue; }
+      if (p[6].length!==ITEMS.length) throw 0;
+      out.push({name:p[2], period:p[3], date:p[4], minutes:+p[5], masks:[...p[6]].map(h=>parseInt(h,16)), verified: !!m[2] && check(payload, v)===m[2], nocheck: !m[2], code:m[0]});
+    }catch(e){ bad++; }
+  }
+  return {rows:out, bad, other};
+}
+
+/* ---------- Canvas "Student Analysis" CSV ---------- */
+function csvRows(text){
+  const rows=[]; let row=[], f="", q=false;
+  for (let i=0;i<text.length;i++){
+    const c=text[i];
+    if (q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else if (c==='"') q=true;
+    else if (c===','){ row.push(f); f=""; }
+    else if (c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n') i++; row.push(f); rows.push(row); row=[]; f=""; }
+    else f+=c;
+  }
+  if (f!==""||row.length){ row.push(f); rows.push(row); }
+  return rows;
+}
+const norm = s => String(s).toLowerCase().replace(/<[^>]*>/g,"").replace(/&[a-z#0-9]+;/g,"").replace(/[^a-z0-9]/g,"").slice(0,60);
+function parseCanvas(text){
+  const rows = csvRows(text); if (rows.length<2) return [];
+  const h = rows[0].map(x=>x.trim());
+  const nameCol = h.findIndex(x=>x.toLowerCase()==="name");
+  if (nameCol<0) return [];
+  const secCol = h.findIndex(x=>x.toLowerCase()==="section");
+  const subCol = h.findIndex(x=>x.toLowerCase()==="submitted");
+  const byStem = new Map(ITEMS.map((it,i)=>[norm(it.stem),i]));
+  const map = []; // [colIndex of score, itemIndex]
+  h.forEach((x,c)=>{ const m = x.match(/^\d+:\s*([\s\S]+)/); if(!m) return; const i = byStem.get(norm(m[1])); if(i!==undefined) map.push([c+1,i]); });
+  if (!map.length) return [];
+  return rows.slice(1).filter(r=> r[nameCol] && r[nameCol].trim()).map(r=>{
+    const masks = ITEMS.map(()=>0);
+    for (const [c,i] of map){ const v = parseFloat(r[c]); if (v>=0.999) masks[i] = keyMask(ITEMS[i]); }
+    const sub = subCol>=0 ? (r[subCol]||"").slice(0,10) : "";
+    return {name:r[nameCol].trim(), period: secCol>=0?(r[secCol]||"").trim():"", date:sub, minutes:0, masks, verified:true, code:"canvas:"+r[nameCol], canvas:true, matched:map.length};
+  });
+}
+
+/* ---------- attempt state ---------- */
+let S = null;
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function newAttempt(name, period){
+  return {name, period, order: shuffle(ITEMS.map((_,i)=>i)),
+    perm: ITEMS.map(it=> shuffle(it.options.map((_,k)=>k))),
+    masks: ITEMS.map(()=>0), flags: ITEMS.map(()=>false), idx:0, start: Date.now(), end:null};
+}
+function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const s = JSON.parse(localStorage.getItem(SAVE_KEY)||"null"); if(s && s.masks && s.masks.length===ITEMS.length) return s; }catch(e){} return null; }
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); }catch(e){} }
+const answeredCount = () => S.masks.filter((m,i)=> popcount(m)===need(ITEMS[i])).length;
+function popcount(m){ let c=0; while(m){ c+=m&1; m>>=1;} return c; }
+
+/* ---------- views ---------- */
+function footer(){
+  return `<footer class="foot"><span>Original practice questions written to each exam's published objectives. Readiness is an estimate from this diagnostic, not an official score prediction. Not affiliated with or endorsed by any exam vendor; exam names are trademarks of their owners.${CFG.org?" "+esc(CFG.org)+".":""}</span>
+  <button class="link" id="toTeacher">Teacher view</button></footer>`;
+}
+function viewStart(){
+  const saved = load();
+  app.innerHTML = `
+  <header class="stack">
+    <div class="eyebrow">${esc(CFG.eyebrow)}</div>
+    <h1>${esc(CFG.heading)}</h1>
+    <p class="muted" style="max-width:62ch">${esc(CFG.intro || `This diagnostic covers what ${EXAM_KEYS.length} certification exams test. When you finish, you'll see your readiness for each exam, the one you are most likely to pass, and the topics to study first.`)}</p>
+  </header>
+  <section class="exam-trio" style="grid-template-columns:repeat(${Math.min(EXAM_KEYS.length,3)},minmax(0,1fr))">
+    ${EXAM_KEYS.map(e=>`<div class="exam-card" style="--c:${EXAM_COLOR[e]}"><b>${esc(EXAMS[e].name)}</b><span>${esc(EXAMS[e].vendor)}</span></div>`).join("")}
+  </section>
+  <section class="panel stack">
+    <div class="facts"><span><b>${ITEMS.length}</b> questions</span><span>about <b>${CFG.minutes}</b> minutes</span><span><b>${Object.keys(TOPICS).length}</b> topic areas</span><span>“Choose two” items need both answers right</span></div>
+    ${saved && !saved.end ? `<div class="notice">You have an unfinished attempt for <b>${esc(saved.name)}</b> (${saved.masks.filter(Boolean).length} answered). <button class="link" id="resume">Resume it</button></div>`:""}
+    <form id="startForm" class="stack" novalidate>
+      <div class="row">
+        <label class="field" for="nm">Your name<input type="text" id="nm" autocomplete="name" required></label>
+        <label class="field" for="pd">Class or period<input type="text" id="pd" placeholder="e.g. CSIT AM"></label>
+      </div>
+      <p id="err" class="muted" hidden style="color:var(--bad)">Enter your name to start.</p>
+      <div class="row"><button class="primary" type="submit">Start the diagnostic</button>
+      <span class="muted" style="font-size:.88rem">Answer every question even if you're unsure. Guessing tells your teacher more than a blank.</span></div>
+    </form>
+  </section>
+  ${footer()}`;
+  document.getElementById("startForm").onsubmit = ev => {
+    ev.preventDefault();
+    const nm = document.getElementById("nm").value.trim();
+    if(!nm){ document.getElementById("err").hidden=false; return; }
+    S = newAttempt(nm, document.getElementById("pd").value.trim()); save(); viewQuiz();
+  };
+  const r = document.getElementById("resume"); if (r) r.onclick = ()=>{ S = saved; viewQuiz(); };
+  document.getElementById("toTeacher").onclick = viewTeacher;
+}
+
+function viewQuiz(){
+  const pos = S.idx, i = S.order[pos], it = ITEMS[i], multi = it.type==="ma";
+  const done = answeredCount();
+  app.innerHTML = `
+  <div class="qbar">
+    <div class="qmeta"><span>Question ${pos+1} of ${ITEMS.length}</span><span>${done} answered</span></div>
+    <div class="track"><i style="width:${100*done/ITEMS.length}%"></i></div>
+  </div>
+  <section class="panel stack" aria-live="polite">
+    <p class="stem">${esc(it.stem)}</p>
+    ${multi?`<p class="hint">Select ${need(it)} answers.</p>`:""}
+    <div class="opts" role="${multi?"group":"radiogroup"}">
+      ${S.perm[i].map((k,n)=>{
+        const on = (S.masks[i]>>k)&1;
+        return `<label class="opt ${on?"on":""}"><input type="${multi?"checkbox":"radio"}" name="q" id="o${k}" value="${k}" ${on?"checked":""}><span class="letter">${"ABCD"[n]}</span><span>${esc(it.options[k])}</span></label>`;
+      }).join("")}
+    </div>
+  </section>
+  <div class="row">
+    <button id="prev" ${pos===0?"disabled":""}>Back</button>
+    <button id="flag">${S.flags[i]?"Unflag":"Flag for review"}</button>
+    <span class="spacer"></span>
+    ${pos<ITEMS.length-1?`<button class="primary" id="next">Next</button>`:`<button class="primary" id="finish">Review &amp; submit</button>`}
+  </div>
+  <details class="panel"><summary class="eyebrow" style="cursor:pointer">Jump to a question</summary>
+    <div class="grid-nav" style="margin-top:12px">${S.order.map((q,p)=>`<button data-p="${p}" class="${popcount(S.masks[q])===need(ITEMS[q])?"done":""} ${S.flags[q]?"flag":""} ${p===pos?"cur":""}">${p+1}</button>`).join("")}</div>
+  </details>`;
+  app.querySelectorAll(".opts input").forEach(inp=> inp.onchange = ()=>{
+    const k = +inp.value;
+    if (!multi) S.masks[i] = 1<<k;
+    else {
+      let m = S.masks[i] ^ (1<<k);
+      if (popcount(m) > need(it)) { inp.checked = false; return; }
+      S.masks[i] = m;
+    }
+    save();
+    app.querySelectorAll(".opt").forEach(l=> l.classList.toggle("on", l.querySelector("input").checked));
+    const d = answeredCount();
+    app.querySelector(".qmeta span:last-child").textContent = d+" answered";
+    app.querySelector(".track i").style.width = (100*d/ITEMS.length)+"%";
+  });
+  const go = p => { S.idx = p; save(); viewQuiz(); window.scrollTo(0,0); };
+  document.getElementById("prev").onclick = ()=> go(pos-1);
+  const nx = document.getElementById("next"); if (nx) nx.onclick = ()=> go(pos+1);
+  const fi = document.getElementById("finish"); if (fi) fi.onclick = viewReview;
+  document.getElementById("flag").onclick = ()=>{ S.flags[i]=!S.flags[i]; save(); viewQuiz(); };
+  app.querySelectorAll(".grid-nav button").forEach(b=> b.onclick = ()=> go(+b.dataset.p));
+}
+
+function viewReview(){
+  const missing = S.order.map((q,p)=>({q,p})).filter(x=> popcount(S.masks[x.q])!==need(ITEMS[x.q]));
+  const flagged = S.order.map((q,p)=>({q,p})).filter(x=> S.flags[x.q]);
+  app.innerHTML = `
+  <header class="stack"><div class="eyebrow">Before you submit</div><h2>${answeredCount()} of ${ITEMS.length} answered</h2></header>
+  <section class="panel stack">
+    ${missing.length?`<p>Still open (unanswered, or not enough answers picked): ${missing.map(x=>`<button class="link" data-p="${x.p}">${x.p+1}</button>`).join(", ")}</p>`:`<p>Every question has an answer.</p>`}
+    ${flagged.length?`<p>Flagged: ${flagged.map(x=>`<button class="link" data-p="${x.p}">${x.p+1}</button>`).join(", ")}</p>`:""}
+    <div class="row"><button id="back">Keep working</button><span class="spacer"></span><button class="primary" id="submit">Submit and see my results</button></div>
+    ${missing.length?`<p class="muted" style="font-size:.88rem">Open questions count as wrong.</p>`:""}
+  </section>`;
+  app.querySelectorAll("[data-p]").forEach(b=> b.onclick=()=>{ S.idx=+b.dataset.p; viewQuiz(); });
+  document.getElementById("back").onclick = ()=> viewQuiz();
+  document.getElementById("submit").onclick = ()=>{ S.end = Date.now(); save(); viewResults(); window.scrollTo(0,0); };
+}
+
+function meterHTML(e, pct){
+  const b = band(pct);
+  return `<div class="meter" style="--c:${EXAM_COLOR[e]}"><span class="nm">${esc(EXAMS[e].name)}</span>
+    <span><span class="pill ${b.c}">${b.t}</span> <span class="pct">${pct}%</span></span>
+    <div class="bar" role="img" aria-label="${pct} percent readiness"><i style="width:${pct}%"></i><span class="cut"></span></div></div>`;
+}
+function topicRows(r){
+  return Object.keys(TOPICS).map(t=>{
+    const p = Math.round(r.topic[t].pct*100);
+    const col = p>=80?"var(--good)":p>=60?"var(--warn)":"var(--bad)";
+    const dots = EXAM_KEYS.filter(e=> EXAMS[e].weights[t]).map(e=>`<i style="--c:${EXAM_COLOR[e]}" title="${esc(EXAMS[e].name)}"></i>`).join("");
+    return `<span>${esc(TOPICS[t].name)}<span class="dots">${dots}</span></span><div class="mini"><i style="width:${p}%;background:${col}"></i></div><span class="n">${r.topic[t].c}/${r.topic[t].n}</span>`;
+  }).join("");
+}
+
+function viewResults(){
+  const r = score(S.masks), best = r.best, bb = band(r.exam[best]);
+  const second = r.ranked.filter(e=> e!==best && e!==GOAL)[0] || r.ranked.find(e=> e!==best);
+  const goalNext = GOAL && best!==GOAL ? studyPlan(r, GOAL).filter(x=> !EXAMS[best].weights[x.t] || x.pct < 0.8).slice(0,3) : [];
+  const plan = studyPlan(r, best);
+  const minutes = Math.max(1, Math.round((S.end - S.start)/60000));
+  const code = makeCode({name:S.name, period:S.period||"", date:new Date(S.end).toISOString().slice(0,10), minutes, masks:S.masks});
+  let headline;
+  if (bb.k==="ready") headline = `You're on track to pass ${EXAMS[best].name}.`;
+  else if (bb.k==="close") headline = `${EXAMS[best].name} is your closest exam. A focused review should get you there.`;
+  else headline = `${EXAMS[best].name} is your best starting point. Build these topics before you schedule it.`;
+  app.innerHTML = `
+  <header class="stack">
+    <div class="eyebrow">Score report · ${esc(S.name)}${S.period?" · "+esc(S.period):""} · ${minutes} min</div>
+    <h1>${r.total} of ${ITEMS.length} correct</h1>
+  </header>
+  <section class="panel verdict stack" style="--c:${EXAM_COLOR[best]}">
+    <div class="eyebrow">${GOAL && best!==GOAL ? "Take this exam first" : "Recommended exam"}</div>
+    <div class="big">${esc(EXAMS[best].name)}</div>
+    <p>${esc(headline)}${second?` Next closest: <b>${esc(EXAMS[second].name)}</b> at ${r.exam[second]}%.`:""}</p>
+  </section>
+  ${GOAL && best!==GOAL ? `<section class="panel stack verdict" style="--c:${EXAM_COLOR[GOAL]}">
+    <div class="eyebrow">End goal</div>
+    <div class="row"><h2>${esc(EXAMS[GOAL].name)}</h2><span class="spacer"></span><span><span class="pill ${band(r.exam[GOAL]).c}">${band(r.exam[GOAL]).t}</span> <span class="pct">${r.exam[GOAL]}%</span></span></div>
+    <p>${esc(SHORT(GOAL))} covers the widest range of topics, so it's the exam the others build toward. Topics it shares with ${esc(SHORT(best))} count toward both. Once you reach ${READY}% on it, the diagnostic will recommend it.</p>
+    ${goalNext.length?`<p class="muted" style="font-size:.9rem">To get closer to ${esc(SHORT(GOAL))}, also work on: <b>${goalNext.map(x=>`${esc(TOPICS[x.t].name)} (${Math.round(x.pct*100)}%)`).join(", ")}</b>.</p>`:""}
+  </section>`:""}
+  <section class="panel stack">
+    <div class="row"><h2>Exam readiness</h2><span class="spacer"></span><span class="cutlbl">line = ${READY}% readiness target</span></div>
+    <div class="meters">${r.ranked.map(e=> meterHTML(e, r.exam[e])).join("")}</div>
+    <p class="muted" style="font-size:.86rem">Each exam's readiness weights your topic scores by how much of that exam the topic covers.</p>
+  </section>
+  <section class="panel stack">
+    <h2>Study plan for ${esc(EXAMS[best].name)}</h2>
+    ${plan.length?`<p class="muted">Ordered by how many points each topic is worth on this exam.</p><ol class="plan">${plan.map(x=>`<li><b>${esc(TOPICS[x.t].name)} · ${Math.round(x.pct*100)}%</b><span>${esc(TOPICS[x.t].study)}</span><span class="obj">${esc(TOPICS[x.t].objectives)}</span></li>`).join("")}</ol>`
+      :`<p>You scored 80% or higher on every topic this exam covers. Take a full-length practice test, then schedule the exam.</p>`}
+  </section>
+  <section class="panel stack">
+    <h2>Topic scores</h2>
+    <p class="muted" style="font-size:.86rem">Dots show which exams test each topic: <span class="dots">${EXAM_KEYS.map(e=>`<i style="--c:${EXAM_COLOR[e]}"></i>`).join("")}</span> ${EXAM_KEYS.map(e=>`<span class="examtag" style="--c:${EXAM_COLOR[e]}">${esc(SHORT(e))}</span>`).join(" · ")}</p>
+    <div class="topics">${topicRows(r)}</div>
+  </section>
+  <section class="panel stack">
+    <h2>Turn in your results code</h2>
+    <p>Click <b>Copy code</b> and paste the whole code where your teacher asked (Canvas assignment or form). It ends with a period and four characters; include them.</p>
+    <div class="codebox" id="code">${esc(code)}</div>
+    <div class="row"><button class="primary" id="copy">Copy code</button><span id="copied" class="muted" aria-live="polite"></span></div>
+  </section>
+  <section class="panel">
+    <details><summary style="cursor:pointer"><h2 style="display:inline">Review your answers</h2></summary>
+    <p class="muted" style="font-size:.86rem;margin-top:8px">${CFG.review==="full"?"Correct answers are shown in green.":CFG.review==="none"?"Shows which questions you got right. Ask your teacher to go over the ones you missed.":"Your answers are marked right or wrong, with an explanation. Correct answers aren't shown, so you can work them out."}</p>
+    <div style="margin-top:10px">${S.order.map((q,p)=>{
+      const it = ITEMS[q], ok = r.correct[q];
+      return `<details class="rev"><summary><span class="mark ${ok?"y":"n"}">${ok?"✓":"✗"}</span><span>${p+1}. ${esc(it.stem)}</span></summary>
+        ${CFG.review==="none" ? `<p class="why">${esc(TOPICS[it.topic].name)}</p>` : `
+        <ul>${it.options.map((o,k)=>{ const key=it.answer.includes(k), mine=(S.masks[q]>>k)&1;
+          const cls = CFG.review==="full" ? (key?"key":mine?"wrong":"") : (mine?(ok?"key":"wrong"):"");
+          return `<li class="${cls}">${esc(o)}${mine?" (your answer)":""}</li>`;}).join("")}</ul>
+        <p class="why">${esc(decodeWhy(it))}</p>`}</details>`;}).join("")}</div></details>
+  </section>
+  <div class="row"><button id="again">Start a new attempt</button></div>
+  ${footer()}`;
+  document.getElementById("copy").onclick = async ()=>{
+    const out = document.getElementById("copied");
+    try{ await navigator.clipboard.writeText(code); out.textContent="Copied."; }
+    catch(e){ const rg=document.createRange(); rg.selectNodeContents(document.getElementById("code")); const s=getSelection(); s.removeAllRanges(); s.addRange(rg); out.textContent="Selected. Press Ctrl+C to copy."; }
+  };
+  document.getElementById("again").onclick = ()=>{ clearSave(); S=null; viewStart(); };
+  document.getElementById("toTeacher").onclick = viewTeacher;
+}
+
+/* ---------- teacher ---------- */
+let T = {rows:[], sort:"name", dir:1, example:false};
+function exampleCodes(){
+  const names = ["Example Student A","Example Student B","Example Student C","Example Student D","Example Student E","Example Student F"];
+  // Each example student is strong in the topics of one exam: the first three in all of
+  // that exam's topics, the rest in only its two biggest, so the class shows a realistic spread.
+  const strengths = names.map((_,s)=>{
+    const w = EXAMS[EXAM_KEYS[s % EXAM_KEYS.length]].weights;
+    const ranked = Object.keys(w).sort((a,b)=> w[b]-w[a]);
+    return s < 3 ? ranked : ranked.slice(0, 2);
+  });
+  let seed = 7; const rnd = ()=> (seed = (seed*16807)%2147483647)/2147483647;
+  return names.map((n,s)=> makeCode({name:n, period:"EXAMPLE", date:"2026-10-01", minutes:28+s*3,
+    masks: ITEMS.map(it=> rnd() < (strengths[s].includes(it.topic)?0.88:0.4) ? keyMask(it) : (1<<((it.answer[0]+1)%4)) | (it.type==="ma"?1<<((it.answer[0]+2)%4):0))
+  })).join("\n");
+}
+function viewTeacher(){
+  app.innerHTML = `
+  <header class="stack"><div class="eyebrow">Teacher view</div><h1>Class results</h1>
+    <p class="muted" style="max-width:62ch">Paste results codes from Canvas or a form. You can paste a whole export: the page finds the codes inside it. If you gave the test as a Canvas quiz, open its Student Analysis CSV instead. Nothing you paste leaves this browser.</p></header>
+  <section class="panel stack">
+    <label class="field" for="codes">Results codes<textarea id="codes" placeholder="AIDX-…"></textarea></label>
+    <div class="row"><button class="primary" id="go">Show results</button><label class="btn" for="file" style="cursor:pointer">Open a .csv or .txt file</label><input type="file" id="file" accept=".csv,.txt,text/plain,text/csv" hidden>
+      <span class="spacer"></span><button id="ex">Load example class</button><button id="back">Back to the test</button></div>
+    <p id="parseMsg" class="muted" aria-live="polite"></p>
+  </section>
+  <div id="tout" class="stack"></div>`;
+  const ta = document.getElementById("codes");
+  const run = ()=>{ const {rows:codeRows,bad,other} = parseCodes(ta.value); const canvasRows = parseCanvas(ta.value);
+    const rows = codeRows.concat(canvasRows);
+    T.rows = rows.map(x=>({...x, r:score(x.masks)})); T.example = rows.some(r=>r.period==="EXAMPLE");
+    const cv = canvasRows.length ? ` Canvas report: ${canvasRows.length} student${canvasRows.length>1?"s":""}, ${canvasRows[0].matched} of ${ITEMS.length} questions matched.` : "";
+    document.getElementById("parseMsg").textContent = rows.length ? `${rows.length} result${rows.length>1?"s":""} loaded${bad?`, ${bad} code${bad>1?"s":""} could not be read`:""}.${cv}${other?` ${other} code${other>1?"s":""} from a different diagnostic skipped.`:""}` : (bad?`${bad} code(s) could not be read. Check that each one was copied in full.`:"No results found. Paste codes that start with AIDX-, or open the Canvas Student Analysis CSV.");
+    renderTeacher(); };
+  document.getElementById("go").onclick = run;
+  document.getElementById("ex").onclick = ()=>{ ta.value = exampleCodes(); run(); };
+  document.getElementById("file").onchange = ev=>{ const f=ev.target.files[0]; if(!f) return; f.text().then(t=>{ ta.value=t; run(); }); };
+  document.getElementById("back").onclick = ()=> S && !S.end ? viewQuiz() : S && S.end ? viewResults() : viewStart();
+  if (T.rows.length) renderTeacher();
+}
+function renderTeacher(){
+  const out = document.getElementById("tout"); if(!out) return;
+  const rows = T.rows; if(!rows.length){ out.innerHTML=""; return; }
+  const avg = f => Math.round(rows.reduce((s,x)=>s+f(x),0)/rows.length);
+  const recCount = Object.fromEntries(EXAM_KEYS.map(e=>[e, rows.filter(x=>x.r.best===e).length]));
+  const readyCount = rows.filter(x=> x.r.exam[x.r.best]>=READY).length;
+  const topicAvg = Object.keys(TOPICS).map(t=>({t, p: rows.reduce((s,x)=>s+x.r.topic[t].pct,0)/rows.length})).sort((a,b)=>a.p-b.p);
+  const itemPct = ITEMS.map((it,i)=>({it, p: rows.filter(x=>x.r.correct[i]).length/rows.length})).sort((a,b)=>a.p-b.p).slice(0,6);
+  const sorted = rows.slice().sort((a,b)=>{
+    const k=T.sort, d=T.dir;
+    const v = x => k==="name"?x.name.toLowerCase(): k==="period"?x.period.toLowerCase(): k==="date"?x.date: k==="overall"?x.r.overall: k==="rec"?x.r.best: x.r.exam[k];
+    return v(a)>v(b)?d: v(a)<v(b)?-d:0;});
+  const chip = p => { const b=band(p); return `<span class="chip ${b.c}">${p}%</span>`; };
+  const th = (k,l)=>`<th data-k="${k}" aria-sort="${T.sort===k?(T.dir>0?"ascending":"descending"):"none"}">${l}${T.sort===k?(T.dir>0?" ▲":" ▼"):""}</th>`;
+  out.innerHTML = `
+  ${T.example?`<p class="notice">These are example students generated to show the layout. They are not real results.</p>`:""}
+  ${rows.some(x=>!x.verified)?`<p class="notice">${rows.filter(x=>!x.verified).length} code(s) couldn't be verified and are marked with ⚠. ${rows.some(x=>x.nocheck)?"Codes missing their last few characters (after the period) were usually copied by hand; the answers in them are still complete. ":""}${rows.some(x=>!x.verified&&!x.nocheck)?"A code whose check characters don't match may have been edited.":""}</p>`:""}
+  <section class="stats">
+    <div class="stat"><b>${rows.length}</b><span>students</span></div>
+    <div class="stat"><b>${avg(x=>x.r.overall)}%</b><span>average score</span></div>
+    <div class="stat"><b>${readyCount}</b><span>likely ready for their recommended exam</span></div>
+    ${GOAL?`<div class="stat"><b>${rows.filter(x=> x.r.exam[GOAL]>=READY).length}</b><span>likely ready for the end goal, ${esc(SHORT(GOAL))}</span></div>`:""}
+    ${EXAM_KEYS.map(e=>`<div class="stat" style="border-top:4px solid ${EXAM_COLOR[e]}"><b>${recCount[e]}</b><span>recommended ${esc(EXAMS[e].name)}</span></div>`).join("")}
+  </section>
+  <div class="tablewrap"><table>
+    <thead><tr>${th("name","Student")}${th("period","Class")}${th("date","Date")}${th("overall","Score")}${EXAM_KEYS.map(e=>th(e,esc(SHORT(e)))).join("")}${th("rec","Recommended")}<th>Study first</th></tr></thead>
+    <tbody>${sorted.map(x=>{ const pl = studyPlan(x.r, x.r.best).slice(0,2);
+      return `<tr><td>${x.verified?"":"⚠ "}${esc(x.name)}</td><td>${esc(x.period)}</td><td class="num">${esc(x.date)}</td><td class="num">${x.r.total}/${ITEMS.length}</td>
+      ${EXAM_KEYS.map(e=>`<td>${chip(x.r.exam[e])}</td>`).join("")}
+      <td><span class="examtag" style="--c:${EXAM_COLOR[x.r.best]}">${esc(EXAMS[x.r.best].name)}</span></td>
+      <td>${pl.length?pl.map(p=>esc(TOPICS[p.t].name)).join("<br>"):"Ready to test"}</td></tr>`;}).join("")}</tbody>
+  </table></div>
+  <div class="row"><button id="csv">Download CSV</button><button id="copycsv">Copy as CSV</button><span id="csvMsg" class="muted" aria-live="polite"></span></div>
+  <section class="panel stack"><h2>Class topic averages</h2><p class="muted" style="font-size:.86rem">Weakest first. Dots show which exams test the topic.</p>
+    <div class="topics">${topicAvg.map(({t,p})=>{ const q=Math.round(p*100); const col=q>=80?"var(--good)":q>=60?"var(--warn)":"var(--bad)";
+      return `<span>${esc(TOPICS[t].name)}<span class="dots">${EXAM_KEYS.filter(e=>EXAMS[e].weights[t]).map(e=>`<i style="--c:${EXAM_COLOR[e]}"></i>`).join("")}</span></span><div class="mini"><i style="width:${q}%;background:${col}"></i></div><span class="n">${q}%</span>`;}).join("")}</div>
+  </section>
+  <section class="panel stack"><h2>Most-missed questions</h2>
+    ${itemPct.map(({it,p})=>`<div><span class="pill ${band(Math.round(p*100)).c}">${Math.round(p*100)}% correct</span> <span class="eyebrow">${it.id} · ${esc(TOPICS[it.topic].name)}</span><p style="margin-top:4px">${esc(it.stem)}</p></div>`).join("")}
+  </section>`;
+  out.querySelectorAll("th[data-k]").forEach(h=> h.onclick=()=>{ const k=h.dataset.k; T.dir = T.sort===k? -T.dir : (["name","period","rec"].includes(k)?1:-1); T.sort=k; renderTeacher(); });
+  const csv = ()=> { const q=v=>`"${String(v).replace(/"/g,'""')}"`;
+    const head = ["Student","Class","Date","Minutes","Correct","Overall %",...EXAM_KEYS.map(e=>EXAMS[e].name+" %"),"Recommended exam", ...Object.keys(TOPICS).map(t=>TOPICS[t].name+" %"),"Verified"];
+    return [head.map(q).join(","), ...rows.map(x=>[x.name,x.period,x.date,x.minutes,x.r.total,x.r.overall,...EXAM_KEYS.map(e=>x.r.exam[e]),EXAMS[x.r.best].name,...Object.keys(TOPICS).map(t=>Math.round(x.r.topic[t].pct*100)),x.verified?"yes":"no"].map(q).join(","))].join("\n"); };
+  const msg = document.getElementById("csvMsg");
+  document.getElementById("copycsv").onclick = async ()=>{ try{ await navigator.clipboard.writeText(csv()); msg.textContent="Copied. Paste into Excel or Sheets."; }catch(e){ msg.textContent="Copy was blocked in this view. Use Download CSV."; } };
+  const dl = document.getElementById("csv");
+  (async ()=>{ const d = window.claude ? await window.claude.use("downloads").catch(()=>null) : null;
+    if (d) dl.onclick = async ()=>{ try{ await d.save({filename:CFG.id+"-diagnostic-results.csv", data:csv()}); msg.textContent="Saved."; }catch(e){ msg.textContent="Download was cancelled or blocked."; } };
+    else if (!window.claude) dl.onclick = ()=>{ const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv()],{type:"text/csv"})); a.download=CFG.id+"-diagnostic-results.csv"; a.click(); };
+    else dl.hidden = true; })();
+}
+
+/* ---------- boot ---------- */
+if (location.hash === "#teacher") viewTeacher();
+else { const s = load(); if (s && s.end) { S = s; viewResults(); } else viewStart(); }
+</script>
+</body></html>

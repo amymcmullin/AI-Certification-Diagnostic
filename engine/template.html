@@ -135,6 +135,9 @@ const CFG = Object.assign({id:"pack", eyebrow:"Certification readiness", heading
 const EXAM_KEYS = Object.keys(EXAMS);
 const EXAM_COLOR = Object.fromEntries(EXAM_KEYS.map((e,i)=>[e,`var(--x${i%4})`]));
 const SHORT = e => EXAMS[e].short || EXAMS[e].name;
+// An exam marked "goal" (e.g. a multi-domain exam the others build toward) is shown as the
+// end goal and recommended first only once the student is likely ready for it.
+const GOAL = EXAM_KEYS.find(e=> EXAMS[e].goal) || null;
 const READY = 75, CLOSE = 60, DEV = 40;
 const SAVE_KEY = "cdx-attempt-" + CFG.id;
 const app = document.getElementById("app");
@@ -180,8 +183,10 @@ function score(masks){ // masks: array aligned with ITEMS (canonical option indi
     exam[e] = Math.round(s*100);
   }
   const ranked = EXAM_KEYS.slice().sort((a,b)=> exam[b]-exam[a]);
+  const steps = GOAL ? ranked.filter(e=> e!==GOAL) : ranked;
+  const best = GOAL && (exam[GOAL] >= READY || !steps.length) ? GOAL : steps[0];
   const total = correct.filter(Boolean).length;
-  return {topic, exam, ranked, best: ranked[0], correct, total, overall: Math.round(100*total/ITEMS.length)};
+  return {topic, exam, ranked, best, correct, total, overall: Math.round(100*total/ITEMS.length)};
 }
 function band(p){ return p>=READY?{k:"ready",t:"Likely ready",c:"b-ready"}: p>=CLOSE?{k:"close",t:"Almost there",c:"b-close"}: p>=DEV?{k:"dev",t:"Developing",c:"b-dev"}:{k:"not",t:"Not yet",c:"b-not"}; }
 function studyPlan(r, e){
@@ -385,7 +390,9 @@ function topicRows(r){
 }
 
 function viewResults(){
-  const r = score(S.masks), best = r.best, second = r.ranked[1], bb = band(r.exam[best]);
+  const r = score(S.masks), best = r.best, bb = band(r.exam[best]);
+  const second = r.ranked.filter(e=> e!==best && e!==GOAL)[0] || r.ranked.find(e=> e!==best);
+  const goalNext = GOAL && best!==GOAL ? studyPlan(r, GOAL).filter(x=> !EXAMS[best].weights[x.t] || x.pct < 0.8).slice(0,3) : [];
   const plan = studyPlan(r, best);
   const minutes = Math.max(1, Math.round((S.end - S.start)/60000));
   const code = makeCode({name:S.name, period:S.period||"", date:new Date(S.end).toISOString().slice(0,10), minutes, masks:S.masks});
@@ -399,10 +406,16 @@ function viewResults(){
     <h1>${r.total} of ${ITEMS.length} correct</h1>
   </header>
   <section class="panel verdict stack" style="--c:${EXAM_COLOR[best]}">
-    <div class="eyebrow">Recommended exam</div>
+    <div class="eyebrow">${GOAL && best!==GOAL ? "Take this exam first" : "Recommended exam"}</div>
     <div class="big">${esc(EXAMS[best].name)}</div>
-    <p>${esc(headline)} Next closest: <b>${esc(EXAMS[second].name)}</b> at ${r.exam[second]}%.</p>
+    <p>${esc(headline)}${second?` Next closest: <b>${esc(EXAMS[second].name)}</b> at ${r.exam[second]}%.`:""}</p>
   </section>
+  ${GOAL && best!==GOAL ? `<section class="panel stack verdict" style="--c:${EXAM_COLOR[GOAL]}">
+    <div class="eyebrow">End goal</div>
+    <div class="row"><h2>${esc(EXAMS[GOAL].name)}</h2><span class="spacer"></span><span><span class="pill ${band(r.exam[GOAL]).c}">${band(r.exam[GOAL]).t}</span> <span class="pct">${r.exam[GOAL]}%</span></span></div>
+    <p>${esc(SHORT(GOAL))} covers the widest range of topics, so it's the exam the others build toward. Topics it shares with ${esc(SHORT(best))} count toward both. Once you reach ${READY}% on it, the diagnostic will recommend it.</p>
+    ${goalNext.length?`<p class="muted" style="font-size:.9rem">To get closer to ${esc(SHORT(GOAL))}, also work on: <b>${goalNext.map(x=>`${esc(TOPICS[x.t].name)} (${Math.round(x.pct*100)}%)`).join(", ")}</b>.</p>`:""}
+  </section>`:""}
   <section class="panel stack">
     <div class="row"><h2>Exam readiness</h2><span class="spacer"></span><span class="cutlbl">line = ${READY}% readiness target</span></div>
     <div class="meters">${r.ranked.map(e=> meterHTML(e, r.exam[e])).join("")}</div>
@@ -508,6 +521,7 @@ function renderTeacher(){
     <div class="stat"><b>${rows.length}</b><span>students</span></div>
     <div class="stat"><b>${avg(x=>x.r.overall)}%</b><span>average score</span></div>
     <div class="stat"><b>${readyCount}</b><span>likely ready for their recommended exam</span></div>
+    ${GOAL?`<div class="stat"><b>${rows.filter(x=> x.r.exam[GOAL]>=READY).length}</b><span>likely ready for the end goal, ${esc(SHORT(GOAL))}</span></div>`:""}
     ${EXAM_KEYS.map(e=>`<div class="stat" style="border-top:4px solid ${EXAM_COLOR[e]}"><b>${recCount[e]}</b><span>recommended ${esc(EXAMS[e].name)}</span></div>`).join("")}
   </section>
   <div class="tablewrap"><table>

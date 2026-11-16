@@ -7,6 +7,7 @@ An open-source practice test engine for IT career and technical education. A stu
 | **AI** | Generative AI Foundations (Certiport) · Azure AI Fundamentals AI-901 (Microsoft) · IT Specialist: Artificial Intelligence (Certiport) | 45 |
 | **Networking** | Cisco Certified Support Technician: Networking (Cisco/Certiport) · IT Specialist: Networking (Certiport) · IT Specialist: Network Security (Certiport) | 50 |
 | **IT Support** | Cisco Certified Support Technician: IT Support (Cisco/Certiport) · IT Specialist: Device Configuration and Management (Certiport) | 50 |
+| **IT Foundations** | CCST IT Support · IT Specialist: Device Configuration and Management · CompTIA Tech+ (end goal) | 60 |
 
 Diagnostics for cloud and for multi-domain exams (A+, Tech+) are planned.
 
@@ -14,6 +15,7 @@ Diagnostics for cloud and for multi-domain exams (A+, Tech+) are planned.
 - [AI Certification Diagnostic](https://amymcmullin.github.io/AI-Certification-Diagnostic/ai/): 45 questions, answer keys encoded
 - [Networking Certification Diagnostic](https://amymcmullin.github.io/AI-Certification-Diagnostic/networking/): 50 questions, answer keys encoded
 - [IT Support Certification Diagnostic](https://amymcmullin.github.io/AI-Certification-Diagnostic/it-support/): 50 questions, answer keys encoded
+- [IT Foundations Certification Diagnostic](https://amymcmullin.github.io/AI-Certification-Diagnostic/it-foundations/): 60 questions, answer keys encoded; adds CompTIA Tech+ as the end-goal exam
 - [Demo](https://amymcmullin.github.io/AI-Certification-Diagnostic/demo/): 12 public sample questions, with answers shown after submitting
 - Add `#teacher` to any of these addresses to open the Teacher view
 
@@ -54,7 +56,7 @@ build/build_qti.py       Canvas QTI 1.2 builder
 packs/demo/              Public sample pack (pack.json) and its builds
 tests/test.js            Checks a built page against its source pack
 index.html, catalog.json Landing page and the list of published diagnostics (generated)
-ai/, networking/, it-support/, demo/ Published diagnostics (generated; served by GitHub Pages)
+ai/, networking/, it-support/, it-foundations/, demo/ Published diagnostics (generated; served by GitHub Pages)
 docs/                    Scoring method, pack format, Canvas guide
 ```
 
